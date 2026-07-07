@@ -4,6 +4,7 @@ const sleepTypes = {
   hut: { label: "Hut of shelter", icon: "▰" },
   host: { label: "Gastnetwerk", icon: "♥" },
   ask: { label: "Toestemming vragen", icon: "?" },
+  camping: { label: "Camping", icon: "C" },
 };
 
 const places = [
@@ -332,18 +333,19 @@ const countries = [
 ];
 
 const sources = [
-  { icon: "W", name: "Warmshowers", description: "Wereldwijd hospitalitynetwerk met een hostkaart in de mobiele app. Rollout heeft nog geen stabiele openbare export om die kaartposities betrouwbaar als eigen laag bij te houden.", meta: "Kaart zichtbaar in officiële app", url: "https://play.google.com/store/apps/details?id=org.warmshowers.app" },
-  { icon: "V", name: "Vrienden op de Fiets", description: "De openbare kaartfeed levert losse kaartposities en generieke voorzieningen zonder adresvelden. Rollout clustert die bij uitzoomen en toont de afzonderlijke bronpins bij inzoomen.", meta: "5.144 pins in elf landen · 15 juni 2026", url: "https://www.vriendenopdefiets.nl/zoek-een-logeeradres" },
-  { icon: "G", name: "Welcome To My Garden", description: "De openbare explore-kaart levert losse tuinposities, basisvoorzieningen en waar aanwezig een tuinfoto. Die worden brongetrouw geclusterd en bij verder inzoomen afzonderlijk getoond.", meta: "5.379 pins · 3.943 foto's · 15 juni 2026", url: "https://welcometomygarden.org/nl/explore" },
+  { icon: "W", name: "Warmshowers", description: "Wereldwijd hospitalitynetwerk met een hostkaart in de mobiele app. Nook heeft nog geen stabiele openbare export om die kaartposities betrouwbaar als eigen laag bij te houden.", meta: "Kaart zichtbaar in officiële app", url: "https://play.google.com/store/apps/details?id=org.warmshowers.app" },
+  { icon: "V", name: "Vrienden op de Fiets", description: "De openbare kaartfeed levert losse kaartposities en generieke voorzieningen zonder adresvelden. Nook clustert die bij uitzoomen en toont de afzonderlijke bronpins bij inzoomen.", meta: "5.343 pins · 38 Europese landen · 7 juli 2026", url: "https://www.vriendenopdefiets.nl/zoek-een-logeeradres" },
+  { icon: "G", name: "Welcome To My Garden", description: "De openbare explore-kaart levert losse tuinposities, basisvoorzieningen en waar aanwezig een tuinfoto. Die worden brongetrouw geclusterd en bij verder inzoomen afzonderlijk getoond.", meta: "5.924 pins · 4.324 foto's · 7 juli 2026", url: "https://welcometomygarden.org/nl/explore" },
   { icon: "U", name: "Ud i Naturen", description: "Officiële Deense kaartdata met concrete vrije tentgebieden, primitieve overnachtingsplekken en shelters, inclusief locatiebeschrijving, capaciteit en boekingsstatus.", meta: "2.480 officiële plekken · 14 juni 2026", url: "https://udinaturen.dk/kort" },
   { icon: "F", name: "De Wereldfietser", description: "Forum en vereniging met veel ervaringskennis over routes, materiaal en overnachten onderweg.", meta: "Forum · Nederlands", url: "https://forum.wereldfietser.nl/" },
   { icon: "R", name: "Reddit", description: "Recente ervaringen en lokale tips, nuttig als aanwijzing. Controleer elke claim daarna bij een primaire bron.", meta: "Community · wisselend", url: "https://www.reddit.com/r/bikepacking/search/?q=camping%20sweden%20denmark%20germany" },
 ];
 
 const publicData = window.BEDROLL_DATA || {};
-const vodfPins = publicData.vodf?.pins || [];
-const wtmgPins = publicData.wtmg?.pins || [];
-const denmarkPlaces = publicData.denmark?.places || [];
+let vodfPins = publicData.vodf?.pins || [];
+let wtmgPins = publicData.wtmg?.pins || [];
+let denmarkPlaces = publicData.denmark?.places || [];
+const overviewSourceCounts = publicData.overview?.countries || {};
 
 const map = L.map("map", { zoomControl: false }).setView([52.4, 8.8], 4);
 L.control.zoom({ position: "topright" }).addTo(map);
@@ -353,56 +355,77 @@ L.tileLayer("https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
 }).addTo(map);
 
-const curatedLayer = L.layerGroup().addTo(map);
-const osmLayer = L.layerGroup().addTo(map);
-const importedLayer = L.layerGroup().addTo(map);
 const routeLayer = L.layerGroup().addTo(map);
 const locationLayer = L.layerGroup().addTo(map);
+
+function clusterVisual(count) {
+  if (count >= 1000) return { size: 86, density: "cluster-density-peak" };
+  if (count >= 250) return { size: 76, density: "cluster-density-high" };
+  if (count >= 50) return { size: 64, density: "cluster-density-medium" };
+  if (count >= 10) return { size: 54, density: "cluster-density-normal" };
+  return { size: 44, density: "cluster-density-low" };
+}
+
+function countClusterIcon(className, count, { prefix = "" } = {}) {
+  const visual = clusterVisual(count);
+  return L.divIcon({
+    className: "",
+    html: `<div class="map-count-cluster ${className} ${visual.density}">${prefix ? `<span>${escapeHtml(prefix)}</span>` : ""}<strong>${escapeHtml(compactCount(count))}</strong></div>`,
+    iconSize: [visual.size, visual.size],
+    iconAnchor: [visual.size / 2, visual.size / 2],
+  });
+}
+
 function sourceClusterLayer(className) {
   return L.markerClusterGroup
     ? L.markerClusterGroup({
         chunkedLoading: true,
-        disableClusteringAtZoom: 13,
-        maxClusterRadius: 52,
+        disableClusteringAtZoom: 15,
+        maxClusterRadius: (zoom) => {
+          if (zoom < 5) return 132;
+          if (zoom < 7) return 108;
+          if (zoom < 10) return 76;
+          return 52;
+        },
         showCoverageOnHover: false,
         spiderfyOnMaxZoom: true,
-        iconCreateFunction: (cluster) => L.divIcon({
-          className: "",
-          html: `<div class="map-count-cluster ${className}">${cluster.getChildCount()}</div>`,
-          iconSize: [46, 46],
-          iconAnchor: [23, 23],
-        }),
+        iconCreateFunction: (cluster) => countClusterIcon(className, cluster.getChildCount()),
       }).addTo(map)
     : L.layerGroup().addTo(map);
 }
 
+const curatedLayer = sourceClusterLayer("cluster-curated");
+const osmLayer = sourceClusterLayer("cluster-osm");
+const importedLayer = sourceClusterLayer("cluster-imported");
 const vodfLayer = sourceClusterLayer("cluster-vodf");
 const wtmgLayer = sourceClusterLayer("cluster-wtmg");
-const denmarkLayer = L.markerClusterGroup
-  ? L.markerClusterGroup({
-      chunkedLoading: true,
-      disableClusteringAtZoom: 11,
-      maxClusterRadius: 52,
-      showCoverageOnHover: false,
-      spiderfyOnMaxZoom: true,
-      iconCreateFunction: (cluster) => L.divIcon({
-        className: "",
-        html: `<div class="map-count-cluster cluster-official">${cluster.getChildCount()}</div>`,
-        iconSize: [46, 46],
-        iconAnchor: [23, 23],
-      }),
-    }).addTo(map)
-  : L.layerGroup().addTo(map);
+const campingLayer = sourceClusterLayer("cluster-camping");
+const denmarkLayer = sourceClusterLayer("cluster-official");
 const markerIndex = new Map();
-const visiblePlaceCounts = { curated: 0, hospitality: 0, denmark: 0, osm: 0, imported: 0 };
+const visiblePlaceCounts = { curated: 0, hospitality: 0, denmark: 0, osm: 0, camping: 0, imported: 0 };
+const ROUTE_LIBRARY_KEY = "nook-saved-routes-v1";
+const LEGACY_ROUTE_KEY = "nook-saved-route-v1";
+const LEGACY_STORAGE_KEYS = {
+  [ROUTE_LIBRARY_KEY]: "rollout-saved-routes-v1",
+  [LEGACY_ROUTE_KEY]: "rollout-saved-route-v1",
+  "nook-country-filter-v1": "rollout-country-filter-v1",
+  "nook-route-distance": "rollout-route-distance",
+};
 let osmPlaces = [];
+let campingPlaces = [];
 let importedWaypoints = [];
+let savedRoutes = [];
+let routesPersisted = true;
 let currentCandidates = [];
 let displayedCandidates = [];
 let userLocation = null;
 let locationMessage = "";
 let candidatePanelOpen = false;
 let candidateHorizonKm = 35;
+let campingLoading = false;
+let campingQueuedRefresh = false;
+const campingRequestedKeys = new Set();
+const campingPlaceIds = new Set();
 let routeState = {
   name: "",
   pointCount: 0,
@@ -414,6 +437,19 @@ let routeState = {
 };
 
 const ROUTE_GRID_DEGREES = 0.25;
+const SOURCE_LOAD_ZOOM = 6;
+const CAMPING_RESULT_LIMIT = 1500;
+const CAMPING_MAX_BOUNDS_DIAGONAL_KM = 520;
+const CAMPING_FALLBACK_RADIUS_KM = 180;
+const START_LOCATION_RADIUS_KM = 300;
+const OVERPASS_ENDPOINTS = [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+];
+const STARTUP_LOCATION_COPY = "Nook opent dan rond 300 km van jou en rangschikt plekken vanaf je positie.";
+let startupLocationTried = false;
+let startupLocationPromptDismissed = false;
+let viewportRefreshTimer = 0;
 
 function escapeHtml(value = "") {
   return String(value)
@@ -553,6 +589,30 @@ function distanceBetweenPointsKm(start, end) {
   return 2 * earthRadiusKm * Math.asin(Math.sqrt(haversine));
 }
 
+function boundsDiagonalKm(bounds) {
+  return distanceBetweenPointsKm(
+    { lat: bounds.getSouth(), lng: bounds.getWest() },
+    { lat: bounds.getNorth(), lng: bounds.getEast() },
+  );
+}
+
+function boundsAroundPoint(point, radiusKm) {
+  const latDelta = radiusKm / 110.574;
+  const lngDelta = radiusKm / Math.max(20, 111.32 * Math.cos(point.lat * Math.PI / 180));
+  return L.latLngBounds(
+    [point.lat - latDelta, point.lng - lngDelta],
+    [point.lat + latDelta, point.lng + lngDelta],
+  );
+}
+
+function focusMapAroundPoint(point, radiusKm = START_LOCATION_RADIUS_KM, options = {}) {
+  map.fitBounds(boundsAroundPoint(point, radiusKm), {
+    animate: options.animate ?? true,
+    padding: [44, 44],
+    maxZoom: options.maxZoom || 8,
+  });
+}
+
 function routeLengthKm(lines) {
   return lines.reduce((total, line) => total + line.slice(1).reduce(
     (lineTotal, point, index) => lineTotal + distanceBetweenPointsKm(line[index], point),
@@ -673,12 +733,13 @@ function formatDistance(distanceKm) {
 
 function candidateProviderLabel(provider) {
   return {
-    curated: "Rollout-regiogids",
+    curated: "Nook-regiogids",
     denmark: "Ud i Naturen",
     osm: "OpenStreetMap",
     imported: "GPX-waypoint",
     vodf: "Vrienden op de Fiets",
     wtmg: "Welcome To My Garden",
+    camping: "OpenStreetMap-camping",
   }[provider] || "Bronlocatie";
 }
 
@@ -767,7 +828,7 @@ function openCandidatePanel() {
   setFiltersOpen(false);
   panel.classList.add("is-open");
   panel.setAttribute("aria-hidden", "false");
-  updateCandidatePanel();
+  refreshMapPlaces();
 }
 
 function closeCandidatePanel() {
@@ -775,6 +836,7 @@ function closeCandidatePanel() {
   const panel = document.querySelector("#candidate-panel");
   panel?.classList.remove("is-open");
   panel?.setAttribute("aria-hidden", "true");
+  if (map.getZoom() < SOURCE_LOAD_ZOOM) scheduleViewportRefresh();
 }
 
 function drawUserLocation() {
@@ -823,6 +885,23 @@ function showLocationStatus(message, tone = "neutral", { sticky = false } = {}) 
   }
 }
 
+function hideStartupLocationPrompt() {
+  const prompt = document.querySelector("#startup-location-card");
+  if (prompt) prompt.hidden = true;
+}
+
+function showStartupLocationPrompt({ title = "Gebruik je locatie", message = STARTUP_LOCATION_COPY, primaryLabel = "Gebruik locatie" } = {}) {
+  const prompt = document.querySelector("#startup-location-card");
+  if (!prompt || userLocation || startupLocationPromptDismissed) return;
+  const titleElement = document.querySelector("#startup-location-title");
+  const copy = document.querySelector("#startup-location-copy");
+  const primaryButton = document.querySelector("#startup-use-location");
+  if (titleElement) titleElement.textContent = title;
+  if (copy) copy.textContent = message;
+  if (primaryButton) primaryButton.textContent = primaryLabel;
+  prompt.hidden = false;
+}
+
 function updateLocationNote() {
   const note = document.querySelector("#candidate-location-note");
   if (!note) return;
@@ -831,30 +910,40 @@ function updateLocationNote() {
   } else if (locationMessage) {
     note.textContent = locationMessage;
   } else {
-    note.textContent = "Zonder GPS gebruikt Rollout het midden van de kaart.";
+    note.textContent = "Zonder GPS gebruikt Nook het midden van de kaart.";
   }
 }
 
 function geolocationUnavailableMessage() {
   if (!("geolocation" in navigator)) return "Deze browser ondersteunt geen locatiebepaling.";
-  if (!window.isSecureContext) return "GPS werkt op je telefoon alleen via HTTPS. Open straks de GitHub Pages-link; deze lokale netwerklink gebruikt kaartmidden.";
+  if (!window.isSecureContext) return "GPS werkt op je telefoon alleen via HTTPS. Open de gepubliceerde GitHub Pages-link of gebruik het kaartmidden.";
   return "";
 }
 
-function requestUserLocation({ openCandidates = false, focusMap = true } = {}) {
+function requestUserLocation({ openCandidates = false, focusMap = true, focusRadiusKm = 0, quiet = false, promptOnError = false } = {}) {
   if (openCandidates) openCandidatePanel();
   const unavailableMessage = geolocationUnavailableMessage();
   if (unavailableMessage) {
     locationMessage = unavailableMessage;
-    showLocationStatus(unavailableMessage, "warning", { sticky: true });
+    if (promptOnError) {
+      startupLocationPromptDismissed = false;
+      showStartupLocationPrompt({
+        title: "Locatie niet beschikbaar",
+        message: unavailableMessage,
+        primaryLabel: "Opnieuw proberen",
+      });
+    } else if (!quiet) {
+      showLocationStatus(unavailableMessage, "warning", { sticky: true });
+    }
     updateLocationNote();
     updateCandidatePanel();
     return;
   }
 
+  hideStartupLocationPrompt();
   locationMessage = "Je positie bepalen...";
   setLocationControlsLoading(true);
-  showLocationStatus("Je positie bepalen...", "neutral");
+  if (!quiet) showLocationStatus("Je positie bepalen...", "neutral");
   updateLocationNote();
   if (openCandidates) updateCandidatePanel();
 
@@ -865,27 +954,71 @@ function requestUserLocation({ openCandidates = false, focusMap = true } = {}) {
       accuracy: position.coords.accuracy,
     };
     locationMessage = "Je huidige positie is actief.";
+    startupLocationPromptDismissed = true;
+    hideStartupLocationPrompt();
     drawUserLocation();
-    if (focusMap) map.flyTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
+    if (focusMap && focusRadiusKm) focusMapAroundPoint(userLocation, focusRadiusKm, { animate: !quiet });
+    else if (focusMap) map.flyTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
     setLocationControlsLoading(false);
     document.querySelector("#locate-me").classList.add("has-location");
-    showLocationStatus("Huidige positie actief. Plekken worden nu vanaf jou gerangschikt.", "success");
+    if (!quiet) showLocationStatus("Huidige positie actief. Plekken worden nu vanaf jou gerangschikt.", "success");
     updateLocationNote();
-    if (openCandidates) updateCandidatePanel();
+    refreshMapPlaces();
   }, (error) => {
     setLocationControlsLoading(false);
     const explanation = error.code === error.PERMISSION_DENIED
       ? "Locatietoegang is geweigerd. Zet locatie aan voor deze site of gebruik het midden van de kaart."
-      : "Je positie kon niet worden bepaald. Rollout gebruikt nu het midden van de kaart.";
+      : error.code === error.TIMEOUT
+        ? "Locatie bepalen duurde te lang. Nook gebruikt nu het midden van de kaart."
+        : "Deze browser gaf geen positie door. Nook gebruikt nu het midden van de kaart.";
     locationMessage = explanation;
-    showLocationStatus(explanation, "warning", { sticky: true });
+    if (quiet || promptOnError) {
+      startupLocationPromptDismissed = false;
+      showStartupLocationPrompt({
+        title: error.code === error.PERMISSION_DENIED ? "Locatie staat uit" : "Locatie lukte niet",
+        message: `${explanation} Probeer opnieuw of gebruik het kaartmidden.`,
+        primaryLabel: "Opnieuw proberen",
+      });
+    } else {
+      showLocationStatus(explanation, "warning", { sticky: true });
+    }
     updateLocationNote();
     updateCandidatePanel();
   }, {
-    enableHighAccuracy: true,
-    timeout: 12000,
-    maximumAge: 60000,
+    enableHighAccuracy: false,
+    timeout: 15000,
+    maximumAge: 300000,
   });
+}
+
+async function openAroundCurrentLocation() {
+  if (startupLocationTried || userLocation) return;
+  startupLocationTried = true;
+  const unavailableMessage = geolocationUnavailableMessage();
+  if (unavailableMessage) {
+    showStartupLocationPrompt({
+      title: "Locatie niet beschikbaar",
+      message: unavailableMessage,
+      primaryLabel: "Toch proberen",
+    });
+    return;
+  }
+  try {
+    if (navigator.permissions?.query) {
+      const permission = await navigator.permissions.query({ name: "geolocation" });
+      if (permission.state === "denied") {
+        showStartupLocationPrompt({
+          title: "Locatie staat geblokkeerd",
+          message: "Zet locatie aan voor deze site in je browserinstellingen, of gebruik voorlopig het kaartmidden.",
+          primaryLabel: "Opnieuw proberen",
+        });
+        return;
+      }
+    }
+  } catch (error) {
+    console.warn("Locatierechten konden niet vooraf worden gelezen.", error);
+  }
+  showStartupLocationPrompt();
 }
 
 function setFiltersOpen(open) {
@@ -900,18 +1033,389 @@ function setFiltersOpen(open) {
 
 function currentFilters() {
   return {
-    country: document.querySelector("#country-filter").value,
-    confidence: Number(document.querySelector("#confidence-filter").value),
-    types: new Set([...document.querySelectorAll('fieldset:not(.network-filter):not(.route-filter) .check-row input:checked')].map((input) => input.value)),
+    countries: selectedCountryCodes(),
+    confidence: 1,
+    types: new Set([...document.querySelectorAll('#sleep-filter input[value]:checked')].map((input) => input.value)),
     networks: new Set([...document.querySelectorAll('[data-network]:checked')].map((input) => input.dataset.network)),
   };
 }
 
-const countryNames = {
-  NL: "Nederland", BE: "België", LU: "Luxemburg", DE: "Duitsland",
-  DK: "Denemarken", SE: "Zweden", NO: "Noorwegen", FR: "Frankrijk",
-  CH: "Zwitserland", AT: "Oostenrijk", IT: "Italië",
+const FILTER_COUNTRIES = [
+  { code: "AL", name: "Albanië", center: [41.2, 20.1, 7], bounds: [[39.6, 19.1], [42.7, 21.1]] },
+  { code: "AD", name: "Andorra", center: [42.55, 1.6, 10], bounds: [[42.4, 1.4], [42.7, 1.8]] },
+  { code: "AT", name: "Oostenrijk", center: [47.6, 14.1, 7], bounds: [[46.35, 9.5], [49.1, 17.2]] },
+  { code: "BY", name: "Belarus", center: [53.7, 27.9, 6], bounds: [[51.2, 23.1], [56.2, 32.8]] },
+  { code: "BE", name: "België", center: [50.7, 4.65, 7], bounds: [[49.45, 2.45], [51.55, 6.45]] },
+  { code: "BA", name: "Bosnië en Herzegovina", center: [44.1, 17.8, 7], bounds: [[42.5, 15.7], [45.3, 19.7]] },
+  { code: "BG", name: "Bulgarije", center: [42.7, 25.3, 7], bounds: [[41.2, 22.3], [44.3, 28.7]] },
+  { code: "HR", name: "Kroatië", center: [45.1, 16.4, 7], bounds: [[42.3, 13.3], [46.6, 19.5]] },
+  { code: "CY", name: "Cyprus", center: [35.1, 33.2, 8], bounds: [[34.5, 32.2], [35.8, 34.7]] },
+  { code: "CZ", name: "Tsjechië", center: [49.8, 15.5, 7], bounds: [[48.5, 12.0], [51.1, 18.9]] },
+  { code: "DK", name: "Denemarken", center: [56.1, 9.4, 7], bounds: [[54.45, 7.7], [57.9, 15.3]] },
+  { code: "EE", name: "Estland", center: [58.7, 25.0, 7], bounds: [[57.5, 21.7], [59.8, 28.3]] },
+  { code: "FI", name: "Finland", center: [63.8, 26.0, 5], bounds: [[59.7, 19.0], [70.1, 31.6]] },
+  { code: "FR", name: "Frankrijk", center: [46.6, 2.5, 6], bounds: [[41.2, -5.3], [51.3, 9.7]] },
+  { code: "DE", name: "Duitsland", center: [51.2, 10.4, 6], bounds: [[47.2, 5.5], [55.2, 15.2]] },
+  { code: "GR", name: "Griekenland", center: [39.1, 22.2, 6], bounds: [[34.7, 19.2], [41.8, 28.3]] },
+  { code: "HU", name: "Hongarije", center: [47.1, 19.4, 7], bounds: [[45.7, 16.1], [48.6, 22.9]] },
+  { code: "IS", name: "IJsland", center: [64.9, -18.7, 6], bounds: [[63.2, -24.8], [66.7, -13.4]] },
+  { code: "IE", name: "Ierland", center: [53.3, -8.0, 7], bounds: [[51.3, -10.8], [55.4, -5.9]] },
+  { code: "IT", name: "Italië", center: [43.2, 12.0, 6], bounds: [[35.4, 6.6], [47.2, 18.8]] },
+  { code: "XK", name: "Kosovo", center: [42.6, 20.9, 8], bounds: [[41.8, 20.0], [43.3, 21.9]] },
+  { code: "LV", name: "Letland", center: [56.9, 24.6, 7], bounds: [[55.6, 20.8], [58.1, 28.3]] },
+  { code: "LI", name: "Liechtenstein", center: [47.15, 9.55, 10], bounds: [[47.0, 9.45], [47.3, 9.65]] },
+  { code: "LT", name: "Litouwen", center: [55.2, 23.9, 7], bounds: [[53.9, 20.9], [56.5, 26.9]] },
+  { code: "LU", name: "Luxemburg", center: [49.8, 6.1, 9], bounds: [[49.4, 5.7], [50.25, 6.6]] },
+  { code: "MT", name: "Malta", center: [35.9, 14.4, 10], bounds: [[35.75, 14.15], [36.1, 14.6]] },
+  { code: "MD", name: "Moldavië", center: [47.2, 28.5, 7], bounds: [[45.4, 26.6], [48.5, 30.2]] },
+  { code: "MC", name: "Monaco", center: [43.73, 7.42, 12], bounds: [[43.7, 7.38], [43.75, 7.45]] },
+  { code: "ME", name: "Montenegro", center: [42.8, 19.2, 8], bounds: [[41.8, 18.4], [43.6, 20.4]] },
+  { code: "NL", name: "Nederland", center: [52.2, 5.4, 7], bounds: [[50.7, 3.2], [53.7, 7.3]] },
+  { code: "MK", name: "Noord-Macedonië", center: [41.6, 21.7, 8], bounds: [[40.8, 20.4], [42.4, 23.1]] },
+  { code: "NO", name: "Noorwegen", center: [62.2, 9.2, 5], bounds: [[57.8, 4.0], [71.4, 31.2]] },
+  { code: "PL", name: "Polen", center: [52.1, 19.4, 6], bounds: [[49.0, 14.1], [54.9, 24.2]] },
+  { code: "PT", name: "Portugal", center: [39.6, -8.0, 7], bounds: [[36.9, -9.6], [42.2, -6.0]] },
+  { code: "RO", name: "Roemenië", center: [45.9, 24.9, 7], bounds: [[43.6, 20.2], [48.3, 29.7]] },
+  { code: "RU", name: "Rusland", center: [56.0, 38.0, 5], bounds: [[41.2, 27.0], [69.5, 60.0]] },
+  { code: "SM", name: "San Marino", center: [43.94, 12.46, 11], bounds: [[43.88, 12.38], [44.0, 12.52]] },
+  { code: "RS", name: "Servië", center: [44.0, 20.8, 7], bounds: [[42.2, 18.8], [46.2, 23.1]] },
+  { code: "SK", name: "Slowakije", center: [48.7, 19.5, 7], bounds: [[47.7, 16.8], [49.7, 22.6]] },
+  { code: "SI", name: "Slovenië", center: [46.1, 14.9, 8], bounds: [[45.4, 13.3], [46.9, 16.7]] },
+  { code: "ES", name: "Spanje", center: [40.3, -3.7, 6], bounds: [[36.0, -9.4], [43.9, 4.4]] },
+  { code: "SE", name: "Zweden", center: [61.0, 15.2, 5], bounds: [[55.0, 10.6], [69.2, 24.3]] },
+  { code: "CH", name: "Zwitserland", center: [46.8, 8.2, 7], bounds: [[45.75, 5.75], [47.85, 10.65]] },
+  { code: "TR", name: "Turkije", center: [39.0, 35.2, 5], bounds: [[35.8, 25.6], [42.2, 44.8]] },
+  { code: "UA", name: "Oekraïne", center: [49.0, 31.4, 6], bounds: [[44.0, 22.1], [52.4, 40.2]] },
+  { code: "GB", name: "Verenigd Koninkrijk", center: [54.5, -3.2, 6], bounds: [[49.8, -8.7], [60.9, 1.9]] },
+  { code: "VA", name: "Vaticaanstad", center: [41.9, 12.45, 13], bounds: [[41.89, 12.44], [41.91, 12.46]] },
+];
+
+const countryNames = Object.fromEntries(FILTER_COUNTRIES.map((country) => [country.code, country.name]));
+
+const COUNTRY_FILTER_KEY = "nook-country-filter-v2";
+const STORAGE_MODE_KEY = "nook-storage-mode-v1";
+const LEGACY_STORAGE_MODE_KEY = "rollout-storage-mode-v1";
+const FILTER_PREFERENCES_KEY = "nook-filter-preferences-v3";
+const ROUTE_DISTANCE_KEY = "nook-route-distance";
+const PERSONAL_STORAGE_KEYS = [
+  ROUTE_LIBRARY_KEY,
+  LEGACY_ROUTE_KEY,
+  COUNTRY_FILTER_KEY,
+  FILTER_PREFERENCES_KEY,
+  ROUTE_DISTANCE_KEY,
+];
+const ALL_COUNTRY_CODES = FILTER_COUNTRIES.map((country) => country.code);
+const DEFAULT_COUNTRY_CODES = ALL_COUNTRY_CODES;
+const SOURCE_COUNTRY_CODES = new Set(Object.entries(overviewSourceCounts)
+  .filter(([, counts]) => Object.values(counts || {}).some((value) => Number(value) > 0))
+  .map(([country]) => country));
+const COUNTRY_CENTERS = Object.fromEntries(FILTER_COUNTRIES.map((country) => [country.code, country.center]));
+const COUNTRY_BOUNDS = Object.fromEntries(FILTER_COUNTRIES.map((country) => [country.code, country.bounds]));
+const SOURCE_DATA_VERSION = "20260707-1";
+const loadedSourceChunks = {
+  vodf: new Set(),
+  wtmg: new Set(),
+  denmark: new Set(),
 };
+const loadingSourceChunks = new Map();
+
+function selectedCountryCodes() {
+  return new Set([...document.querySelectorAll("[data-country]:checked")].map((input) => input.dataset.country));
+}
+
+function storageMode() {
+  try {
+    const stored = localStorage.getItem(STORAGE_MODE_KEY) || localStorage.getItem(LEGACY_STORAGE_MODE_KEY);
+    return stored === "session" ? "session" : "device";
+  } catch (error) {
+    return "session";
+  }
+}
+
+function userStorage() {
+  return storageMode() === "session" ? sessionStorage : localStorage;
+}
+
+function migrateLegacyValue(key) {
+  const legacyKey = LEGACY_STORAGE_KEYS[key];
+  if (!legacyKey) return null;
+  const storageTargets = [userStorage(), localStorage, sessionStorage];
+  for (const storage of storageTargets) {
+    try {
+      const value = storage.getItem(legacyKey);
+      if (value === null) continue;
+      userStorage().setItem(key, value);
+      storage.removeItem(legacyKey);
+      return value;
+    } catch (error) {
+      console.warn("Oude Nook-opslag kon niet worden gemigreerd.", error);
+    }
+  }
+  return null;
+}
+
+function getUserValue(key) {
+  try {
+    const value = userStorage().getItem(key);
+    return value ?? migrateLegacyValue(key);
+  } catch (error) {
+    console.warn("Gebruikersopslag kon niet worden gelezen.", error);
+    return null;
+  }
+}
+
+function setUserValue(key, value) {
+  try {
+    userStorage().setItem(key, value);
+    return true;
+  } catch (error) {
+    console.warn("Gebruikersopslag kon niet worden bewaard.", error);
+    return false;
+  }
+}
+
+function removeUserValue(key) {
+  try {
+    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
+  } catch (error) {
+    console.warn("Gebruikersopslag kon niet worden gewist.", error);
+  }
+}
+
+function storedJson(key) {
+  const value = getUserValue(key);
+  if (!value) return null;
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    console.warn(`Bewaarde instelling ${key} kon niet worden gelezen.`, error);
+    return null;
+  }
+}
+
+function setStorageMode(mode) {
+  const nextMode = mode === "session" ? "session" : "device";
+  const nextStorage = nextMode === "session" ? sessionStorage : localStorage;
+  const previousStorage = nextMode === "session" ? localStorage : sessionStorage;
+
+  PERSONAL_STORAGE_KEYS.forEach((key) => {
+    try {
+      const value = previousStorage.getItem(key);
+      if (value !== null) nextStorage.setItem(key, value);
+      previousStorage.removeItem(key);
+    } catch (error) {
+      console.warn("Opslagmodus kon niet volledig worden omgezet.", error);
+    }
+  });
+
+  try {
+    localStorage.setItem(STORAGE_MODE_KEY, nextMode);
+    localStorage.removeItem(LEGACY_STORAGE_MODE_KEY);
+  } catch (error) {
+    console.warn("Opslagmodus kon niet worden onthouden.", error);
+  }
+  updateStorageStatus();
+}
+
+function countryAllowed(countryCode, filters = currentFilters()) {
+  return Boolean(countryCode && filters.countries.has(countryCode));
+}
+
+function renderCountryFilter() {
+  const grid = document.querySelector("#country-toggle-grid");
+  if (!grid) return;
+  grid.innerHTML = FILTER_COUNTRIES.map((country) => `
+    <label class="country-chip" title="${escapeHtml(country.name)}">
+      <input type="checkbox" data-country="${escapeHtml(country.code)}" />
+      <span>${escapeHtml(country.code)}</span>
+    </label>
+  `).join("");
+}
+
+function selectedCountryLabel() {
+  const selected = [...selectedCountryCodes()];
+  if (!selected.length) return "Geen landen";
+  if (selected.length === ALL_COUNTRY_CODES.length) return "alle landen";
+  if (selected.length <= 3) return selected.map((code) => countryNames[code]).join(", ");
+  return `${selected.length} landen`;
+}
+
+function renderCountrySelectionPanel() {
+  const selected = [...selectedCountryCodes()];
+  renderEmptyPanel(
+    selected.length ? `Verken ${selectedCountryLabel()}` : "Geen landen geselecteerd",
+    selected.length
+      ? "Klik op clusters om in te zoomen. Bij maximale zoom verschijnen de afzonderlijke bronpins."
+      : "Zet één of meer landen aan om slaapplekken op de kaart te tonen.",
+  );
+}
+
+function saveCountrySelection() {
+  setUserValue(COUNTRY_FILTER_KEY, JSON.stringify([...selectedCountryCodes()]));
+}
+
+function setSelectedCountries(countryCodes, { persist = true, fit = false, announce = true } = {}) {
+  const selected = new Set(countryCodes.filter((code) => ALL_COUNTRY_CODES.includes(code)));
+  document.querySelectorAll("[data-country]").forEach((input) => {
+    input.checked = selected.has(input.dataset.country);
+  });
+  if (persist) saveCountrySelection();
+  if (fit) fitSelectedCountries();
+  if (announce) renderCountrySelectionPanel();
+}
+
+function restoreCountrySelection() {
+  try {
+    const saved = storedJson(COUNTRY_FILTER_KEY);
+    const countryCodes = Array.isArray(saved) && saved.some((code) => ALL_COUNTRY_CODES.includes(code))
+      ? saved
+      : DEFAULT_COUNTRY_CODES;
+    setSelectedCountries(countryCodes, { persist: false, announce: false, fit: true });
+  } catch (error) {
+    console.warn("Landselectie kon niet worden hersteld.", error);
+    setSelectedCountries(DEFAULT_COUNTRY_CODES, { persist: false, announce: false, fit: true });
+  }
+}
+
+function fitSelectedCountries() {
+  const selected = [...selectedCountryCodes()];
+  if (!selected.length) return;
+  if (selected.length === 1 && COUNTRY_CENTERS[selected[0]]) {
+    const [lat, lng, zoom] = COUNTRY_CENTERS[selected[0]];
+    map.flyTo([lat, lng], zoom);
+    return;
+  }
+  const points = selected.flatMap((code) => COUNTRY_BOUNDS[code] || []);
+  if (points.length) map.fitBounds(L.latLngBounds(points), { padding: [48, 48], maxZoom: 6 });
+}
+
+function countryFromLatLng(lat, lng) {
+  const matches = Object.entries(COUNTRY_BOUNDS)
+    .filter(([, [[south, west], [north, east]]]) => lat >= south && lat <= north && lng >= west && lng <= east)
+    .map(([code, [[south, west], [north, east]]]) => ({ code, area: (north - south) * (east - west) }))
+    .sort((a, b) => a.area - b.area);
+  return matches[0]?.code || "";
+}
+
+function compactCount(value) {
+  const number = Number(value) || 0;
+  if (number >= 1000) return `${(number / 1000).toFixed(number >= 10000 ? 0 : 1).replace(".", ",")}k`;
+  return number.toLocaleString("nl-NL");
+}
+
+function overviewCountValue(countryCode, key) {
+  return Number(overviewSourceCounts[countryCode]?.[key]) || 0;
+}
+
+function sourceChunkHasPins(countryCode, kind) {
+  if (kind === "denmark") return overviewCountValue(countryCode, "denmark") > 0;
+  return overviewCountValue(countryCode, kind) > 0;
+}
+
+function overviewModeActive() {
+  return false;
+}
+
+function neededSourceChunks(filters) {
+  const countriesToLoad = [...filters.countries].filter((country) => SOURCE_COUNTRY_CODES.has(country));
+  const chunks = [];
+
+  if (filters.types.has("host") && filters.confidence <= 2) {
+    if (filters.networks.has("vodf")) {
+      countriesToLoad
+        .filter((country) => sourceChunkHasPins(country, "vodf"))
+        .forEach((country) => chunks.push({ kind: "vodf", country }));
+    }
+    if (filters.networks.has("wtmg")) {
+      countriesToLoad
+        .filter((country) => sourceChunkHasPins(country, "wtmg"))
+        .forEach((country) => chunks.push({ kind: "wtmg", country }));
+    }
+  }
+
+  const wantsDenmarkTypes = filters.types.has("designated") || filters.types.has("hut");
+  if (countryAllowed("DK", filters) && wantsDenmarkTypes && filters.confidence <= 3 && sourceChunkHasPins("DK", "denmark")) {
+    chunks.push({ kind: "denmark", country: "DK" });
+  }
+
+  return chunks;
+}
+
+function sourceDataReadyForFilters(filters) {
+  return neededSourceChunks(filters).every(({ kind, country }) => loadedSourceChunks[kind].has(country));
+}
+
+function renderOverviewMarkers() {
+}
+
+function sourceChunkUrl(kind, country) {
+  if (kind === "denmark") return `data/denmark-DK.json?v=${SOURCE_DATA_VERSION}`;
+  return `data/${kind}-${country}.json?v=${SOURCE_DATA_VERSION}`;
+}
+
+function mergeSourceChunk(kind, country, payload) {
+  if (kind === "vodf") vodfPins = vodfPins.concat(payload.pins || []);
+  if (kind === "wtmg") wtmgPins = wtmgPins.concat(payload.pins || []);
+  if (kind === "denmark") denmarkPlaces = denmarkPlaces.concat(payload.places || []);
+  loadedSourceChunks[kind].add(country);
+}
+
+function sourceDataLoading() {
+  return loadingSourceChunks.size > 0;
+}
+
+function loadSourceChunk(kind, country) {
+  const key = `${kind}:${country}`;
+  if (loadedSourceChunks[kind].has(country) || loadingSourceChunks.has(key)) return;
+
+  const request = fetch(sourceChunkUrl(kind, country))
+    .then((response) => {
+      if (!response.ok) throw new Error(`Databestand ${key} gaf status ${response.status}`);
+      return response.json();
+    })
+    .then((payload) => {
+      mergeSourceChunk(kind, country, payload);
+    })
+    .catch((error) => {
+      console.warn("Brondata kon niet worden geladen.", error);
+    })
+    .finally(() => {
+      loadingSourceChunks.delete(key);
+      refreshMapPlaces();
+    });
+
+  loadingSourceChunks.set(key, request);
+  updateMapDataHint();
+}
+
+function ensureSourceData(filters) {
+  neededSourceChunks(filters).forEach(({ kind, country }) => loadSourceChunk(kind, country));
+}
+
+function sourceLayerBounds() {
+  return map.getBounds().pad(map.getZoom() >= 10 ? 0.16 : 0.32);
+}
+
+function inSourceViewport(item, bounds) {
+  return bounds.contains([item.lat, item.lng]);
+}
+
+function updateMapDataHint() {
+  const hint = document.querySelector("#map-data-hint");
+  if (!hint) return;
+  if (sourceDataLoading()) {
+    hint.textContent = "Plekken in dit kaartbeeld laden...";
+    hint.hidden = false;
+    return;
+  }
+  hint.hidden = true;
+}
+
+function scheduleViewportRefresh() {
+  window.clearTimeout(viewportRefreshTimer);
+  viewportRefreshTimer = window.setTimeout(refreshMapPlaces, 90);
+}
 
 function hostPinIcon(provider, label) {
   return L.divIcon({
@@ -952,7 +1456,7 @@ function vodfPlace(pin) {
     sourceUrl: publicData.vodf?.source || "https://www.vriendenopdefiets.nl/zoek-een-logeeradres",
     sourceAction: "Open de officiële zoekkaart",
     decision: "Dit is een afzonderlijke pin uit de openbare kaartfeed.",
-    description: "Rollout gebruikt dezelfde gepubliceerde kaartpositie, zonder host-ID, naam of adresvelden. Log bij de bron in voor de host en reservering.",
+    description: "Nook gebruikt dezelfde gepubliceerde kaartpositie, zonder host-ID, naam of adresvelden. Log bij de bron in voor de host en reservering.",
     stay: "Alleen na reservering bij een host",
     cost: "Volgens de platformvoorwaarden",
     water: "Afhankelijk van de host",
@@ -999,11 +1503,14 @@ function renderHospitalityPins() {
   vodfLayer.clearLayers();
   wtmgLayer.clearLayers();
   visiblePlaceCounts.hospitality = 0;
+  if (overviewModeActive()) return;
   if (!filters.types.has("host") || filters.confidence > 2) return;
+  const bounds = sourceLayerBounds();
 
   if (filters.networks.has("vodf")) {
     const markers = vodfPins
-      .filter((pin) => filters.country === "all" || pin.country === filters.country)
+      .filter((pin) => countryAllowed(pin.country, filters))
+      .filter((pin) => inSourceViewport(pin, bounds))
       .filter((pin) => isWithinRoute(pin.lat, pin.lng))
       .map((pin) => {
         const place = vodfPlace(pin);
@@ -1019,7 +1526,8 @@ function renderHospitalityPins() {
 
   if (filters.networks.has("wtmg")) {
     const markers = wtmgPins
-      .filter((pin) => filters.country === "all" || pin.country === filters.country)
+      .filter((pin) => countryAllowed(pin.country, filters))
+      .filter((pin) => inSourceViewport(pin, bounds))
       .filter((pin) => isWithinRoute(pin.lat, pin.lng))
       .map((pin) => {
         const place = wtmgPlace(pin);
@@ -1071,11 +1579,14 @@ function renderDenmarkPlaces() {
   const filters = currentFilters();
   denmarkLayer.clearLayers();
   visiblePlaceCounts.denmark = 0;
-  if (filters.country !== "all" && filters.country !== "DK") return;
+  if (overviewModeActive()) return;
+  if (!countryAllowed("DK", filters)) return;
   if (filters.confidence > 3) return;
+  const bounds = sourceLayerBounds();
 
   const markers = denmarkPlaces
     .filter((place) => filters.types.has(place.type))
+    .filter((place) => inSourceViewport(place, bounds))
     .filter((place) => isWithinRoute(place.lat, place.lng))
     .map((sourcePlace) => {
       const place = denmarkPlace(sourcePlace);
@@ -1095,21 +1606,23 @@ function renderCuratedMarkers() {
   curatedLayer.clearLayers();
   markerIndex.clear();
   visiblePlaceCounts.curated = 0;
+  if (overviewModeActive()) return;
 
-  places
-    .filter((place) => filters.country === "all" || place.country === filters.country)
+  const markers = places
+    .filter((place) => countryAllowed(place.country, filters))
     .filter((place) => filters.types.has(place.type))
     .filter((place) => place.confidence >= filters.confidence)
     .filter((place) => isWithinRoute(place.lat, place.lng))
-    .forEach((place) => {
+    .map((place) => {
       const displayPlace = { ...place, approximate: true };
       addCandidate(place.lat, place.lng, displayPlace, "curated");
       const marker = L.marker([place.lat, place.lng], { icon: markerIcon(place.type), title: place.name })
-        .on("click", () => renderPlace(displayPlace))
-        .addTo(curatedLayer);
+        .on("click", () => renderPlace(displayPlace));
       markerIndex.set(place.id, marker);
       visiblePlaceCounts.curated += 1;
+      return marker;
     });
+  addMarkers(curatedLayer, markers);
 }
 
 function renderCountries() {
@@ -1155,24 +1668,53 @@ function osmPhoto(tags) {
   return `https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(commonsFile)}?width=900`;
 }
 
+async function fetchOverpass(query, { timeoutMs = 32000 } = {}) {
+  let lastError = null;
+
+  for (const endpoint of OVERPASS_ENDPOINTS) {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: new URLSearchParams({ data: query }),
+        signal: controller.signal,
+      });
+      if (!response.ok) throw new Error(`Overpass gaf status ${response.status}`);
+      return response.json();
+    } catch (error) {
+      lastError = error;
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  }
+
+  throw lastError || new Error("Overpass kon niet worden bereikt");
+}
+
 function renderOsmPlaces() {
+  const filters = currentFilters();
   osmLayer.clearLayers();
   visiblePlaceCounts.osm = 0;
-  osmPlaces
+  if (overviewModeActive()) return;
+  const markers = osmPlaces
+    .filter((item) => item.country ? countryAllowed(item.country, filters) : filters.countries.size === ALL_COUNTRY_CODES.length)
     .filter((item) => isWithinRoute(item.lat, item.lng))
-    .forEach((item) => {
+    .map((item) => {
       addCandidate(item.lat, item.lng, item.place, "osm");
-      L.marker([item.lat, item.lng], { icon: markerIcon(item.place.type), title: item.place.name })
-        .on("click", () => renderPlace(item.place))
-        .addTo(osmLayer);
+      const marker = L.marker([item.lat, item.lng], { icon: markerIcon(item.place.type), title: item.place.name })
+        .on("click", () => renderPlace(item.place));
       visiblePlaceCounts.osm += 1;
+      return marker;
     });
+  addMarkers(osmLayer, markers);
 }
 
 async function loadOsmPlaces() {
   const status = document.querySelector("#osm-status");
   if (map.getZoom() < 7) {
-    status.textContent = "Zoom verder in: niveau 7 of dichterbij is nodig om de openbare bron netjes te bevragen.";
+    status.textContent = "Zoom verder in op het gebied waar je wilt zoeken.";
     return;
   }
 
@@ -1188,17 +1730,9 @@ async function loadOsmPlaces() {
 
   status.textContent = "Openbare kaartdata ophalen…";
   document.querySelector("#load-osm").disabled = true;
-  const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), 35000);
 
   try {
-    const response = await fetch("https://overpass-api.de/api/interpreter", {
-      method: "POST",
-      body: new URLSearchParams({ data: query }),
-      signal: controller.signal,
-    });
-    if (!response.ok) throw new Error(`Overpass gaf status ${response.status}`);
-    const data = await response.json();
+    const data = await fetchOverpass(query, { timeoutMs: 35000 });
     osmPlaces = data.elements.flatMap((element) => {
       const lat = element.lat ?? element.center?.lat;
       const lng = element.lon ?? element.center?.lon;
@@ -1223,9 +1757,10 @@ async function loadOsmPlaces() {
         water: tags.drinking_water === "yes" ? "Drinkwater gemarkeerd" : "Niet vermeld",
         caution: "OpenStreetMap is gemeenschapsdata en kan verouderd of onvolledig zijn. Bekijk borden en lokale regels ter plaatse.",
       };
-      return [{ lat, lng, place }];
+      return [{ lat, lng, country: countryFromLatLng(lat, lng), place }];
     });
     renderOsmPlaces();
+    renderOverviewMarkers();
     updateRouteStatus();
 
     status.textContent = osmPlaces.length ? `${osmPlaces.length} openbare plekken gevonden in dit kaartbeeld.` : "Geen geschikte openbare plekken gevonden. Verschuif de kaart of zoom iets uit.";
@@ -1235,8 +1770,286 @@ async function loadOsmPlaces() {
       ? "De openbare kaartserver deed er te lang over. Zoom verder in en probeer opnieuw."
       : "De openbare kaartserver reageert nu niet. Probeer het over een minuut opnieuw.";
   } finally {
-    window.clearTimeout(timeout);
     document.querySelector("#load-osm").disabled = false;
+  }
+}
+
+function campingLayerEnabled() {
+  return document.querySelector("#camping-layer-active").checked;
+}
+
+function campingBoundsLoadable(bounds = map.getBounds()) {
+  return boundsDiagonalKm(bounds) <= CAMPING_MAX_BOUNDS_DIAGONAL_KM;
+}
+
+function campingQueryBounds() {
+  const bounds = map.getBounds();
+  if (campingBoundsLoadable(bounds)) return bounds;
+  if (!userLocation) return null;
+  return boundsAroundPoint(userLocation, CAMPING_FALLBACK_RADIUS_KM);
+}
+
+function updateCampingStatus(message = "") {
+  const status = document.querySelector("#camping-status");
+  if (!campingLayerEnabled()) {
+    status.textContent = "Uit. Zet Campings aan om OSM-campings in het kaartbeeld te laden.";
+    return;
+  }
+  if (message) {
+    status.textContent = message;
+    return;
+  }
+  const broadMap = !campingBoundsLoadable();
+  if (!campingPlaces.length) {
+    status.textContent = broadMap
+      ? userLocation
+        ? "Breed kaartbeeld: Nook laadt OSM-campings rond je locatie. Zoom in voor het volledige kaartvak."
+        : "Zoom iets verder in op een gebied om OSM-campings als clusters te laden."
+      : "Nog geen OSM-campings geladen in dit kaartbeeld.";
+    return;
+  }
+  const visible = visiblePlaceCounts.camping.toLocaleString("nl-NL");
+  const loaded = campingPlaces.length.toLocaleString("nl-NL");
+  const scope = broadMap ? " Breed kaartbeeld: geladen rond je locatie." : "";
+  status.textContent = visiblePlaceCounts.camping
+    ? `${visible} OSM-campings zichtbaar. ${loaded} geladen in bezochte kaartvakken.${scope}`
+    : `${loaded} OSM-campings geladen, maar niets zichtbaar met je huidige route- of landfilter.${scope}`;
+}
+
+function filterPreferenceState() {
+  return {
+    sleepTypes: [...document.querySelectorAll('#sleep-filter input[value]')]
+      .map((input) => ({ value: input.value, checked: input.checked })),
+    networks: [...document.querySelectorAll("[data-network]")]
+      .map((input) => ({ value: input.dataset.network, checked: input.checked })),
+    campingLayer: campingLayerEnabled(),
+    candidateHorizonKm,
+  };
+}
+
+function saveFilterPreferences() {
+  setUserValue(FILTER_PREFERENCES_KEY, JSON.stringify(filterPreferenceState()));
+}
+
+function restoreFilterPreferences() {
+  const preferences = storedJson(FILTER_PREFERENCES_KEY);
+  if (!preferences || typeof preferences !== "object") return;
+  const hasLegacyCampingLayer = Object.prototype.hasOwnProperty.call(preferences, "campingLayer");
+
+  if (Array.isArray(preferences.sleepTypes)) {
+    const selected = new Map(preferences.sleepTypes.map((item) => [item.value, Boolean(item.checked)]));
+    document.querySelectorAll('#sleep-filter input[value]').forEach((input) => {
+      if (selected.has(input.value)) input.checked = selected.get(input.value);
+    });
+    if (!selected.has("camping") && hasLegacyCampingLayer) {
+      document.querySelector("#camping-layer-active").checked = Boolean(preferences.campingLayer);
+    }
+  } else if (hasLegacyCampingLayer) {
+    document.querySelector("#camping-layer-active").checked = Boolean(preferences.campingLayer);
+  }
+  if (Array.isArray(preferences.networks)) {
+    const selected = new Map(preferences.networks.map((item) => [item.value, Boolean(item.checked)]));
+    document.querySelectorAll("[data-network]").forEach((input) => {
+      if (selected.has(input.dataset.network)) input.checked = selected.get(input.dataset.network);
+    });
+  }
+  if ([15, 35, 70].includes(Number(preferences.candidateHorizonKm))) {
+    candidateHorizonKm = Number(preferences.candidateHorizonKm);
+    document.querySelectorAll("[data-horizon]").forEach((button) => {
+      button.classList.toggle("is-active", Number(button.dataset.horizon) === candidateHorizonKm);
+    });
+  }
+}
+
+function updateStorageStatus() {
+  const modeSelect = document.querySelector("#storage-mode");
+  const status = document.querySelector("#storage-status");
+  if (!modeSelect || !status) return;
+  const mode = storageMode();
+  modeSelect.value = mode;
+  status.textContent = mode === "session"
+    ? "Sessie-opslag actief: routes, eigen plekken en voorkeuren verdwijnen als deze browsersessie eindigt."
+    : "Apparaat-opslag actief: routes, eigen plekken en voorkeuren blijven alleen in deze browser staan.";
+}
+
+function campingRequestKey(bounds) {
+  const decimals = map.getZoom() >= 12 ? 3 : 2;
+  return [
+    "camping-v2",
+    bounds.getSouth().toFixed(decimals),
+    bounds.getWest().toFixed(decimals),
+    bounds.getNorth().toFixed(decimals),
+    bounds.getEast().toFixed(decimals),
+  ].join(",");
+}
+
+function campingPlace(element) {
+  const lat = element.lat ?? element.center?.lat;
+  const lng = element.lon ?? element.center?.lon;
+  const tags = element.tags || {};
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  if (!["camp_site", "caravan_site"].includes(tags.tourism)) return null;
+
+  const name = tags.name || tags.operator || "Naamloze camping";
+  const osmKey = `${element.type}/${element.id}`;
+  const country = countryFromLatLng(lat, lng);
+  const locality = tags["addr:city"] || tags["addr:town"] || tags["addr:village"] || tags["addr:place"] || tags["is_in:city"] || tags["is_in:town"] || "";
+  const typeLabel = tags.tourism === "caravan_site" ? "Camper- of caravanterrein" : "Camping";
+  const website = tags.website || tags["contact:website"] || "";
+  const phone = tags.phone || tags["contact:phone"] || "";
+  const email = tags.email || tags["contact:email"] || "";
+  const extras = [
+    ["Type", typeLabel],
+  ];
+  if (locality) extras.push(["Plaats", locality]);
+  if (tags.access) extras.push(["Toegang", tags.access]);
+  if (tags.tents) extras.push(["Tenten", tags.tents === "yes" ? "Ja" : tags.tents === "no" ? "Nee volgens OSM" : tags.tents]);
+  if (tags.campers) extras.push(["Campers", tags.campers === "yes" ? "Ja" : tags.campers === "no" ? "Nee volgens OSM" : tags.campers]);
+  if (tags.operator) extras.push(["Beheerder", tags.operator]);
+  if (tags.opening_hours) extras.push(["Open", tags.opening_hours]);
+  if (tags.stars) extras.push(["Sterren", tags.stars]);
+  if (tags.toilets) extras.push(["Toilet", tags.toilets === "yes" ? "Aanwezig gemarkeerd" : tags.toilets]);
+  if (tags.shower) extras.push(["Douche", tags.shower === "yes" ? "Aanwezig gemarkeerd" : tags.shower]);
+  if (tags.power_supply) extras.push(["Stroom", tags.power_supply === "yes" ? "Aanwezig gemarkeerd" : tags.power_supply]);
+  if (website) extras.push(["Website", website]);
+  if (phone) extras.push(["Telefoon", phone]);
+  if (email) extras.push(["E-mail", email]);
+  const caution = tags.access && !["yes", "permissive", "customers"].includes(tags.access)
+    ? "OSM meldt beperkte toegang. Controleer lidmaatschap, reservering en voorwaarden voordat je erheen fietst."
+    : tags.tents === "no"
+      ? "Deze plek staat in OSM als niet geschikt voor tenten. Controleer dit voor bikepacking extra goed."
+      : "Controleer altijd de officiële campingwebsite, openingstijden en of tenten welkom zijn. OSM kan verouderd of onvolledig zijn.";
+
+  return {
+    osmKey,
+    name,
+    lat,
+    lng,
+    country,
+    place: {
+      name,
+      lat,
+      lng,
+      location: locality
+        ? `${locality} · ${countryNames[country] || "Onbekend land"}`
+        : `${countryNames[country] || "Onbekend land"} · OpenStreetMap-camping`,
+      type: "camping",
+      confidence: 1,
+      photo: osmPhoto(tags),
+      photoLabel: tags.image ? "OpenStreetMap-bronverwijzing" : "Wikimedia Commons",
+      sourceLabel: "OpenStreetMap",
+      sourceUrl: `https://www.openstreetmap.org/${element.type}/${element.id}`,
+      sourceAction: "Open in OpenStreetMap",
+      description: "Camping of camperterrein uit OpenStreetMap. Handig als brede zoeklaag langs je route; geen volledige boekings- of campingdatabase.",
+      stay: "Volgens campingvoorwaarden",
+      cost: tags.fee === "no" ? "Als gratis gemarkeerd" : tags.fee === "yes" ? "Betaald; controleer tarief" : "Niet vermeld",
+      water: tags.drinking_water === "yes" ? "Drinkwater gemarkeerd" : tags.water_point === "yes" ? "Waterpunt gemarkeerd" : "Niet vermeld",
+      extraFacts: extras,
+      caution,
+    },
+  };
+}
+
+function renderCampingPlaces() {
+  const filters = currentFilters();
+  campingLayer.clearLayers();
+  visiblePlaceCounts.camping = 0;
+  if (!campingLayerEnabled()) {
+    updateCampingStatus();
+    return;
+  }
+  if (overviewModeActive()) {
+    updateCampingStatus();
+    return;
+  }
+  if (!campingBoundsLoadable() && !userLocation) {
+    updateCampingStatus();
+    return;
+  }
+
+  const bounds = sourceLayerBounds();
+  const markers = campingPlaces
+    .filter((item) => item.country ? countryAllowed(item.country, filters) : filters.countries.size === ALL_COUNTRY_CODES.length)
+    .filter((item) => inSourceViewport(item, bounds))
+    .filter((item) => isWithinRoute(item.lat, item.lng))
+    .map((item) => {
+      addCandidate(item.lat, item.lng, item.place, "camping");
+      return L.marker([item.lat, item.lng], {
+        icon: markerIcon("camping"),
+        title: item.place.name,
+      }).on("click", () => renderPlace(item.place));
+    });
+
+  addMarkers(campingLayer, markers);
+  visiblePlaceCounts.camping = markers.length;
+  updateCampingStatus();
+}
+
+async function loadCampingPlaces() {
+  if (!campingLayerEnabled()) {
+    campingLayer.clearLayers();
+    visiblePlaceCounts.camping = 0;
+    updateCampingStatus();
+    return;
+  }
+
+  const broadMap = !campingBoundsLoadable();
+  const bounds = campingQueryBounds();
+  if (!bounds) {
+    updateCampingStatus();
+    return;
+  }
+  const requestKey = campingRequestKey(bounds);
+  if (campingRequestedKeys.has(requestKey)) return;
+  if (campingLoading) {
+    campingQueuedRefresh = true;
+    return;
+  }
+
+  const bbox = [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()].join(",");
+  const query = `[out:json][timeout:30];(
+    nwr["tourism"="camp_site"](${bbox});
+    nwr["tourism"="caravan_site"](${bbox});
+  );out center tags ${CAMPING_RESULT_LIMIT};`;
+
+  campingLoading = true;
+  campingQueuedRefresh = false;
+  updateCampingStatus(broadMap
+    ? "Breed kaartbeeld: OSM-campings rond je locatie laden..."
+    : "OSM-campings in dit kaartbeeld laden...");
+
+  let failed = false;
+  let finalStatusMessage = "";
+  try {
+    const data = await fetchOverpass(query, { timeoutMs: 30000 });
+    campingRequestedKeys.add(requestKey);
+    const nextPlaces = data.elements.flatMap((element) => {
+      const item = campingPlace(element);
+      if (!item || campingPlaceIds.has(item.osmKey)) return [];
+      campingPlaceIds.add(item.osmKey);
+      return [item];
+    });
+    campingPlaces = campingPlaces.concat(nextPlaces);
+    renderCampingPlaces();
+    renderOverviewMarkers();
+    updateRouteStatus();
+    updateCandidatePanel();
+    if (data.elements.length >= CAMPING_RESULT_LIMIT) {
+      finalStatusMessage = `${visiblePlaceCounts.camping.toLocaleString("nl-NL")} OSM-campings zichtbaar. Resultaatlimiet geraakt; zoom verder in voor vollediger detail.`;
+    }
+  } catch (error) {
+    failed = true;
+    console.warn(error);
+    updateCampingStatus(error.name === "AbortError"
+      ? "OSM deed te lang over voor campings. Zoom iets verder in en probeer opnieuw."
+      : "OSM reageert nu niet voor campings. Probeer straks opnieuw of zoom iets verder in.");
+  } finally {
+    campingLoading = false;
+    if (!failed) updateCampingStatus(finalStatusMessage);
+    if (campingQueuedRefresh) {
+      campingQueuedRefresh = false;
+      window.setTimeout(loadCampingPlaces, 0);
+    }
   }
 }
 
@@ -1256,15 +2069,17 @@ function coordinatesFromElements(elements) {
 function renderImportedWaypoints() {
   importedLayer.clearLayers();
   visiblePlaceCounts.imported = 0;
-  importedWaypoints
+  if (overviewModeActive()) return;
+  const markers = importedWaypoints
     .filter((item) => isWithinRoute(item.lat, item.lng))
-    .forEach((item) => {
+    .map((item) => {
       addCandidate(item.lat, item.lng, item.place, "imported");
-      L.marker([item.lat, item.lng], { icon: markerIcon("hut"), title: item.place.name })
-        .on("click", () => renderPlace(item.place))
-        .addTo(importedLayer);
+      const marker = L.marker([item.lat, item.lng], { icon: markerIcon(item.place.type || "hut"), title: item.place.name })
+        .on("click", () => renderPlace(item.place));
       visiblePlaceCounts.imported += 1;
+      return marker;
     });
+  addMarkers(importedLayer, markers);
 }
 
 function updateRouteStatus() {
@@ -1276,35 +2091,47 @@ function updateRouteStatus() {
   });
 
   if (!routeState.segments.length) {
-    status.textContent = "Importeer een GPX-track uit bijvoorbeeld Komoot, EuroVelo of cycle.travel.";
+    if (savedRoutes.length && importedWaypoints.length) {
+      status.textContent = `${importedWaypoints.length.toLocaleString("nl-NL")} GPX-waypoints zichtbaar. Vink een route met track aan voor de afstandsfilter.`;
+    } else if (savedRoutes.length) {
+      status.textContent = "Geen actieve GPX-track. Vink een route aan om plekken langs de route te filteren.";
+    } else {
+      status.textContent = "Importeer een GPX-track uit bijvoorbeeld Komoot, EuroVelo of cycle.travel.";
+    }
     return;
   }
 
   const visibleTotal = Object.values(visiblePlaceCounts).reduce((total, count) => total + count, 0);
   const routeLength = Math.round(routeState.lengthKm).toLocaleString("nl-NL");
-  const savedLabel = routeState.saved ? " Route lokaal bewaard." : "";
+  const savedLabel = routesPersisted ? " GPX-lijst lokaal bewaard." : " GPX-lijst past niet meer in browseropslag.";
   status.textContent = routeFilterEnabled()
-    ? `${visibleTotal.toLocaleString("nl-NL")} plekken binnen ${distanceKm} km van ${routeState.name} (${routeLength} km).${savedLabel}`
+    ? `${visibleTotal.toLocaleString("nl-NL")} plekken in beeld binnen ${distanceKm} km van ${routeState.name} (${routeLength} km).${savedLabel}`
     : `${routeState.name} (${routeLength} km) staat op de kaart; de afstandsfilter is uitgeschakeld.${savedLabel}`;
 }
 
 function refreshMapPlaces() {
+  const filters = currentFilters();
+  ensureSourceData(filters);
   currentCandidates = [];
+  renderOverviewMarkers();
   renderCuratedMarkers();
   renderHospitalityPins();
   renderDenmarkPlaces();
   renderOsmPlaces();
+  loadCampingPlaces();
+  renderCampingPlaces();
   renderImportedWaypoints();
+  updateMapDataHint();
   updateRouteStatus();
   updateCandidatePanel();
 }
 
-function setRouteControls(enabled) {
-  document.querySelector("#route-distance").disabled = !enabled;
-  document.querySelector("#route-filter-active").disabled = !enabled;
-  document.querySelector("#clear-route").disabled = !enabled;
+function setRouteControls(hasActiveTrack, hasSavedRoutes = hasActiveTrack) {
+  document.querySelector("#route-distance").disabled = !hasActiveTrack;
+  document.querySelector("#route-filter-active").disabled = !hasActiveTrack;
+  document.querySelector("#clear-route").disabled = !hasSavedRoutes;
   document.querySelectorAll("[data-route-distance]").forEach((button) => {
-    button.disabled = !enabled;
+    button.disabled = !hasActiveTrack;
   });
 }
 
@@ -1316,52 +2143,158 @@ function drawRoute() {
   L.polyline(latLngLines, { color: "#d6ec91", weight: 4, opacity: 0.96, interactive: false }).addTo(routeLayer);
 }
 
-function persistRoute() {
-  if (!routeState.lines.length) return false;
-  try {
-    localStorage.setItem("rollout-saved-route-v1", JSON.stringify({
-      name: routeState.name,
-      pointCount: routeState.pointCount,
-      lengthKm: routeState.lengthKm,
-      lines: routeState.lines,
-      waypoints: importedWaypoints.slice(0, 500),
-    }));
-    routeState.saved = true;
-    return true;
-  } catch (error) {
-    routeState.saved = false;
-    console.warn("Route kon niet lokaal worden bewaard.", error);
-    return false;
+function emptyRouteState() {
+  return { name: "", pointCount: 0, lengthKm: 0, saved: false, lines: [], segments: [], segmentGrid: new Map() };
+}
+
+function validRouteLines(lines) {
+  return (Array.isArray(lines) ? lines : [])
+    .map((line) => (Array.isArray(line) ? line : []).filter((point) => Number.isFinite(point.lat) && Number.isFinite(point.lng)))
+    .filter((line) => line.length > 1);
+}
+
+function validRouteWaypoints(waypoints) {
+  return (Array.isArray(waypoints) ? waypoints : [])
+    .filter((item) => Number.isFinite(item.lat) && Number.isFinite(item.lng) && item.place)
+    .slice(0, 5000);
+}
+
+function routeId(fileName) {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}-${fileName.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "gpx"}`;
+}
+
+function formatFileSize(bytes) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return "";
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1).replace(".", ",")} MB`;
+}
+
+function normalizeRouteRecord(route, index = 0) {
+  const lines = validRouteLines(route?.lines);
+  const waypoints = validRouteWaypoints(route?.waypoints);
+  if (!lines.length && !waypoints.length) return null;
+  return {
+    id: route.id || routeId(route.fileName || route.name || `route-${index}`),
+    name: route.name || route.fileName || `GPX-route ${index + 1}`,
+    fileName: route.fileName || "",
+    originalSize: Number(route.originalSize) || 0,
+    pointCount: Number(route.pointCount) || lines.reduce((total, line) => total + line.length, 0),
+    lengthKm: Number(route.lengthKm) || (lines.length ? routeLengthKm(lines) : 0),
+    lines,
+    waypoints,
+    enabled: route.enabled !== false,
+    importedAt: route.importedAt || new Date().toISOString(),
+  };
+}
+
+function renderRouteLibrary() {
+  const library = document.querySelector("#route-library");
+  const list = document.querySelector("#route-list");
+  const count = document.querySelector("#route-library-count");
+  if (!savedRoutes.length) {
+    library.hidden = true;
+    list.innerHTML = "";
+    count.textContent = "0 routes";
+    return;
+  }
+
+  library.hidden = false;
+  const activeCount = savedRoutes.filter((route) => route.enabled).length;
+  count.textContent = `${activeCount}/${savedRoutes.length} actief`;
+  list.innerHTML = savedRoutes.map((route) => {
+    const lengthLabel = route.lengthKm ? `${Math.round(route.lengthKm).toLocaleString("nl-NL")} km` : "waypoints";
+    const pointLabel = route.pointCount ? `${route.pointCount.toLocaleString("nl-NL")} punten` : `${route.waypoints.length.toLocaleString("nl-NL")} waypoints`;
+    const sizeLabel = formatFileSize(route.originalSize);
+    const meta = [lengthLabel, pointLabel, sizeLabel].filter(Boolean).join(" · ");
+    return `
+      <div class="route-list-item">
+        <label>
+          <input type="checkbox" data-route-toggle="${escapeHtml(route.id)}" ${route.enabled ? "checked" : ""} />
+          <span>
+            <strong>${escapeHtml(route.name)}</strong>
+            <small>${escapeHtml(meta)}</small>
+          </span>
+        </label>
+        <button type="button" data-route-remove="${escapeHtml(route.id)}" aria-label="${escapeHtml(route.name)} verwijderen">×</button>
+      </div>
+    `;
+  }).join("");
+}
+
+function saveRouteLibrary() {
+  const saved = setUserValue(ROUTE_LIBRARY_KEY, JSON.stringify(savedRoutes));
+  removeUserValue(LEGACY_ROUTE_KEY);
+  routesPersisted = saved;
+  return saved;
+}
+
+function rebuildActiveRoutes({ fitPoints = null } = {}) {
+  const activeRoutes = savedRoutes.filter((route) => route.enabled);
+  const activeTrackRoutes = activeRoutes.filter((route) => route.lines.length);
+  const activeLines = activeTrackRoutes.flatMap((route) => route.lines);
+  importedWaypoints = activeRoutes.flatMap((route) => route.waypoints);
+
+  if (!activeLines.length) {
+    routeState = emptyRouteState();
+  } else {
+    routeState = {
+      name: activeTrackRoutes.length === 1 ? activeTrackRoutes[0].name : `${activeTrackRoutes.length} GPX-routes`,
+      pointCount: activeTrackRoutes.reduce((total, route) => total + route.pointCount, 0),
+      lengthKm: activeTrackRoutes.reduce((total, route) => total + route.lengthKm, 0),
+      saved: routesPersisted,
+      lines: activeLines,
+      segments: routeSegments(activeLines),
+      segmentGrid: new Map(),
+    };
+    routeState.segmentGrid = buildRouteSegmentGrid(routeState.segments);
+  }
+
+  drawRoute();
+  setRouteControls(routeState.segments.length > 0, savedRoutes.length > 0);
+  renderRouteLibrary();
+
+  const boundsPoints = fitPoints || (activeLines.length ? activeLines.flat() : importedWaypoints);
+  if (boundsPoints.length) {
+    map.fitBounds(L.latLngBounds(boundsPoints.map((point) => [point.lat, point.lng])), { padding: [34, 34], maxZoom: 11 });
   }
 }
 
 function restoreRoute() {
   try {
-    const saved = JSON.parse(localStorage.getItem("rollout-saved-route-v1") || "null");
-    const lines = saved?.lines?.filter((line) => Array.isArray(line) && line.length > 1);
-    if (!lines?.length) return false;
-    const validLines = lines.map((line) => line.filter((point) => Number.isFinite(point.lat) && Number.isFinite(point.lng))).filter((line) => line.length > 1);
-    if (!validLines.length) return false;
-    routeState = {
-      name: saved.name || "Bewaarde route",
-      pointCount: Number(saved.pointCount) || validLines.flat().length,
-      lengthKm: Number(saved.lengthKm) || routeLengthKm(validLines),
-      saved: true,
-      lines: validLines,
-      segments: routeSegments(validLines),
-      segmentGrid: new Map(),
-    };
-    routeState.segmentGrid = buildRouteSegmentGrid(routeState.segments);
-    importedWaypoints = Array.isArray(saved.waypoints) ? saved.waypoints : [];
-    drawRoute();
-    setRouteControls(true);
+    const routeLibrary = storedJson(ROUTE_LIBRARY_KEY);
+    const restoredRoutes = Array.isArray(routeLibrary)
+      ? routeLibrary.map(normalizeRouteRecord).filter(Boolean)
+      : [];
+
+    if (restoredRoutes.length) {
+      savedRoutes = restoredRoutes;
+      routesPersisted = true;
+      document.querySelector("#route-filter-active").checked = true;
+      rebuildActiveRoutes();
+      return true;
+    }
+
+    const legacy = storedJson(LEGACY_ROUTE_KEY);
+    const legacyRoute = normalizeRouteRecord({
+      id: "legacy-route",
+      name: legacy?.name || "Bewaarde route",
+      pointCount: legacy?.pointCount,
+      lengthKm: legacy?.lengthKm,
+      lines: legacy?.lines,
+      waypoints: legacy?.waypoints,
+      enabled: true,
+      importedAt: new Date().toISOString(),
+    });
+    if (!legacyRoute) return false;
+    savedRoutes = [legacyRoute];
+    saveRouteLibrary();
     document.querySelector("#route-filter-active").checked = true;
-    const allPoints = validLines.flat();
-    map.fitBounds(L.latLngBounds(allPoints.map((point) => [point.lat, point.lng])), { padding: [34, 34], maxZoom: 11 });
+    rebuildActiveRoutes();
     return true;
   } catch (error) {
-    console.warn("Bewaarde route kon niet worden hersteld.", error);
-    localStorage.removeItem("rollout-saved-route-v1");
+    console.warn("Bewaarde GPX-routes konden niet worden hersteld.", error);
+    removeUserValue(ROUTE_LIBRARY_KEY);
     return false;
   }
 }
@@ -1369,10 +2302,50 @@ function restoreRoute() {
 function clearRoute() {
   routeLayer.clearLayers();
   importedLayer.clearLayers();
+  savedRoutes = [];
   importedWaypoints = [];
-  routeState = { name: "", pointCount: 0, lengthKm: 0, saved: false, lines: [], segments: [], segmentGrid: new Map() };
-  localStorage.removeItem("rollout-saved-route-v1");
-  setRouteControls(false);
+  routeState = emptyRouteState();
+  removeUserValue(ROUTE_LIBRARY_KEY);
+  removeUserValue(LEGACY_ROUTE_KEY);
+  routesPersisted = true;
+  setRouteControls(false, false);
+  renderRouteLibrary();
+  refreshMapPlaces();
+}
+
+function resetUserControlsToDefaults() {
+  setSelectedCountries(DEFAULT_COUNTRY_CODES, { persist: false, fit: true, announce: false });
+  document.querySelectorAll('#sleep-filter input[value]').forEach((input) => {
+    input.checked = true;
+  });
+  document.querySelectorAll("[data-network]").forEach((input) => {
+    input.checked = true;
+  });
+  document.querySelector("#route-distance").value = "10";
+  candidateHorizonKm = 35;
+  document.querySelectorAll("[data-horizon]").forEach((button) => {
+    button.classList.toggle("is-active", Number(button.dataset.horizon) === candidateHorizonKm);
+  });
+}
+
+function clearUserData() {
+  PERSONAL_STORAGE_KEYS.forEach(removeUserValue);
+  savedRoutes = [];
+  importedWaypoints = [];
+  campingPlaces = [];
+  campingPlaceIds.clear();
+  campingRequestedKeys.clear();
+  campingQueuedRefresh = false;
+  routeState = emptyRouteState();
+  routesPersisted = true;
+  routeLayer.clearLayers();
+  importedLayer.clearLayers();
+  campingLayer.clearLayers();
+  setRouteControls(false, false);
+  renderRouteLibrary();
+  resetUserControlsToDefaults();
+  document.querySelector("#custom-data-status").textContent = "Je lokale routes, eigen plekken en voorkeuren zijn gewist.";
+  updateStorageStatus();
   refreshMapPlaces();
 }
 
@@ -1406,8 +2379,7 @@ function importGpx(file) {
       return;
     }
 
-    routeLayer.clearLayers();
-    importedWaypoints = waypointElements.slice(0, 5000).flatMap((waypoint, index) => {
+    const routeWaypoints = waypointElements.slice(0, 5000).flatMap((waypoint, index) => {
       const lat = Number(waypoint.getAttribute("lat"));
       const lng = Number(waypoint.getAttribute("lon"));
       if (!Number.isFinite(lat) || !Number.isFinite(lng)) return [];
@@ -1445,86 +2417,242 @@ function importGpx(file) {
         || xmlText(track || documentXml, "name")
         || xmlText(route || documentXml, "name")
         || file.name.replace(/\.gpx$/i, "");
-      routeState = {
+      const routeRecord = normalizeRouteRecord({
+        id: routeId(file.name),
         name: routeName,
+        fileName: file.name,
+        originalSize: file.size,
         pointCount: allRawPoints.length,
         lengthKm: routeLengthKm(rawLines),
-        saved: false,
         lines: preparedLines,
-        segments: routeSegments(preparedLines),
-        segmentGrid: new Map(),
-      };
-      routeState.segmentGrid = buildRouteSegmentGrid(routeState.segments);
-
-      drawRoute();
-      setRouteControls(true);
+        waypoints: routeWaypoints,
+        enabled: true,
+        importedAt: new Date().toISOString(),
+      });
+      savedRoutes.push(routeRecord);
+      const saved = saveRouteLibrary();
       document.querySelector("#route-filter-active").checked = true;
-      document.querySelector("#country-filter").value = "all";
-      persistRoute();
-      map.fitBounds(L.latLngBounds(allRawPoints.map((point) => [point.lat, point.lng])), { padding: [34, 34], maxZoom: 11 });
+      setSelectedCountries(ALL_COUNTRY_CODES, { fit: false, announce: false });
+      rebuildActiveRoutes({ fitPoints: allRawPoints });
+      refreshMapPlaces();
+      const sizeLabel = formatFileSize(file.size);
+      status.textContent = `${routeName} toegevoegd (${Math.round(routeRecord.lengthKm).toLocaleString("nl-NL")} km${sizeLabel ? ` · ${sizeLabel}` : ""}).${saved ? " Lokaal bewaard." : " Staat tijdelijk op de kaart, maar paste niet in browseropslag."}`;
     } else {
-      routeState = { name: "", pointCount: 0, lengthKm: 0, saved: false, lines: [], segments: [], segmentGrid: new Map() };
-      setRouteControls(false);
-    }
-
-    refreshMapPlaces();
-    if (!rawLines.length) {
-      status.textContent = `${importedWaypoints.length} losse GPX-waypoints geladen; dit bestand bevat geen route of track.`;
-      if (importedWaypoints.length) map.fitBounds(importedWaypoints.map((item) => [item.lat, item.lng]), { padding: [30, 30], maxZoom: 11 });
+      const waypointRoute = normalizeRouteRecord({
+        id: routeId(file.name),
+        name: file.name.replace(/\.gpx$/i, "") || "GPX-waypoints",
+        fileName: file.name,
+        originalSize: file.size,
+        lines: [],
+        waypoints: routeWaypoints,
+        enabled: true,
+        importedAt: new Date().toISOString(),
+      });
+      savedRoutes.push(waypointRoute);
+      const saved = saveRouteLibrary();
+      rebuildActiveRoutes({ fitPoints: routeWaypoints });
+      refreshMapPlaces();
+      const sizeLabel = formatFileSize(file.size);
+      status.textContent = `${routeWaypoints.length} losse GPX-waypoints toegevoegd${sizeLabel ? ` (${sizeLabel})` : ""}; dit bestand bevat geen route of track.${saved ? " Lokaal bewaard." : " Staat tijdelijk op de kaart, maar paste niet in browseropslag."}`;
     }
   };
 
   reader.readAsText(file);
 }
 
-document.querySelectorAll("#country-filter, #confidence-filter, .check-row input:not(#route-filter-active)").forEach((control) => {
-  control.addEventListener("change", refreshMapPlaces);
+function customDataPointFromFeature(feature, index, fileName) {
+  const geometry = feature?.geometry || {};
+  if (geometry.type !== "Point" || !Array.isArray(geometry.coordinates)) return null;
+  const [lng, lat] = geometry.coordinates.map(Number);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  const properties = feature.properties || {};
+  const type = sleepTypes[properties.type] ? properties.type : "ask";
+  const sourceUrl = /^https?:\/\//i.test(properties.url || properties.sourceUrl || "")
+    ? (properties.url || properties.sourceUrl)
+    : "https://www.openstreetmap.org/";
+  const place = {
+    name: properties.name || properties.title || `Eigen plek ${index + 1}`,
+    lat,
+    lng,
+    location: `${lat.toFixed(5)}, ${lng.toFixed(5)} · geïmporteerd uit ${fileName}`,
+    type,
+    confidence: 1,
+    photo: /^https?:\/\//i.test(properties.photo || properties.image || "") ? (properties.photo || properties.image) : "",
+    photoLabel: "Eigen data",
+    sourceLabel: `Eigen data: ${fileName}`,
+    sourceUrl,
+    description: properties.description || properties.desc || "Eigen geïmporteerde plek zonder aanvullende beschrijving.",
+    stay: properties.stay || "Controleer zelf",
+    cost: properties.cost || "Niet vermeld",
+    water: properties.water || "Niet vermeld",
+    caution: "Deze plek komt uit je eigen lokale import. Controleer toegang, regels en actualiteit vóór gebruik.",
+  };
+  return { lat, lng, place };
+}
+
+function customDataPointFromObject(item, index, fileName) {
+  const lat = Number(item.lat ?? item.latitude);
+  const lng = Number(item.lng ?? item.lon ?? item.longitude);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  return customDataPointFromFeature({
+    geometry: { type: "Point", coordinates: [lng, lat] },
+    properties: item,
+  }, index, fileName);
+}
+
+function customDataWaypoints(data, fileName) {
+  if (data?.type === "FeatureCollection" && Array.isArray(data.features)) {
+    return data.features.slice(0, 5000).flatMap((feature, index) => customDataPointFromFeature(feature, index, fileName) || []);
+  }
+  if (data?.type === "Feature") {
+    const point = customDataPointFromFeature(data, 0, fileName);
+    return point ? [point] : [];
+  }
+  if (Array.isArray(data)) {
+    return data.slice(0, 5000).flatMap((item, index) => customDataPointFromObject(item, index, fileName) || []);
+  }
+  return [];
+}
+
+function importCustomData(file) {
+  const status = document.querySelector("#custom-data-status");
+  const reader = new FileReader();
+  status.textContent = `${file.name} lezen...`;
+
+  reader.onerror = () => {
+    status.textContent = "Dit databestand kon niet worden gelezen.";
+  };
+
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      const waypoints = customDataWaypoints(data, file.name);
+      if (!waypoints.length) {
+        status.textContent = "Geen punten gevonden. Gebruik GeoJSON Point-features of JSON-objecten met lat/lng.";
+        return;
+      }
+
+      const routeRecord = normalizeRouteRecord({
+        id: routeId(file.name),
+        name: file.name.replace(/\.(geo)?json$/i, "") || "Eigen plekken",
+        fileName: file.name,
+        originalSize: file.size,
+        lines: [],
+        waypoints,
+        enabled: true,
+        importedAt: new Date().toISOString(),
+      });
+      savedRoutes.push(routeRecord);
+      const saved = saveRouteLibrary();
+      rebuildActiveRoutes({ fitPoints: waypoints });
+      refreshMapPlaces();
+      const sizeLabel = formatFileSize(file.size);
+      status.textContent = `${waypoints.length.toLocaleString("nl-NL")} eigen plekken toegevoegd${sizeLabel ? ` (${sizeLabel})` : ""}.${saved ? " Lokaal bewaard." : " Staat tijdelijk op de kaart, maar paste niet in browseropslag."}`;
+    } catch (error) {
+      console.warn(error);
+      status.textContent = "Dit bestand bevat geen geldige JSON of GeoJSON.";
+    }
+  };
+
+  reader.readAsText(file);
+}
+
+document.querySelectorAll("#sleep-filter input").forEach((control) => {
+  control.addEventListener("change", (event) => {
+    if (event.target.id === "camping-layer-active") campingQueuedRefresh = false;
+    saveFilterPreferences();
+    refreshMapPlaces();
+  });
 });
 
 document.querySelector("#country-filter").addEventListener("change", (event) => {
-  const country = countries.find((item) => item.code === event.target.value);
-  const centers = {
-    NL: [52.2, 5.4, 7], BE: [50.7, 4.65, 7], LU: [49.8, 6.1, 9],
-    DE: [51.2, 10.4, 6], DK: [56.1, 9.4, 7], SE: [61.0, 15.2, 5],
-    NO: [62.2, 9.2, 5], FR: [46.6, 2.5, 6], CH: [46.8, 8.2, 7],
-    AT: [47.6, 14.1, 7], IT: [43.2, 12.0, 6],
-  };
-  renderEmptyPanel(
-    country ? `Verken ${country.name}` : "Kies een plek",
-    country ? "Klik op een cluster om in te zoomen; vanaf zoomniveau 13 verschijnen de afzonderlijke bronpins." : "Klik op een marker voor regels, bron en praktische aandachtspunten.",
-  );
-  if (country) map.flyTo(centers[country.code].slice(0, 2), centers[country.code][2]);
+  if (!event.target.matches("[data-country]")) return;
+  saveCountrySelection();
+  refreshMapPlaces();
+  renderCountrySelectionPanel();
 });
 
 document.querySelector("#load-osm").addEventListener("click", loadOsmPlaces);
+document.querySelector("#storage-mode").addEventListener("change", (event) => {
+  saveCountrySelection();
+  saveFilterPreferences();
+  if (savedRoutes.length) saveRouteLibrary();
+  setUserValue(ROUTE_DISTANCE_KEY, document.querySelector("#route-distance").value);
+  setStorageMode(event.target.value);
+  saveCountrySelection();
+  saveFilterPreferences();
+  if (savedRoutes.length) saveRouteLibrary();
+  setUserValue(ROUTE_DISTANCE_KEY, document.querySelector("#route-distance").value);
+});
+document.querySelector("#clear-user-data").addEventListener("click", () => {
+  const confirmed = window.confirm("Wis je lokale routes, eigen plekken en voorkeuren uit deze browser?");
+  if (confirmed) clearUserData();
+});
+document.querySelector("#custom-data-file").addEventListener("change", (event) => {
+  const [file] = event.target.files;
+  if (file) importCustomData(file);
+  event.target.value = "";
+});
 document.querySelector("#gpx-file").addEventListener("change", (event) => {
   const [file] = event.target.files;
   if (file) importGpx(file);
   event.target.value = "";
 });
-document.querySelector("#quick-route").addEventListener("click", () => document.querySelector("#gpx-file").click());
 document.querySelector("#route-distance").addEventListener("input", updateRouteStatus);
 document.querySelector("#route-distance").addEventListener("change", (event) => {
-  localStorage.setItem("rollout-route-distance", event.target.value);
+  setUserValue(ROUTE_DISTANCE_KEY, event.target.value);
   refreshMapPlaces();
 });
 document.querySelectorAll("[data-route-distance]").forEach((button) => {
   button.addEventListener("click", () => {
     const distance = button.dataset.routeDistance;
     document.querySelector("#route-distance").value = distance;
-    localStorage.setItem("rollout-route-distance", distance);
+    setUserValue(ROUTE_DISTANCE_KEY, distance);
     refreshMapPlaces();
   });
 });
 document.querySelector("#route-filter-active").addEventListener("change", refreshMapPlaces);
 document.querySelector("#clear-route").addEventListener("click", clearRoute);
+document.querySelector("#route-list").addEventListener("change", (event) => {
+  const checkbox = event.target.closest("[data-route-toggle]");
+  if (!checkbox) return;
+  const route = savedRoutes.find((item) => item.id === checkbox.dataset.routeToggle);
+  if (!route) return;
+  route.enabled = checkbox.checked;
+  saveRouteLibrary();
+  rebuildActiveRoutes();
+  refreshMapPlaces();
+});
+document.querySelector("#route-list").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-route-remove]");
+  if (!button) return;
+  savedRoutes = savedRoutes.filter((route) => route.id !== button.dataset.routeRemove);
+  saveRouteLibrary();
+  rebuildActiveRoutes();
+  refreshMapPlaces();
+});
 document.querySelector("#locate-me").addEventListener("click", () => {
   if (userLocation) map.flyTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
   else requestUserLocation({ focusMap: true });
 });
+document.querySelector("#startup-use-location").addEventListener("click", () => {
+  requestUserLocation({ focusMap: true, focusRadiusKm: START_LOCATION_RADIUS_KM, promptOnError: true });
+});
+document.querySelector("#startup-skip-location").addEventListener("click", () => {
+  startupLocationPromptDismissed = true;
+  hideStartupLocationPrompt();
+  locationMessage = "Nook gebruikt het midden van de kaart.";
+  showLocationStatus(locationMessage, "neutral");
+  updateLocationNote();
+  updateCandidatePanel();
+});
 document.querySelector("#show-candidates").addEventListener("click", () => {
-  if (userLocation) openCandidatePanel();
-  else requestUserLocation({ openCandidates: true, focusMap: false });
+  if (userLocation) {
+    map.flyTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
+    openCandidatePanel();
+  } else {
+    requestUserLocation({ openCandidates: true, focusMap: true });
+  }
 });
 document.querySelector("#candidate-use-location").addEventListener("click", () => {
   requestUserLocation({ openCandidates: true, focusMap: true });
@@ -1534,6 +2662,7 @@ document.querySelectorAll("[data-horizon]").forEach((button) => {
   button.addEventListener("click", () => {
     candidateHorizonKm = Number(button.dataset.horizon);
     document.querySelectorAll("[data-horizon]").forEach((item) => item.classList.toggle("is-active", item === button));
+    saveFilterPreferences();
     updateCandidatePanel();
   });
 });
@@ -1552,9 +2681,7 @@ document.querySelector("#toggle-filters").addEventListener("click", () => {
 });
 document.querySelector("#close-filters").addEventListener("click", () => setFiltersOpen(false));
 document.querySelector("#map-overlay-scrim").addEventListener("click", () => setFiltersOpen(false));
-map.on("moveend", () => {
-  if (candidatePanelOpen && !userLocation) updateCandidatePanel();
-});
+map.on("moveend zoomend", scheduleViewportRefresh);
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
   setFiltersOpen(false);
@@ -1562,13 +2689,18 @@ document.addEventListener("keydown", (event) => {
   renderEmptyPanel();
 });
 
-const savedRouteDistance = Number(localStorage.getItem("rollout-route-distance"));
+updateStorageStatus();
+renderCountryFilter();
+const savedRouteDistance = Number(getUserValue(ROUTE_DISTANCE_KEY));
 if (savedRouteDistance >= 1 && savedRouteDistance <= 50) {
   document.querySelector("#route-distance").value = savedRouteDistance;
 }
 
+restoreCountrySelection();
+restoreFilterPreferences();
 restoreRoute();
 refreshMapPlaces();
+openAroundCurrentLocation();
 function openRouteImportPanelFromLink() {
   const sidebar = document.querySelector("#map-sidebar");
   const mapShell = document.querySelector(".map-shell");

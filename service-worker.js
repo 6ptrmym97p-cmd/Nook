@@ -1,5 +1,5 @@
-const SHELL_CACHE = "rollout-shell-20260616-3";
-const RUNTIME_CACHE = "rollout-runtime-20260616-3";
+const SHELL_CACHE = "nook-shell-20260707-5";
+const RUNTIME_CACHE = "nook-runtime-20260707-5";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -7,15 +7,16 @@ const APP_SHELL = [
   "./regels.html",
   "./netwerken.html",
   "./over.html",
-  "./styles.css?v=20260616-3",
-  "./app.js?v=20260616-2",
+  "./styles.css?v=20260707-5",
+  "./app.js?v=20260707-5",
   "./routebronnen.js?v=20260615-2",
-  "./public-data.js?v=20260615-4",
-  "./favicon.svg?v=20260615-2",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./apple-touch-icon.png",
-  "./manifest.webmanifest",
+  "./public-data.js?v=20260707-1",
+  "./favicon.ico?v=20260705-1",
+  "./favicon.svg?v=20260705-1",
+  "./icon-192.png?v=20260705-1",
+  "./icon-512.png?v=20260705-1",
+  "./apple-touch-icon.png?v=20260705-1",
+  "./manifest.webmanifest?v=20260705-1",
   "./pwa.js?v=20260616-3"
 ];
 

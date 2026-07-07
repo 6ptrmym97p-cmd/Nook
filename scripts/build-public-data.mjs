@@ -10,6 +10,8 @@ const vodfPath = args.get("--vodf") || "/tmp/vodf-public-map.js";
 const wtmgPath = args.get("--wtmg") || "/tmp/wtmg-public.json";
 const udDir = args.get("--ud-dir") || "/tmp";
 const outputPath = args.get("--output") || path.resolve("public-data.js");
+const appPath = args.get("--app") || path.resolve("app.js");
+const countryGeoJsonPath = args.get("--countries-geojson") || "";
 const regions = ["81", "82", "83", "84", "85"];
 const types = ["1106", "1111", "1115"];
 const regionNames = {
@@ -19,6 +21,25 @@ const regionNames = {
   84: "Hoofdstad en Bornholm",
   85: "Seeland",
 };
+
+function readCountryDefinitions() {
+  const source = fs.readFileSync(appPath, "utf8");
+  const block = source.match(/const FILTER_COUNTRIES = \[([\s\S]*?)\];\n\nconst countryNames/);
+  if (!block) throw new Error(`Kon FILTER_COUNTRIES niet lezen uit ${appPath}`);
+  return [...block[1].matchAll(/\{ code: "([^"]+)", name: "([^"]+)", center: \[[^\]]+\], bounds: \[\[([^\]]+)\], \[([^\]]+)\]\] \}/g)]
+    .map((match) => ({
+      code: match[1],
+      name: match[2],
+      bounds: [
+        match[3].split(",").map((value) => Number(value.trim())),
+        match[4].split(",").map((value) => Number(value.trim())),
+      ],
+    }));
+}
+
+const countryDefinitions = readCountryDefinitions();
+const countryCodes = countryDefinitions.map((country) => country.code);
+const countryBounds = Object.fromEntries(countryDefinitions.map((country) => [country.code, country.bounds]));
 
 function pointInPolygon(lat, lng, polygon) {
   let inside = false;
@@ -32,7 +53,59 @@ function pointInPolygon(lat, lng, polygon) {
   return inside;
 }
 
+function coordinateBounds(coordinates, bounds = { south: 90, west: 180, north: -90, east: -180 }) {
+  if (!Array.isArray(coordinates)) return bounds;
+  if (coordinates.length >= 2 && Number.isFinite(coordinates[0]) && Number.isFinite(coordinates[1])) {
+    const [lng, lat] = coordinates;
+    bounds.south = Math.min(bounds.south, lat);
+    bounds.west = Math.min(bounds.west, lng);
+    bounds.north = Math.max(bounds.north, lat);
+    bounds.east = Math.max(bounds.east, lng);
+    return bounds;
+  }
+  coordinates.forEach((entry) => coordinateBounds(entry, bounds));
+  return bounds;
+}
+
+function boundsContain(bounds, lat, lng) {
+  return lat >= bounds.south && lat <= bounds.north && lng >= bounds.west && lng <= bounds.east;
+}
+
+function polygonContainsPoint(rings, lat, lng) {
+  if (!rings?.length || !pointInPolygon(lat, lng, rings[0])) return false;
+  return !rings.slice(1).some((hole) => pointInPolygon(lat, lng, hole));
+}
+
+function geometryContainsPoint(geometry, lat, lng) {
+  if (!geometry) return false;
+  if (geometry.type === "Polygon") return polygonContainsPoint(geometry.coordinates, lat, lng);
+  if (geometry.type === "MultiPolygon") {
+    return geometry.coordinates.some((polygon) => polygonContainsPoint(polygon, lat, lng));
+  }
+  return false;
+}
+
+function buildGeoCountryFeatures() {
+  if (!countryGeoJsonPath || !fs.existsSync(countryGeoJsonPath)) return [];
+  const allowed = new Set(countryCodes);
+  const geojson = JSON.parse(fs.readFileSync(countryGeoJsonPath, "utf8"));
+  return (geojson.features || [])
+    .map((feature) => ({
+      code: feature.properties?.["ISO3166-1-Alpha-2"],
+      geometry: feature.geometry,
+      bounds: coordinateBounds(feature.geometry?.coordinates),
+    }))
+    .filter((feature) => allowed.has(feature.code));
+}
+
+const geoCountryFeatures = buildGeoCountryFeatures();
+
 function countryFor(lat, lng) {
+  const geoMatch = geoCountryFeatures.find((feature) => (
+    boundsContain(feature.bounds, lat, lng) && geometryContainsPoint(feature.geometry, lat, lng)
+  ));
+  if (geoMatch) return geoMatch.code;
+
   const inJutland = lat >= 54.78 && lat <= 57.85 && lng >= 7.65 && lng <= 10.95;
   const inDanishIslands = lat >= 54.45 && lat <= 56.25 && lng > 10.5 && lng <= 12.95;
   const inBornholm = lat >= 54.85 && lat <= 55.35 && lng >= 14.55 && lng <= 15.25;
@@ -106,6 +179,13 @@ function countryFor(lat, lng) {
     [8.3, 53.5], [6.8, 53.7], [6.15, 51.8], [5.85, 50.5], [6.1, 47.55],
   ];
   if (pointInPolygon(lat, lng, germany)) return "DE";
+
+  const boundsMatch = Object.entries(countryBounds)
+    .filter(([, [[south, west], [north, east]]]) => lat >= south && lat <= north && lng >= west && lng <= east)
+    .map(([code, [[south, west], [north, east]]]) => ({ code, area: (north - south) * (east - west) }))
+    .sort((a, b) => a.area - b.area)[0];
+  if (boundsMatch) return boundsMatch.code;
+
   return null;
 }
 
@@ -319,10 +399,19 @@ function detailUrl(item) {
 function buildDenmarkPlaces() {
   const places = [];
   const seen = new Set();
+  const existingSnapshotPath = path.join(path.dirname(outputPath), "data", "denmark-DK.json");
+  const hasRawUdData = regions.some((region) => types.some((type) => fs.existsSync(path.join(udDir, `ud-${region}-${type}.json`))));
+
+  if (!hasRawUdData) {
+    if (!fs.existsSync(existingSnapshotPath)) return [];
+    return (JSON.parse(fs.readFileSync(existingSnapshotPath, "utf8")).places || [])
+      .sort((a, b) => a.name.localeCompare(b.name, "da"));
+  }
 
   for (const region of regions) {
     for (const type of types) {
       const filePath = path.join(udDir, `ud-${region}-${type}.json`);
+      if (!fs.existsSync(filePath)) continue;
       const items = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
       for (const item of items) {
@@ -374,8 +463,21 @@ function buildDenmarkPlaces() {
 const vodfPins = buildVodfPins();
 const wtmgPins = buildWtmgPins();
 const denmarkPlaces = buildDenmarkPlaces();
+const overviewCountries = Object.fromEntries(countryCodes.map((country) => [
+  country,
+  {
+    vodf: vodfPins.filter((pin) => pin.country === country).length,
+    wtmg: wtmgPins.filter((pin) => pin.country === country).length,
+    denmark: country === "DK" ? denmarkPlaces.length : 0,
+    denmarkDesignated: country === "DK" ? denmarkPlaces.filter((place) => place.type === "designated").length : 0,
+    denmarkHut: country === "DK" ? denmarkPlaces.filter((place) => place.type === "hut").length : 0,
+  },
+]));
 const output = {
   generatedAt: new Date().toISOString().slice(0, 10),
+  overview: {
+    countries: overviewCountries,
+  },
   vodf: {
     source: "https://www.vriendenopdefiets.nl/zoek-een-logeeradres",
     totalVisible: vodfPins.length,
@@ -393,8 +495,62 @@ const output = {
   },
 };
 
-fs.writeFileSync(outputPath, `window.BEDROLL_DATA = ${JSON.stringify(output)};\n`);
-console.log(`Geschreven: ${outputPath}`);
+const dataDir = path.join(path.dirname(outputPath), "data");
+fs.mkdirSync(dataDir, { recursive: true });
+
+for (const country of countryCodes) {
+  fs.writeFileSync(
+    path.join(dataDir, `vodf-${country}.json`),
+    `${JSON.stringify({
+      generatedAt: output.generatedAt,
+      source: output.vodf.source,
+      country,
+      pins: vodfPins.filter((pin) => pin.country === country),
+    })}\n`,
+  );
+  fs.writeFileSync(
+    path.join(dataDir, `wtmg-${country}.json`),
+    `${JSON.stringify({
+      generatedAt: output.generatedAt,
+      source: output.wtmg.source,
+      country,
+      pins: wtmgPins.filter((pin) => pin.country === country),
+    })}\n`,
+  );
+}
+
+fs.writeFileSync(
+  path.join(dataDir, "denmark-DK.json"),
+  `${JSON.stringify({
+    generatedAt: output.generatedAt,
+    source: output.denmark.source,
+    country: "DK",
+    places: denmarkPlaces,
+  })}\n`,
+);
+
+const shellData = {
+  generatedAt: output.generatedAt,
+  overview: output.overview,
+  vodf: {
+    source: output.vodf.source,
+    totalVisible: output.vodf.totalVisible,
+    uniqueLocations: output.vodf.uniqueLocations,
+    pins: [],
+  },
+  wtmg: {
+    source: output.wtmg.source,
+    totalVisible: output.wtmg.totalVisible,
+    pins: [],
+  },
+  denmark: {
+    source: output.denmark.source,
+    places: [],
+  },
+};
+
+fs.writeFileSync(outputPath, `window.BEDROLL_DATA = ${JSON.stringify(shellData)};\n`);
+console.log(`Geschreven: ${outputPath} en ${dataDir}`);
 console.log(`Vrienden op de Fiets: ${vodfPins.length} openbare kaartpins op ${output.vodf.uniqueLocations} locaties`);
-console.log(`Welcome To My Garden: ${wtmgPins.length} openbare kaartpins in de elf doellanden`);
+console.log(`Welcome To My Garden: ${wtmgPins.length} openbare kaartpins in de app-landen`);
 console.log(`Ud i Naturen: ${denmarkPlaces.length} officiële slaapplekken`);

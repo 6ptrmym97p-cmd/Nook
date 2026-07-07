@@ -3,47 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="description" content="Vind fiets- en bikepackingroutes, download een GPX en filter Rollout op slaapplekken langs je route." />
-    <title>Routes | Rollout</title>
+    <meta name="description" content="Vind fiets- en bikepackingroutes, download een GPX en filter slaapplekken op afstand tot je route." />
+    <title>Routes | Nook</title>
     <meta name="theme-color" content="#123127" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-    <link rel="icon" href="favicon.svg?v=20260615-2" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest?v=20260705-1" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260705-1" />
+    <link rel="icon" href="favicon.ico?v=20260705-1" sizes="any" />
+    <link rel="icon" href="favicon.svg?v=20260705-1" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260616-3" />
+    <link rel="stylesheet" href="styles.css?v=20260706-6" />
   </head>
   <body class="route-sources-page">
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Rollout kaart">
-        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><path class="logo-tent" d="M6 44 22 12l17 32Z" /><path class="logo-door" d="M22 13v31" /><circle class="logo-wheel" cx="39" cy="44" r="7" /><circle class="logo-wheel" cx="55" cy="44" r="7" /><path class="logo-bike" d="m39 44 7-14 9 14H39l5-9h8m-7-5-2-5h-4m13 5 3-5h4" /></svg>
-        <span>Rollout</span>
+      <a class="brand" href="index.html" aria-label="Nook kaart">
+        <img class="brand-mark" src="favicon.svg?v=20260705-1" alt="" width="38" height="38" aria-hidden="true" />
+        <span>Nook</span>
       </a>
-      <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html" aria-current="page">Routes</a><a href="regels.html">Regels</a></nav>
+      <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html" aria-current="page">Routes</a><a href="regels.html">Regels</a><a href="netwerken.html">Netwerken</a></nav>
       <a class="header-action" href="over.html">Over</a>
     </header>
 
     <main class="route-sources-main">
       <section class="route-sources-hero">
         <div>
-          <p class="eyebrow">Van plan naar slaapplek</p>
-          <h1>Vind een route.<br />Laad de GPX.</h1>
+          <p class="eyebrow">Voor fietstochten</p>
+          <h1>Route erin.<br />Ruis eruit.</h1>
         </div>
         <div class="route-workflow" aria-label="Werkwijze">
-          <span><b>1</b> Kies een bron</span>
-          <span><b>2</b> Download de GPX</span>
-          <span><b>3</b> Filter plekken langs je lijn</span>
+          <span><b>1</b> Download een GPX</span>
+          <span><b>2</b> Zet hem aan op de kaart</span>
+          <span><b>3</b> Kies 3, 8, 15 of 25 km marge</span>
         </div>
       </section>
 
       <section class="route-source-content">
         <div class="route-source-toolbar">
           <div>
-            <p class="eyebrow">Routebibliotheek</p>
-            <h2>Goede startpunten</h2>
+            <p class="eyebrow">GPX-bronnen</p>
+            <h2>Startpunten voor je track</h2>
           </div>
           <div class="route-source-filters" aria-label="Routebronnen filteren">
             <label>Land
@@ -102,12 +103,12 @@
             <div class="route-card-top"><span class="route-source-logo">EV</span><span class="route-badge badge-tip">Beste startpunt</span></div><h3>Noord en Alpen</h3><p>Voor Noorwegen, Denemarken en Oostenrijk is EuroVelo de meest consistente grensoverschrijdende GPX-bron in deze lijst. Verfijn daarna lokaal met cycle.travel of BRouter.</p><div class="route-tags"><span>NO</span><span>DK</span><span>AT</span></div><a href="https://en.eurovelo.com/" target="_blank" rel="noreferrer">Kies een EuroVelo-route <span>↗</span></a>
           </article>
         </div>
-        <div class="route-empty" id="route-empty" hidden>Voor deze combinatie staat nog geen aparte bron in de lijst. EuroVelo, cycle.travel en BRouter werken wel in alle elf landen.</div>
+        <div class="route-empty" id="route-empty" hidden>Voor deze combinatie staat nog geen aparte bron in de lijst. EuroVelo, cycle.travel en BRouter werken wel Europa-breed.</div>
       </section>
     </main>
 
     <a class="route-import-dock is-hidden" href="index.html?route=import"><span>GPX gedownload?</span><strong>Kies bestand op de kaart →</strong></a>
-    <footer class="site-footer"><span>Rollout</span><p>Bronnen openen in een nieuw tabblad. Downloads blijven op je eigen apparaat.</p><a href="netwerken.html">Gastnetwerken <span>→</span></a></footer>
+    <footer class="site-footer"><span>Nook</span><p>Bronnen openen in een nieuw tabblad. Downloads blijven op je eigen apparaat.</p><a href="netwerken.html">Gastnetwerken <span>→</span></a></footer>
     <script src="routebronnen.js?v=20260615-2"></script>
     <script src="pwa.js?v=20260616-3"></script>
   </body>
