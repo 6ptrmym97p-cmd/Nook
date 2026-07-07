@@ -343,7 +343,7 @@ const sources = [
   { icon: "R", name: "Reddit", description: "Recente ervaringen en lokale tips, nuttig als aanwijzing. Controleer elke claim daarna bij een primaire bron.", meta: "Community · wisselend", url: "https://www.reddit.com/r/bikepacking/search/?q=camping%20sweden%20denmark%20germany" },
 ];
 
-const publicData = window.BEDROLL_DATA || {};
+const publicData = window.NOOK_DATA || {};
 let vodfPins = publicData.vodf?.pins || [];
 let wtmgPins = publicData.wtmg?.pins || [];
 let denmarkPlaces = publicData.denmark?.places || [];
@@ -410,12 +410,6 @@ const markerIndex = new Map();
 const visiblePlaceCounts = { curated: 0, hospitality: 0, denmark: 0, campwild: 0, osm: 0, camping: 0, imported: 0 };
 const ROUTE_LIBRARY_KEY = "nook-saved-routes-v1";
 const LEGACY_ROUTE_KEY = "nook-saved-route-v1";
-const LEGACY_STORAGE_KEYS = {
-  [ROUTE_LIBRARY_KEY]: "rollout-saved-routes-v1",
-  [LEGACY_ROUTE_KEY]: "rollout-saved-route-v1",
-  "nook-country-filter-v1": "rollout-country-filter-v1",
-  "nook-route-distance": "rollout-route-distance",
-};
 let osmPlaces = [];
 let importedWaypoints = [];
 let savedRoutes = [];
@@ -1113,7 +1107,6 @@ const countryNames = Object.fromEntries(FILTER_COUNTRIES.map((country) => [count
 
 const COUNTRY_FILTER_KEY = "nook-country-filter-v2";
 const STORAGE_MODE_KEY = "nook-storage-mode-v1";
-const LEGACY_STORAGE_MODE_KEY = "rollout-storage-mode-v1";
 const FILTER_PREFERENCES_KEY = "nook-filter-preferences-v3";
 const ROUTE_DISTANCE_KEY = "nook-route-distance";
 const PERSONAL_STORAGE_KEYS = [
@@ -1146,7 +1139,7 @@ function selectedCountryCodes() {
 
 function storageMode() {
   try {
-    const stored = localStorage.getItem(STORAGE_MODE_KEY) || localStorage.getItem(LEGACY_STORAGE_MODE_KEY);
+    const stored = localStorage.getItem(STORAGE_MODE_KEY);
     return stored === "session" ? "session" : "device";
   } catch (error) {
     return "session";
@@ -1157,28 +1150,10 @@ function userStorage() {
   return storageMode() === "session" ? sessionStorage : localStorage;
 }
 
-function migrateLegacyValue(key) {
-  const legacyKey = LEGACY_STORAGE_KEYS[key];
-  if (!legacyKey) return null;
-  const storageTargets = [userStorage(), localStorage, sessionStorage];
-  for (const storage of storageTargets) {
-    try {
-      const value = storage.getItem(legacyKey);
-      if (value === null) continue;
-      userStorage().setItem(key, value);
-      storage.removeItem(legacyKey);
-      return value;
-    } catch (error) {
-      console.warn("Oude Nook-opslag kon niet worden gemigreerd.", error);
-    }
-  }
-  return null;
-}
-
 function getUserValue(key) {
   try {
     const value = userStorage().getItem(key);
-    return value ?? migrateLegacyValue(key);
+    return value;
   } catch (error) {
     console.warn("Gebruikersopslag kon niet worden gelezen.", error);
     return null;
@@ -1232,7 +1207,6 @@ function setStorageMode(mode) {
 
   try {
     localStorage.setItem(STORAGE_MODE_KEY, nextMode);
-    localStorage.removeItem(LEGACY_STORAGE_MODE_KEY);
   } catch (error) {
     console.warn("Opslagmodus kon niet worden onthouden.", error);
   }

@@ -696,7 +696,7 @@ const shellData = {
   },
 };
 
-fs.writeFileSync(outputPath, `window.BEDROLL_DATA = ${JSON.stringify(shellData)};\n`);
+fs.writeFileSync(outputPath, `window.NOOK_DATA = ${JSON.stringify(shellData)};\n`);
 console.log(`Geschreven: ${outputPath} en ${dataDir}`);
 console.log(`Vrienden op de Fiets: ${vodfPins.length} openbare kaartpins op ${output.vodf.uniqueLocations} locaties`);
 console.log(`Welcome To My Garden: ${wtmgPins.length} openbare kaartpins in de app-landen`);
