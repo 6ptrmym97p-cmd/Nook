@@ -8,6 +8,8 @@ for (let index = 2; index < process.argv.length; index += 2) {
 
 const vodfPath = args.get("--vodf") || "/tmp/vodf-public-map.js";
 const wtmgPath = args.get("--wtmg") || "/tmp/wtmg-public.json";
+const campingPath = args.get("--campings") || "/tmp/nook-osm-campings.json";
+const campwildPath = args.get("--campwild") || "/tmp/campwild-places.json";
 const udDir = args.get("--ud-dir") || "/tmp";
 const outputPath = args.get("--output") || path.resolve("public-data.js");
 const appPath = args.get("--app") || path.resolve("app.js");
@@ -460,14 +462,121 @@ function buildDenmarkPlaces() {
   return places.sort((a, b) => a.name.localeCompare(b.name, "da"));
 }
 
+function normalizeCampingPlace(place) {
+  const lat = Number(place.lat);
+  const lng = Number(place.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  const country = place.country || countryFor(lat, lng);
+  if (!countryCodes.includes(country)) return null;
+  return {
+    osmKey: String(place.osmKey || ""),
+    country,
+    lat: Number(lat.toFixed(6)),
+    lng: Number(lng.toFixed(6)),
+    name: plainText(place.name || place.operator || "Naamloze camping"),
+    tourism: place.tourism === "caravan_site" ? "caravan_site" : "camp_site",
+    locality: plainText(place.locality || ""),
+    website: String(place.website || ""),
+    phone: String(place.phone || ""),
+    email: String(place.email || ""),
+    access: String(place.access || ""),
+    tents: String(place.tents || ""),
+    campers: String(place.campers || ""),
+    category: String(place.category || ""),
+    capacity: String(place.capacity || ""),
+    charge: String(place.charge || ""),
+    cabins: String(place.cabins || ""),
+    caravans: String(place.caravans || ""),
+    motorhome: String(place.motorhome || ""),
+    operator: plainText(place.operator || ""),
+    openingHours: String(place.openingHours || ""),
+    stars: String(place.stars || ""),
+    toilets: String(place.toilets || ""),
+    shower: String(place.shower || ""),
+    powerSupply: String(place.powerSupply || ""),
+    fee: String(place.fee || ""),
+    drinkingWater: String(place.drinkingWater || ""),
+    waterPoint: String(place.waterPoint || ""),
+    image: String(place.image || ""),
+    wikimediaCommons: String(place.wikimediaCommons || ""),
+    sourceUrl: String(place.sourceUrl || ""),
+  };
+}
+
+function buildCampingPlaces() {
+  if (fs.existsSync(campingPath)) {
+    const snapshot = JSON.parse(fs.readFileSync(campingPath, "utf8"));
+    return (snapshot.places || [])
+      .map(normalizeCampingPlace)
+      .filter(Boolean)
+      .sort((a, b) => a.country.localeCompare(b.country) || a.name.localeCompare(b.name));
+  }
+
+  const existingDataDir = path.join(path.dirname(outputPath), "data");
+  return countryCodes.flatMap((country) => {
+    const filePath = path.join(existingDataDir, `camping-${country}.json`);
+    if (!fs.existsSync(filePath)) return [];
+    const payload = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    return (payload.places || []).map(normalizeCampingPlace).filter(Boolean);
+  });
+}
+
+function campwildTypeLabel(type) {
+  return {
+    hut: "Hut",
+    "lean-to": "Lean-to",
+    basic_shelter: "Basic shelter",
+    weather_shelter: "Weather shelter",
+    bivouac: "Bivouac",
+  }[type] || "";
+}
+
+function normalizeCampwildPlace(place) {
+  const lat = Number(place.lat);
+  const lng = Number(place.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  const sourceType = String(place.type || "");
+  const typeLabel = campwildTypeLabel(sourceType);
+  if (!typeLabel) return null;
+  const country = place.country || countryFor(lat, lng);
+  if (!countryCodes.includes(country)) return null;
+  const id = Number(place.id);
+  if (!Number.isFinite(id)) return null;
+  const nookType = sourceType === "bivouac" ? "designated" : "hut";
+  return {
+    id,
+    country,
+    lat: Number(lat.toFixed(6)),
+    lng: Number(lng.toFixed(6)),
+    sourceType,
+    typeLabel,
+    type: nookType,
+    name: `CampWild ${typeLabel}`,
+    sourceUrl: `https://map.campwild.org/places/${id}/`,
+  };
+}
+
+function buildCampwildPlaces() {
+  if (!fs.existsSync(campwildPath)) return [];
+  const snapshot = JSON.parse(fs.readFileSync(campwildPath, "utf8"));
+  return (snapshot.places || [])
+    .map(normalizeCampwildPlace)
+    .filter(Boolean)
+    .sort((a, b) => a.country.localeCompare(b.country) || a.id - b.id);
+}
+
 const vodfPins = buildVodfPins();
 const wtmgPins = buildWtmgPins();
 const denmarkPlaces = buildDenmarkPlaces();
+const campingPlaces = buildCampingPlaces();
+const campwildPlaces = buildCampwildPlaces();
 const overviewCountries = Object.fromEntries(countryCodes.map((country) => [
   country,
   {
     vodf: vodfPins.filter((pin) => pin.country === country).length,
     wtmg: wtmgPins.filter((pin) => pin.country === country).length,
+    camping: campingPlaces.filter((place) => place.country === country).length,
+    campwild: campwildPlaces.filter((place) => place.country === country).length,
     denmark: country === "DK" ? denmarkPlaces.length : 0,
     denmarkDesignated: country === "DK" ? denmarkPlaces.filter((place) => place.type === "designated").length : 0,
     denmarkHut: country === "DK" ? denmarkPlaces.filter((place) => place.type === "hut").length : 0,
@@ -493,6 +602,16 @@ const output = {
     source: "https://udinaturen.dk/kort",
     places: denmarkPlaces,
   },
+  camping: {
+    source: "https://opencampingmap.org/",
+    totalVisible: campingPlaces.length,
+    places: campingPlaces,
+  },
+  campwild: {
+    source: "https://map.campwild.org/",
+    totalVisible: campwildPlaces.length,
+    places: campwildPlaces,
+  },
 };
 
 const dataDir = path.join(path.dirname(outputPath), "data");
@@ -515,6 +634,24 @@ for (const country of countryCodes) {
       source: output.wtmg.source,
       country,
       pins: wtmgPins.filter((pin) => pin.country === country),
+    })}\n`,
+  );
+  fs.writeFileSync(
+    path.join(dataDir, `camping-${country}.json`),
+    `${JSON.stringify({
+      generatedAt: output.generatedAt,
+      source: output.camping.source,
+      country,
+      places: campingPlaces.filter((place) => place.country === country),
+    })}\n`,
+  );
+  fs.writeFileSync(
+    path.join(dataDir, `campwild-${country}.json`),
+    `${JSON.stringify({
+      generatedAt: output.generatedAt,
+      source: output.campwild.source,
+      country,
+      places: campwildPlaces.filter((place) => place.country === country),
     })}\n`,
   );
 }
@@ -547,6 +684,16 @@ const shellData = {
     source: output.denmark.source,
     places: [],
   },
+  camping: {
+    source: output.camping.source,
+    totalVisible: output.camping.totalVisible,
+    places: [],
+  },
+  campwild: {
+    source: output.campwild.source,
+    totalVisible: output.campwild.totalVisible,
+    places: [],
+  },
 };
 
 fs.writeFileSync(outputPath, `window.BEDROLL_DATA = ${JSON.stringify(shellData)};\n`);
@@ -554,3 +701,5 @@ console.log(`Geschreven: ${outputPath} en ${dataDir}`);
 console.log(`Vrienden op de Fiets: ${vodfPins.length} openbare kaartpins op ${output.vodf.uniqueLocations} locaties`);
 console.log(`Welcome To My Garden: ${wtmgPins.length} openbare kaartpins in de app-landen`);
 console.log(`Ud i Naturen: ${denmarkPlaces.length} officiële slaapplekken`);
+console.log(`OpenStreetMap-campings: ${campingPlaces.length} kaartpins in de app-landen`);
+console.log(`CampWild: ${campwildPlaces.length} hutten, bivakplekken en shelters in de app-landen`);

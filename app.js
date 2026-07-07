@@ -337,6 +337,8 @@ const sources = [
   { icon: "V", name: "Vrienden op de Fiets", description: "De openbare kaartfeed levert losse kaartposities en generieke voorzieningen zonder adresvelden. Nook clustert die bij uitzoomen en toont de afzonderlijke bronpins bij inzoomen.", meta: "5.343 pins · 38 Europese landen · 7 juli 2026", url: "https://www.vriendenopdefiets.nl/zoek-een-logeeradres" },
   { icon: "G", name: "Welcome To My Garden", description: "De openbare explore-kaart levert losse tuinposities, basisvoorzieningen en waar aanwezig een tuinfoto. Die worden brongetrouw geclusterd en bij verder inzoomen afzonderlijk getoond.", meta: "5.924 pins · 4.324 foto's · 7 juli 2026", url: "https://welcometomygarden.org/nl/explore" },
   { icon: "U", name: "Ud i Naturen", description: "Officiële Deense kaartdata met concrete vrije tentgebieden, primitieve overnachtingsplekken en shelters, inclusief locatiebeschrijving, capaciteit en boekingsstatus.", meta: "2.480 officiële plekken · 14 juni 2026", url: "https://udinaturen.dk/kort" },
+  { icon: "C", name: "OpenStreetMap-campings", description: "Campings en camperterreinen uit OpenStreetMap, opgehaald via de openbare OpenCampingMap-endpoint. Nook laadt ze per land als gewone kaartpins.", meta: "82.084 pins · 47 landen · 7 juli 2026", url: "https://opencampingmap.org/" },
+  { icon: "CW", name: "CampWild", description: "Publieke kaart met shelters, lean-to's, bivakplekken en hutten. Nook neemt alleen de duidelijke slaap- en schuiltypes op als hut/shelterpins.", meta: "6.036 pins · publieke kaartlaag · 7 juli 2026", url: "https://map.campwild.org/" },
   { icon: "F", name: "De Wereldfietser", description: "Forum en vereniging met veel ervaringskennis over routes, materiaal en overnachten onderweg.", meta: "Forum · Nederlands", url: "https://forum.wereldfietser.nl/" },
   { icon: "R", name: "Reddit", description: "Recente ervaringen en lokale tips, nuttig als aanwijzing. Controleer elke claim daarna bij een primaire bron.", meta: "Community · wisselend", url: "https://www.reddit.com/r/bikepacking/search/?q=camping%20sweden%20denmark%20germany" },
 ];
@@ -345,6 +347,8 @@ const publicData = window.BEDROLL_DATA || {};
 let vodfPins = publicData.vodf?.pins || [];
 let wtmgPins = publicData.wtmg?.pins || [];
 let denmarkPlaces = publicData.denmark?.places || [];
+let campingPlaces = publicData.camping?.places || [];
+let campwildPlaces = publicData.campwild?.places || [];
 const overviewSourceCounts = publicData.overview?.countries || {};
 
 const map = L.map("map", { zoomControl: false }).setView([52.4, 8.8], 4);
@@ -400,9 +404,10 @@ const importedLayer = sourceClusterLayer("cluster-imported");
 const vodfLayer = sourceClusterLayer("cluster-vodf");
 const wtmgLayer = sourceClusterLayer("cluster-wtmg");
 const campingLayer = sourceClusterLayer("cluster-camping");
+const campwildLayer = sourceClusterLayer("cluster-official");
 const denmarkLayer = sourceClusterLayer("cluster-official");
 const markerIndex = new Map();
-const visiblePlaceCounts = { curated: 0, hospitality: 0, denmark: 0, osm: 0, camping: 0, imported: 0 };
+const visiblePlaceCounts = { curated: 0, hospitality: 0, denmark: 0, campwild: 0, osm: 0, camping: 0, imported: 0 };
 const ROUTE_LIBRARY_KEY = "nook-saved-routes-v1";
 const LEGACY_ROUTE_KEY = "nook-saved-route-v1";
 const LEGACY_STORAGE_KEYS = {
@@ -412,7 +417,6 @@ const LEGACY_STORAGE_KEYS = {
   "nook-route-distance": "rollout-route-distance",
 };
 let osmPlaces = [];
-let campingPlaces = [];
 let importedWaypoints = [];
 let savedRoutes = [];
 let routesPersisted = true;
@@ -422,10 +426,6 @@ let userLocation = null;
 let locationMessage = "";
 let candidatePanelOpen = false;
 let candidateHorizonKm = 35;
-let campingLoading = false;
-let campingQueuedRefresh = false;
-const campingRequestedKeys = new Set();
-const campingPlaceIds = new Set();
 let routeState = {
   name: "",
   pointCount: 0,
@@ -438,9 +438,6 @@ let routeState = {
 
 const ROUTE_GRID_DEGREES = 0.25;
 const SOURCE_LOAD_ZOOM = 6;
-const CAMPING_RESULT_LIMIT = 1500;
-const CAMPING_MAX_BOUNDS_DIAGONAL_KM = 520;
-const CAMPING_FALLBACK_RADIUS_KM = 180;
 const START_LOCATION_RADIUS_KM = 80;
 const OVERPASS_ENDPOINTS = [
   "https://overpass-api.de/api/interpreter",
@@ -449,6 +446,7 @@ const OVERPASS_ENDPOINTS = [
 const STARTUP_LOCATION_COPY = "Nook opent dan rond 80 km van jou en rangschikt plekken vanaf je positie.";
 let startupLocationTried = false;
 let startupLocationPromptDismissed = false;
+let startupSourceLoadPaused = true;
 let viewportRefreshTimer = 0;
 
 function escapeHtml(value = "") {
@@ -735,6 +733,7 @@ function candidateProviderLabel(provider) {
   return {
     curated: "Nook-regiogids",
     denmark: "Ud i Naturen",
+    campwild: "CampWild",
     osm: "OpenStreetMap",
     imported: "GPX-waypoint",
     vodf: "Vrienden op de Fiets",
@@ -914,6 +913,11 @@ function updateLocationNote() {
   }
 }
 
+function resumeStartupSourceLoading() {
+  startupSourceLoadPaused = false;
+  refreshMapPlaces();
+}
+
 function geolocationUnavailableMessage() {
   if (!("geolocation" in navigator)) return "Deze browser ondersteunt geen locatiebepaling.";
   if (!window.isSecureContext) return "GPS werkt op je telefoon alleen via HTTPS. Open de gepubliceerde GitHub Pages-link of gebruik het kaartmidden.";
@@ -925,6 +929,7 @@ function requestUserLocation({ openCandidates = false, focusMap = true, focusRad
   const unavailableMessage = geolocationUnavailableMessage();
   if (unavailableMessage) {
     locationMessage = unavailableMessage;
+    resumeStartupSourceLoading();
     if (promptOnError) {
       startupLocationPromptDismissed = false;
       showStartupLocationPrompt({
@@ -963,7 +968,7 @@ function requestUserLocation({ openCandidates = false, focusMap = true, focusRad
     document.querySelector("#locate-me").classList.add("has-location");
     if (!quiet) showLocationStatus("Huidige positie actief. Plekken worden nu vanaf jou gerangschikt.", "success");
     updateLocationNote();
-    refreshMapPlaces();
+    resumeStartupSourceLoading();
   }, (error) => {
     setLocationControlsLoading(false);
     const explanation = error.code === error.PERMISSION_DENIED
@@ -984,6 +989,7 @@ function requestUserLocation({ openCandidates = false, focusMap = true, focusRad
     }
     updateLocationNote();
     updateCandidatePanel();
+    resumeStartupSourceLoading();
   }, {
     enableHighAccuracy: false,
     timeout: 15000,
@@ -1007,6 +1013,7 @@ async function openAroundCurrentLocation() {
     if (navigator.permissions?.query) {
       const permission = await navigator.permissions.query({ name: "geolocation" });
       if (permission.state === "denied") {
+        resumeStartupSourceLoading();
         showStartupLocationPrompt({
           title: "Locatie staat geblokkeerd",
           message: "Zet locatie aan voor deze site in je browserinstellingen, of gebruik voorlopig het kaartmidden.",
@@ -1014,11 +1021,23 @@ async function openAroundCurrentLocation() {
         });
         return;
       }
+      if (permission.state === "granted") {
+        requestUserLocation({ focusMap: true, focusRadiusKm: START_LOCATION_RADIUS_KM, quiet: true, promptOnError: true });
+        return;
+      }
     }
   } catch (error) {
     console.warn("Locatierechten konden niet vooraf worden gelezen.", error);
   }
   showStartupLocationPrompt();
+  window.setTimeout(() => {
+    if (!userLocation && !startupLocationPromptDismissed) {
+      requestUserLocation({ focusMap: true, focusRadiusKm: START_LOCATION_RADIUS_KM, promptOnError: true });
+    }
+  }, 700);
+  window.setTimeout(() => {
+    if (!userLocation && startupSourceLoadPaused) resumeStartupSourceLoading();
+  }, 9000);
 }
 
 function setFiltersOpen(open) {
@@ -1111,10 +1130,12 @@ const SOURCE_COUNTRY_CODES = new Set(Object.entries(overviewSourceCounts)
   .map(([country]) => country));
 const COUNTRY_CENTERS = Object.fromEntries(FILTER_COUNTRIES.map((country) => [country.code, country.center]));
 const COUNTRY_BOUNDS = Object.fromEntries(FILTER_COUNTRIES.map((country) => [country.code, country.bounds]));
-const SOURCE_DATA_VERSION = "20260707-1";
+const SOURCE_DATA_VERSION = "20260707-3";
 const loadedSourceChunks = {
   vodf: new Set(),
   wtmg: new Set(),
+  camping: new Set(),
+  campwild: new Set(),
   denmark: new Set(),
 };
 const loadingSourceChunks = new Map();
@@ -1271,10 +1292,14 @@ function restoreCountrySelection() {
     const countryCodes = Array.isArray(saved) && saved.some((code) => ALL_COUNTRY_CODES.includes(code))
       ? saved
       : DEFAULT_COUNTRY_CODES;
-    setSelectedCountries(countryCodes, { persist: false, announce: false, fit: true });
+    setSelectedCountries(countryCodes, {
+      persist: false,
+      announce: false,
+      fit: countryCodes.length !== ALL_COUNTRY_CODES.length,
+    });
   } catch (error) {
     console.warn("Landselectie kon niet worden hersteld.", error);
-    setSelectedCountries(DEFAULT_COUNTRY_CODES, { persist: false, announce: false, fit: true });
+    setSelectedCountries(DEFAULT_COUNTRY_CODES, { persist: false, announce: false, fit: false });
   }
 }
 
@@ -1317,8 +1342,21 @@ function overviewModeActive() {
   return false;
 }
 
+function countryIntersectsBounds(countryCode, bounds = sourceLayerBounds()) {
+  const countryBounds = COUNTRY_BOUNDS[countryCode];
+  if (!countryBounds) return false;
+  const [[south, west], [north, east]] = countryBounds;
+  return !(north < bounds.getSouth()
+    || south > bounds.getNorth()
+    || east < bounds.getWest()
+    || west > bounds.getEast());
+}
+
 function neededSourceChunks(filters) {
-  const countriesToLoad = [...filters.countries].filter((country) => SOURCE_COUNTRY_CODES.has(country));
+  if (startupSourceLoadPaused) return [];
+  const countriesToLoad = [...filters.countries]
+    .filter((country) => SOURCE_COUNTRY_CODES.has(country))
+    .filter((country) => countryIntersectsBounds(country));
   const chunks = [];
 
   if (filters.types.has("host") && filters.confidence <= 2) {
@@ -1332,6 +1370,18 @@ function neededSourceChunks(filters) {
         .filter((country) => sourceChunkHasPins(country, "wtmg"))
         .forEach((country) => chunks.push({ kind: "wtmg", country }));
     }
+  }
+
+  if (filters.types.has("camping")) {
+    countriesToLoad
+      .filter((country) => sourceChunkHasPins(country, "camping"))
+      .forEach((country) => chunks.push({ kind: "camping", country }));
+  }
+
+  if (filters.types.has("hut") || filters.types.has("designated")) {
+    countriesToLoad
+      .filter((country) => sourceChunkHasPins(country, "campwild"))
+      .forEach((country) => chunks.push({ kind: "campwild", country }));
   }
 
   const wantsDenmarkTypes = filters.types.has("designated") || filters.types.has("hut");
@@ -1357,6 +1407,8 @@ function sourceChunkUrl(kind, country) {
 function mergeSourceChunk(kind, country, payload) {
   if (kind === "vodf") vodfPins = vodfPins.concat(payload.pins || []);
   if (kind === "wtmg") wtmgPins = wtmgPins.concat(payload.pins || []);
+  if (kind === "camping") campingPlaces = campingPlaces.concat(payload.places || []);
+  if (kind === "campwild") campwildPlaces = campwildPlaces.concat(payload.places || []);
   if (kind === "denmark") denmarkPlaces = denmarkPlaces.concat(payload.places || []);
   loadedSourceChunks[kind].add(country);
 }
@@ -1601,6 +1653,59 @@ function renderDenmarkPlaces() {
   visiblePlaceCounts.denmark = markers.length;
 }
 
+function campwildPlace(sourcePlace) {
+  const typeLabel = sourcePlace.typeLabel || sourcePlace.sourceType || "Shelter";
+  const placeType = sourcePlace.type || "hut";
+  return {
+    name: sourcePlace.name || `CampWild ${typeLabel}`,
+    lat: sourcePlace.lat,
+    lng: sourcePlace.lng,
+    location: `${countryNames[sourcePlace.country] || "Europa"} · CampWild`,
+    type: placeType,
+    confidence: 2,
+    sourceLabel: "CampWild",
+    sourceUrl: sourcePlace.sourceUrl || "https://map.campwild.org/",
+    sourceAction: "Open in CampWild",
+    decision: "Publieke CampWild-kaartpin.",
+    description: "Shelter, lean-to, bivakplek of hut uit de publieke CampWild-kaartlaag. Open de bron voor foto's, opmerkingen en eventuele check-ins.",
+    stay: placeType === "designated" ? "Bivakplek; controleer bron en lokale regels" : "Schuilplek of hut; controleer bron en lokale regels",
+    cost: "Niet vermeld",
+    water: "Niet vermeld",
+    extraFacts: [
+      ["Type", typeLabel],
+      ["CampWild-ID", String(sourcePlace.id)],
+    ],
+    caution: "CampWild is communitydata. Controleer de bronpagina, lokale regels, borden en actuele staat voordat je deze plek als overnachting plant.",
+  };
+}
+
+function renderCampwildPlaces() {
+  const filters = currentFilters();
+  campwildLayer.clearLayers();
+  visiblePlaceCounts.campwild = 0;
+  if (overviewModeActive()) return;
+  const wantsType = filters.types.has("hut") || filters.types.has("designated");
+  if (!wantsType) return;
+  const bounds = sourceLayerBounds();
+
+  const markers = campwildPlaces
+    .filter((place) => countryAllowed(place.country, filters))
+    .filter((place) => filters.types.has(place.type))
+    .filter((place) => inSourceViewport(place, bounds))
+    .filter((place) => isWithinRoute(place.lat, place.lng))
+    .map((sourcePlace) => {
+      const place = campwildPlace(sourcePlace);
+      addCandidate(sourcePlace.lat, sourcePlace.lng, place, "campwild");
+      return L.marker([sourcePlace.lat, sourcePlace.lng], {
+        icon: markerIcon(place.type),
+        title: place.name,
+      }).on("click", () => renderPlace(place));
+    });
+
+  addMarkers(campwildLayer, markers);
+  visiblePlaceCounts.campwild = markers.length;
+}
+
 function renderCuratedMarkers() {
   const filters = currentFilters();
   curatedLayer.clearLayers();
@@ -1774,46 +1879,29 @@ async function loadOsmPlaces() {
   }
 }
 
-function campingLayerEnabled() {
-  return document.querySelector("#camping-layer-active").checked;
-}
-
-function campingBoundsLoadable(bounds = map.getBounds()) {
-  return boundsDiagonalKm(bounds) <= CAMPING_MAX_BOUNDS_DIAGONAL_KM;
-}
-
-function campingQueryBounds() {
-  const bounds = map.getBounds();
-  if (campingBoundsLoadable(bounds)) return bounds;
-  if (!userLocation) return null;
-  return boundsAroundPoint(userLocation, CAMPING_FALLBACK_RADIUS_KM);
-}
-
 function updateCampingStatus(message = "") {
   const status = document.querySelector("#camping-status");
-  if (!campingLayerEnabled()) {
-    status.textContent = "Uit. Zet Campings aan om OSM-campings in het kaartbeeld te laden.";
+  if (!status) return;
+  const filters = currentFilters();
+  if (!filters.types.has("camping")) {
+    status.textContent = "Uit. Zet Campings aan om OSM-campingpins te tonen.";
     return;
   }
   if (message) {
     status.textContent = message;
     return;
   }
-  const broadMap = !campingBoundsLoadable();
   if (!campingPlaces.length) {
-    status.textContent = broadMap
-      ? userLocation
-        ? "Breed kaartbeeld: Nook laadt OSM-campings rond je locatie. Zoom in voor het volledige kaartvak."
-        : "Zoom iets verder in op een gebied om OSM-campings als clusters te laden."
-      : "Nog geen OSM-campings geladen in dit kaartbeeld.";
+    status.textContent = sourceDataLoading()
+      ? "OSM-campings laden als gewone bronlaag per land."
+      : "Nog geen OSM-campings geladen voor je huidige landfilter.";
     return;
   }
   const visible = visiblePlaceCounts.camping.toLocaleString("nl-NL");
   const loaded = campingPlaces.length.toLocaleString("nl-NL");
-  const scope = broadMap ? " Breed kaartbeeld: geladen rond je locatie." : "";
   status.textContent = visiblePlaceCounts.camping
-    ? `${visible} OSM-campings zichtbaar. ${loaded} geladen in bezochte kaartvakken.${scope}`
-    : `${loaded} OSM-campings geladen, maar niets zichtbaar met je huidige route- of landfilter.${scope}`;
+    ? `${visible} OSM-campings zichtbaar. ${loaded} geladen in actieve landen.`
+    : `${loaded} OSM-campings geladen, maar niets zichtbaar met je huidige route- of landfilter.`;
 }
 
 function filterPreferenceState() {
@@ -1822,7 +1910,6 @@ function filterPreferenceState() {
       .map((input) => ({ value: input.value, checked: input.checked })),
     networks: [...document.querySelectorAll("[data-network]")]
       .map((input) => ({ value: input.dataset.network, checked: input.checked })),
-    campingLayer: campingLayerEnabled(),
     candidateHorizonKm,
   };
 }
@@ -1872,53 +1959,50 @@ function updateStorageStatus() {
     : "Apparaat-opslag actief: routes, eigen plekken en voorkeuren blijven alleen in deze browser staan.";
 }
 
-function campingRequestKey(bounds) {
-  const decimals = map.getZoom() >= 12 ? 3 : 2;
-  return [
-    "camping-v2",
-    bounds.getSouth().toFixed(decimals),
-    bounds.getWest().toFixed(decimals),
-    bounds.getNorth().toFixed(decimals),
-    bounds.getEast().toFixed(decimals),
-  ].join(",");
-}
-
-function campingPlace(element) {
-  const lat = element.lat ?? element.center?.lat;
-  const lng = element.lon ?? element.center?.lon;
-  const tags = element.tags || {};
+function campingPlace(sourcePlace) {
+  const lat = Number(sourcePlace.lat);
+  const lng = Number(sourcePlace.lng);
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-  if (!["camp_site", "caravan_site"].includes(tags.tourism)) return null;
 
-  const name = tags.name || tags.operator || "Naamloze camping";
-  const osmKey = `${element.type}/${element.id}`;
-  const country = countryFromLatLng(lat, lng);
-  const locality = tags["addr:city"] || tags["addr:town"] || tags["addr:village"] || tags["addr:place"] || tags["is_in:city"] || tags["is_in:town"] || "";
-  const typeLabel = tags.tourism === "caravan_site" ? "Camper- of caravanterrein" : "Camping";
-  const website = tags.website || tags["contact:website"] || "";
-  const phone = tags.phone || tags["contact:phone"] || "";
-  const email = tags.email || tags["contact:email"] || "";
+  const name = sourcePlace.name || sourcePlace.operator || "Naamloze camping";
+  const osmKey = sourcePlace.osmKey || "";
+  const country = sourcePlace.country || countryFromLatLng(lat, lng);
+  const locality = sourcePlace.locality || "";
+  const typeLabel = sourcePlace.tourism === "caravan_site" ? "Camper- of caravanterrein" : "Camping";
+  const website = sourcePlace.website || "";
+  const phone = sourcePlace.phone || "";
+  const email = sourcePlace.email || "";
   const extras = [
     ["Type", typeLabel],
   ];
+  if (sourcePlace.category) extras.push(["Categorie", sourcePlace.category.replaceAll("_", " ")]);
   if (locality) extras.push(["Plaats", locality]);
-  if (tags.access) extras.push(["Toegang", tags.access]);
-  if (tags.tents) extras.push(["Tenten", tags.tents === "yes" ? "Ja" : tags.tents === "no" ? "Nee volgens OSM" : tags.tents]);
-  if (tags.campers) extras.push(["Campers", tags.campers === "yes" ? "Ja" : tags.campers === "no" ? "Nee volgens OSM" : tags.campers]);
-  if (tags.operator) extras.push(["Beheerder", tags.operator]);
-  if (tags.opening_hours) extras.push(["Open", tags.opening_hours]);
-  if (tags.stars) extras.push(["Sterren", tags.stars]);
-  if (tags.toilets) extras.push(["Toilet", tags.toilets === "yes" ? "Aanwezig gemarkeerd" : tags.toilets]);
-  if (tags.shower) extras.push(["Douche", tags.shower === "yes" ? "Aanwezig gemarkeerd" : tags.shower]);
-  if (tags.power_supply) extras.push(["Stroom", tags.power_supply === "yes" ? "Aanwezig gemarkeerd" : tags.power_supply]);
+  if (sourcePlace.access) extras.push(["Toegang", sourcePlace.access]);
+  if (sourcePlace.tents) extras.push(["Tenten", sourcePlace.tents === "yes" ? "Ja" : sourcePlace.tents === "no" ? "Nee volgens OSM" : sourcePlace.tents]);
+  if (sourcePlace.campers) extras.push(["Campers", sourcePlace.campers === "yes" ? "Ja" : sourcePlace.campers === "no" ? "Nee volgens OSM" : sourcePlace.campers]);
+  if (sourcePlace.caravans) extras.push(["Caravans", sourcePlace.caravans === "yes" ? "Ja" : sourcePlace.caravans === "no" ? "Nee volgens OSM" : sourcePlace.caravans]);
+  if (sourcePlace.motorhome) extras.push(["Camperbus", sourcePlace.motorhome === "yes" ? "Ja" : sourcePlace.motorhome === "no" ? "Nee volgens OSM" : sourcePlace.motorhome]);
+  if (sourcePlace.cabins) extras.push(["Hutten/cabins", sourcePlace.cabins === "yes" ? "Aanwezig gemarkeerd" : sourcePlace.cabins]);
+  if (sourcePlace.capacity) extras.push(["Capaciteit", sourcePlace.capacity]);
+  if (sourcePlace.charge) extras.push(["Tarief", sourcePlace.charge]);
+  if (sourcePlace.operator) extras.push(["Beheerder", sourcePlace.operator]);
+  if (sourcePlace.openingHours) extras.push(["Open", sourcePlace.openingHours]);
+  if (sourcePlace.stars) extras.push(["Sterren", sourcePlace.stars]);
+  if (sourcePlace.toilets) extras.push(["Toilet", sourcePlace.toilets === "yes" ? "Aanwezig gemarkeerd" : sourcePlace.toilets]);
+  if (sourcePlace.shower) extras.push(["Douche", sourcePlace.shower === "yes" ? "Aanwezig gemarkeerd" : sourcePlace.shower]);
+  if (sourcePlace.powerSupply) extras.push(["Stroom", sourcePlace.powerSupply === "yes" ? "Aanwezig gemarkeerd" : sourcePlace.powerSupply]);
   if (website) extras.push(["Website", website]);
   if (phone) extras.push(["Telefoon", phone]);
   if (email) extras.push(["E-mail", email]);
-  const caution = tags.access && !["yes", "permissive", "customers"].includes(tags.access)
+  const caution = sourcePlace.access && !["yes", "permissive", "customers"].includes(sourcePlace.access)
     ? "OSM meldt beperkte toegang. Controleer lidmaatschap, reservering en voorwaarden voordat je erheen fietst."
-    : tags.tents === "no"
+    : sourcePlace.tents === "no"
       ? "Deze plek staat in OSM als niet geschikt voor tenten. Controleer dit voor bikepacking extra goed."
       : "Controleer altijd de officiële campingwebsite, openingstijden en of tenten welkom zijn. OSM kan verouderd of onvolledig zijn.";
+  const photo = osmPhoto({
+    image: sourcePlace.image,
+    wikimedia_commons: sourcePlace.wikimediaCommons,
+  });
 
   return {
     osmKey,
@@ -1935,15 +2019,15 @@ function campingPlace(element) {
         : `${countryNames[country] || "Onbekend land"} · OpenStreetMap-camping`,
       type: "camping",
       confidence: 1,
-      photo: osmPhoto(tags),
-      photoLabel: tags.image ? "OpenStreetMap-bronverwijzing" : "Wikimedia Commons",
+      photo,
+      photoLabel: sourcePlace.image ? "OpenStreetMap-bronverwijzing" : "Wikimedia Commons",
       sourceLabel: "OpenStreetMap",
-      sourceUrl: `https://www.openstreetmap.org/${element.type}/${element.id}`,
+      sourceUrl: sourcePlace.sourceUrl || "https://www.openstreetmap.org/",
       sourceAction: "Open in OpenStreetMap",
-      description: "Camping of camperterrein uit OpenStreetMap. Handig als brede zoeklaag langs je route; geen volledige boekings- of campingdatabase.",
+      description: "Camping of camperterrein uit OpenStreetMap. Nook toont deze als gewone bronpin, met dezelfde clustering en filters als de andere locatiepins.",
       stay: "Volgens campingvoorwaarden",
-      cost: tags.fee === "no" ? "Als gratis gemarkeerd" : tags.fee === "yes" ? "Betaald; controleer tarief" : "Niet vermeld",
-      water: tags.drinking_water === "yes" ? "Drinkwater gemarkeerd" : tags.water_point === "yes" ? "Waterpunt gemarkeerd" : "Niet vermeld",
+      cost: sourcePlace.fee === "no" ? "Als gratis gemarkeerd" : sourcePlace.fee === "yes" ? "Betaald; controleer tarief" : "Niet vermeld",
+      water: sourcePlace.drinkingWater === "yes" ? "Drinkwater gemarkeerd" : sourcePlace.waterPoint === "yes" ? "Waterpunt gemarkeerd" : "Niet vermeld",
       extraFacts: extras,
       caution,
     },
@@ -1954,15 +2038,11 @@ function renderCampingPlaces() {
   const filters = currentFilters();
   campingLayer.clearLayers();
   visiblePlaceCounts.camping = 0;
-  if (!campingLayerEnabled()) {
-    updateCampingStatus();
-    return;
-  }
   if (overviewModeActive()) {
     updateCampingStatus();
     return;
   }
-  if (!campingBoundsLoadable() && !userLocation) {
+  if (!filters.types.has("camping")) {
     updateCampingStatus();
     return;
   }
@@ -1972,7 +2052,9 @@ function renderCampingPlaces() {
     .filter((item) => item.country ? countryAllowed(item.country, filters) : filters.countries.size === ALL_COUNTRY_CODES.length)
     .filter((item) => inSourceViewport(item, bounds))
     .filter((item) => isWithinRoute(item.lat, item.lng))
-    .map((item) => {
+    .flatMap((sourcePlace) => {
+      const item = campingPlace(sourcePlace);
+      if (!item) return [];
       addCandidate(item.lat, item.lng, item.place, "camping");
       return L.marker([item.lat, item.lng], {
         icon: markerIcon("camping"),
@@ -1983,74 +2065,6 @@ function renderCampingPlaces() {
   addMarkers(campingLayer, markers);
   visiblePlaceCounts.camping = markers.length;
   updateCampingStatus();
-}
-
-async function loadCampingPlaces() {
-  if (!campingLayerEnabled()) {
-    campingLayer.clearLayers();
-    visiblePlaceCounts.camping = 0;
-    updateCampingStatus();
-    return;
-  }
-
-  const broadMap = !campingBoundsLoadable();
-  const bounds = campingQueryBounds();
-  if (!bounds) {
-    updateCampingStatus();
-    return;
-  }
-  const requestKey = campingRequestKey(bounds);
-  if (campingRequestedKeys.has(requestKey)) return;
-  if (campingLoading) {
-    campingQueuedRefresh = true;
-    return;
-  }
-
-  const bbox = [bounds.getSouth(), bounds.getWest(), bounds.getNorth(), bounds.getEast()].join(",");
-  const query = `[out:json][timeout:30];(
-    nwr["tourism"="camp_site"](${bbox});
-    nwr["tourism"="caravan_site"](${bbox});
-  );out center tags ${CAMPING_RESULT_LIMIT};`;
-
-  campingLoading = true;
-  campingQueuedRefresh = false;
-  updateCampingStatus(broadMap
-    ? "Breed kaartbeeld: OSM-campings rond je locatie laden..."
-    : "OSM-campings in dit kaartbeeld laden...");
-
-  let failed = false;
-  let finalStatusMessage = "";
-  try {
-    const data = await fetchOverpass(query, { timeoutMs: 30000 });
-    campingRequestedKeys.add(requestKey);
-    const nextPlaces = data.elements.flatMap((element) => {
-      const item = campingPlace(element);
-      if (!item || campingPlaceIds.has(item.osmKey)) return [];
-      campingPlaceIds.add(item.osmKey);
-      return [item];
-    });
-    campingPlaces = campingPlaces.concat(nextPlaces);
-    renderCampingPlaces();
-    renderOverviewMarkers();
-    updateRouteStatus();
-    updateCandidatePanel();
-    if (data.elements.length >= CAMPING_RESULT_LIMIT) {
-      finalStatusMessage = `${visiblePlaceCounts.camping.toLocaleString("nl-NL")} OSM-campings zichtbaar. Resultaatlimiet geraakt; zoom verder in voor vollediger detail.`;
-    }
-  } catch (error) {
-    failed = true;
-    console.warn(error);
-    updateCampingStatus(error.name === "AbortError"
-      ? "OSM deed te lang over voor campings. Zoom iets verder in en probeer opnieuw."
-      : "OSM reageert nu niet voor campings. Probeer straks opnieuw of zoom iets verder in.");
-  } finally {
-    campingLoading = false;
-    if (!failed) updateCampingStatus(finalStatusMessage);
-    if (campingQueuedRefresh) {
-      campingQueuedRefresh = false;
-      window.setTimeout(loadCampingPlaces, 0);
-    }
-  }
 }
 
 function xmlText(element, tagName) {
@@ -2117,8 +2131,8 @@ function refreshMapPlaces() {
   renderCuratedMarkers();
   renderHospitalityPins();
   renderDenmarkPlaces();
+  renderCampwildPlaces();
   renderOsmPlaces();
-  loadCampingPlaces();
   renderCampingPlaces();
   renderImportedWaypoints();
   updateMapDataHint();
@@ -2332,15 +2346,12 @@ function clearUserData() {
   PERSONAL_STORAGE_KEYS.forEach(removeUserValue);
   savedRoutes = [];
   importedWaypoints = [];
-  campingPlaces = [];
-  campingPlaceIds.clear();
-  campingRequestedKeys.clear();
-  campingQueuedRefresh = false;
   routeState = emptyRouteState();
   routesPersisted = true;
   routeLayer.clearLayers();
   importedLayer.clearLayers();
   campingLayer.clearLayers();
+  campwildLayer.clearLayers();
   setRouteControls(false, false);
   renderRouteLibrary();
   resetUserControlsToDefaults();
@@ -2558,8 +2569,7 @@ function importCustomData(file) {
 }
 
 document.querySelectorAll("#sleep-filter input").forEach((control) => {
-  control.addEventListener("change", (event) => {
-    if (event.target.id === "camping-layer-active") campingQueuedRefresh = false;
+  control.addEventListener("change", () => {
     saveFilterPreferences();
     refreshMapPlaces();
   });
@@ -2645,6 +2655,7 @@ document.querySelector("#startup-skip-location").addEventListener("click", () =>
   showLocationStatus(locationMessage, "neutral");
   updateLocationNote();
   updateCandidatePanel();
+  resumeStartupSourceLoading();
 });
 document.querySelector("#show-candidates").addEventListener("click", () => {
   if (userLocation) {
