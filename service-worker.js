@@ -1,5 +1,5 @@
-const SHELL_CACHE = "nook-shell-20260707-5";
-const RUNTIME_CACHE = "nook-runtime-20260707-5";
+const SHELL_CACHE = "nook-shell-20260707-6";
+const RUNTIME_CACHE = "nook-runtime-20260707-6";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -7,8 +7,8 @@ const APP_SHELL = [
   "./regels.html",
   "./netwerken.html",
   "./over.html",
-  "./styles.css?v=20260707-5",
-  "./app.js?v=20260707-5",
+  "./styles.css?v=20260707-6",
+  "./app.js?v=20260707-6",
   "./routebronnen.js?v=20260615-2",
   "./public-data.js?v=20260707-1",
   "./favicon.ico?v=20260705-1",

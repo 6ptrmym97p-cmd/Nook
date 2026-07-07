@@ -441,12 +441,12 @@ const SOURCE_LOAD_ZOOM = 6;
 const CAMPING_RESULT_LIMIT = 1500;
 const CAMPING_MAX_BOUNDS_DIAGONAL_KM = 520;
 const CAMPING_FALLBACK_RADIUS_KM = 180;
-const START_LOCATION_RADIUS_KM = 300;
+const START_LOCATION_RADIUS_KM = 80;
 const OVERPASS_ENDPOINTS = [
   "https://overpass-api.de/api/interpreter",
   "https://overpass.kumi.systems/api/interpreter",
 ];
-const STARTUP_LOCATION_COPY = "Nook opent dan rond 300 km van jou en rangschikt plekken vanaf je positie.";
+const STARTUP_LOCATION_COPY = "Nook opent dan rond 80 km van jou en rangschikt plekken vanaf je positie.";
 let startupLocationTried = false;
 let startupLocationPromptDismissed = false;
 let viewportRefreshTimer = 0;
@@ -609,7 +609,7 @@ function focusMapAroundPoint(point, radiusKm = START_LOCATION_RADIUS_KM, options
   map.fitBounds(boundsAroundPoint(point, radiusKm), {
     animate: options.animate ?? true,
     padding: [44, 44],
-    maxZoom: options.maxZoom || 8,
+    maxZoom: options.maxZoom || 10,
   });
 }
 
@@ -844,17 +844,17 @@ function drawUserLocation() {
   if (!userLocation) return;
   L.circle([userLocation.lat, userLocation.lng], {
     radius: Math.max(20, userLocation.accuracy || 0),
-    color: "#2f6f9f",
-    weight: 1,
-    fillColor: "#5fa7d8",
-    fillOpacity: 0.14,
+    color: "#f2b705",
+    weight: 2,
+    fillColor: "#ffe45e",
+    fillOpacity: 0.18,
     interactive: false,
   }).addTo(locationLayer);
   L.circleMarker([userLocation.lat, userLocation.lng], {
-    radius: 8,
-    color: "#ffffff",
+    radius: 9,
+    color: "#123127",
     weight: 3,
-    fillColor: "#2f6f9f",
+    fillColor: "#ffe45e",
     fillOpacity: 1,
   }).bindTooltip("Mijn positie").addTo(locationLayer);
 }

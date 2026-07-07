@@ -18,7 +18,7 @@ Op een HTTPS-host kan Nook via de browser aan het beginscherm worden toegevoegd.
 - De knop op de kaart zoekt live in OpenStreetMap via Overpass naar gratis gemarkeerde kampeerplekken, shelters en wilderness huts.
 - GPX-tracks en routes uit onder meer Komoot kunnen lokaal worden geïmporteerd. Een instelbare corridor van 1–50 kilometer verbergt slaapplaatsen die te ver van de fietsroute liggen; de inhoud verlaat de browser niet.
 - Geïmporteerde GPX-routes blijven als lokale routebibliotheek in de browser staan. Je kunt routes aan- en uitvinken; de afstandsfilter gebruikt alle actieve routes samen. De app bewaart de vereenvoudigde routepunten, niet het ruwe GPX-bestand.
-- Bij openen probeert Nook, na locatietoestemming, de kaart op ongeveer 300 kilometer rond je huidige positie te zetten. Zo blijven live bronnen zoals OSM-campings relevant en hoeft niet heel Europa tegelijk te laden.
+- Bij openen probeert Nook, na locatietoestemming, de kaart op ongeveer 80 kilometer rond je huidige positie te zetten. Zo blijven live bronnen zoals OSM-campings relevant en hoeft niet heel Europa tegelijk te laden.
 - `Plek voor vannacht` gebruikt, na toestemming, de actuele telefoonpositie. Met 15, 35 of 70 kilometer resterende fietsafstand worden maximaal negen kandidaten gerangschikt. Bij een actieve GPX gebeurt dat op voortgang langs de route; zonder GPX op hemelsbrede afstand.
 - De kandidatenlijst gebruikt dezelfde land-, slaapvorm-, netwerk- en routefilters als de kaart en beperkt het aantal resultaten per bron, zodat één gastnetwerk de lijst niet volledig vult.
 - Als locatietoegang niet beschikbaar of geweigerd is, blijft de functie werken vanaf het midden van het huidige kaartbeeld.
