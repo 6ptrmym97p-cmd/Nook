@@ -6,110 +6,73 @@
     <meta name="description" content="Vind fiets- en bikepackingroutes, download een GPX en filter slaapplekken op afstand tot je route." />
     <title>Routes | Nook</title>
     <meta name="theme-color" content="#123127" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://basemaps.cartocdn.com https://unpkg.com https://images.unsplash.com https://firebasestorage.googleapis.com https://mapcentia-www.s3-eu-west-1.amazonaws.com https://commons.wikimedia.org https://upload.wikimedia.org; connect-src 'self'; worker-src 'self'; manifest-src 'self'; frame-src 'none'; upgrade-insecure-requests"
+    />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="manifest" href="manifest.webmanifest?v=20260705-1" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260705-1" />
-    <link rel="icon" href="favicon.ico?v=20260705-1" sizes="any" />
-    <link rel="icon" href="favicon.svg?v=20260705-1" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest?v=20260708-1" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260708-1" />
+    <link rel="icon" href="favicon.ico?v=20260708-1" sizes="any" />
+    <link rel="icon" href="favicon.svg?v=20260708-1" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260706-6" />
+    <link rel="stylesheet" href="styles.css?v=20260708-2" />
   </head>
   <body class="route-sources-page">
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Nook kaart">
-        <img class="brand-mark" src="favicon.svg?v=20260705-1" alt="" width="38" height="38" aria-hidden="true" />
+        <img class="brand-mark" src="favicon.svg?v=20260708-1" alt="" width="38" height="38" aria-hidden="true" />
         <span>Nook</span>
       </a>
       <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html" aria-current="page">Routes</a><a href="regels.html">Regels</a><a href="netwerken.html">Netwerken</a></nav>
       <a class="header-action" href="over.html">Over</a>
     </header>
 
-    <main class="route-sources-main">
-      <section class="route-sources-hero">
+    <main class="compact-main">
+      <section class="compact-header">
         <div>
-          <p class="eyebrow">Voor fietstochten</p>
-          <h1>Route erin.<br />Ruis eruit.</h1>
+          <p class="eyebrow">GPX-bronnen</p>
+          <h1>Routebronnen</h1>
         </div>
-        <div class="route-workflow" aria-label="Werkwijze">
-          <span><b>1</b> Download een GPX</span>
-          <span><b>2</b> Zet hem aan op de kaart</span>
-          <span><b>3</b> Kies 3, 8, 15 of 25 km marge</span>
-        </div>
+        <p>Open een bron, download of exporteer GPX, en importeer daarna op de kaart. Links openen extern; Nook bewaart je route alleen lokaal in de browser.</p>
       </section>
 
-      <section class="route-source-content">
-        <div class="route-source-toolbar">
-          <div>
-            <p class="eyebrow">GPX-bronnen</p>
-            <h2>Startpunten voor je track</h2>
-          </div>
-          <div class="route-source-filters" aria-label="Routebronnen filteren">
-            <label>Land
-              <select id="route-country-filter">
-                <option value="all">Alle landen</option><option value="NL">Nederland</option><option value="BE">België</option><option value="LU">Luxemburg</option><option value="DE">Duitsland</option><option value="DK">Denemarken</option><option value="SE">Zweden</option><option value="NO">Noorwegen</option><option value="FR">Frankrijk</option><option value="CH">Zwitserland</option><option value="AT">Oostenrijk</option><option value="IT">Italië</option>
-              </select>
-            </label>
-            <label>Soort
-              <select id="route-type-filter"><option value="all">Alles</option><option value="official">Officiële routes</option><option value="planner">Zelf plannen</option><option value="curated">Bikepackingcollecties</option></select>
-            </label>
-          </div>
-        </div>
-        <p class="route-result-count" id="route-result-count" aria-live="polite"></p>
-
-        <div class="route-source-grid" id="route-source-grid">
-          <article class="route-source-card route-source-featured" data-countries="NL BE LU DE DK SE NO FR CH AT IT" data-type="official">
-            <div class="route-card-top"><span class="route-source-logo">EV</span><span class="route-badge badge-gpx">Direct GPX</span></div><h3>EuroVelo</h3><p>Het officiële Europese netwerk met 17 langeafstandsroutes. De routeplanner kan een volledige route als één GPX-track uitvoeren.</p><div class="route-tags"><span>Europa</span><span>lange afstand</span><span>officieel</span></div><a href="https://en.eurovelo.com/" target="_blank" rel="noreferrer">Open EuroVelo <span>↗</span></a>
-          </article>
-          <article class="route-source-card route-source-featured" data-countries="NL BE LU DE DK SE NO FR CH AT IT" data-type="planner">
-            <div class="route-card-top"><span class="route-source-logo">CT</span><span class="route-badge badge-gpx">Direct GPX</span></div><h3>cycle.travel</h3><p>Rustige fietsrouteplanner voor heel Europa, met keuzes voor verhard of gravel en een directe GPX-download.</p><div class="route-tags"><span>planner</span><span>gravel</span><span>asfalt</span></div><a href="https://cycle.travel/map" target="_blank" rel="noreferrer">Plan een route <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="NL BE LU DE DK SE NO FR CH AT IT" data-type="planner">
-            <div class="route-card-top"><span class="route-source-logo">BR</span><span class="route-badge badge-gpx">Direct GPX</span></div><h3>BRouter Web</h3><p>Snelle OpenStreetMap-planner met fietsprofielen en uitvoer naar GPX, KML en GeoJSON. Handig om ter plekke een variant te tekenen.</p><div class="route-tags"><span>planner</span><span>technisch</span><span>vrij te gebruiken</span></div><a href="https://brouter.de/brouter-web/" target="_blank" rel="noreferrer">Open BRouter <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="NL BE LU DE DK SE NO FR CH AT IT" data-type="planner">
-            <div class="route-card-top"><span class="route-source-logo">K</span><span class="route-badge badge-account">Account</span></div><h3>Komoot</h3><p>Bekende planner en routecollectie voor tour, gravel en MTB. GPX-export en kaarttoegang hangen af van je account en product.</p><div class="route-tags"><span>planner</span><span>collecties</span><span>mobiele app</span></div><a href="https://www.komoot.com/plan" target="_blank" rel="noreferrer">Open Komoot <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="NL BE LU DE DK SE NO FR CH AT IT" data-type="curated">
-            <div class="route-card-top"><span class="route-source-logo">BP</span><span class="route-badge badge-variable">Toegang wisselt</span></div><h3>BIKEPACKING.com</h3><p>Een grote, redactioneel samengestelde collectie meerdaagse routes met terreininfo, foto’s en GPS-kaarten. GPX-toegang kan per route verschillen.</p><div class="route-tags"><span>bikepacking</span><span>off-road</span><span>routegidsen</span></div><a href="https://bikepacking.com/bikepacking-routes/" target="_blank" rel="noreferrer">Bekijk routes <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="NL" data-type="official">
-            <div class="route-card-top"><span class="route-source-logo">LF</span><span class="route-badge badge-gpx">Direct GPX</span></div><h3>Nederland Fietsland</h3><p>De officiële LF-routes en landelijke fietsroutes, inclusief GPX-tracks. Een praktische basis voor langere tochten door Nederland.</p><div class="route-tags"><span>Nederland</span><span>LF-routes</span><span>officieel</span></div><a href="https://www.nederlandfietsland.nl/lf-routes/" target="_blank" rel="noreferrer">Bekijk LF-routes <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="FR" data-type="official">
-            <div class="route-card-top"><span class="route-source-logo">FV</span><span class="route-badge badge-gpx">GPX per route</span></div><h3>France Vélo Tourisme</h3><p>De nationale gids voor bewegwijzerde fietsroutes en voies vertes, met etappes, ondergrond en downloads op de routepagina’s.</p><div class="route-tags"><span>Frankrijk</span><span>officieel</span><span>etappes</span></div><a href="https://en.francevelotourisme.com/cycle-route" target="_blank" rel="noreferrer">Bekijk Franse routes <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="BE" data-type="official">
-            <div class="route-card-top"><span class="route-source-logo">VF</span><span class="route-badge badge-planner">Routeplanner</span></div><h3>Visit Flanders</h3><p>Officiële icoonfietsroutes en een planner voor Vlaanderen. Gebruik de routepagina voor actuele bewegwijzering en beschikbare downloads.</p><div class="route-tags"><span>België</span><span>icoonroutes</span><span>officieel</span></div><a href="https://www.visitflanders.com/en/discover-flanders/most-beautiful-cycle-routes" target="_blank" rel="noreferrer">Bekijk icoonroutes <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="DE" data-type="official">
-            <div class="route-card-top"><span class="route-source-logo">D</span><span class="route-badge badge-planner">Officieel netwerk</span></div><h3>Radnetz Deutschland</h3><p>De landelijke D-routes en de Duitse delen van EuroVelo. Gebruik de detailpagina’s voor trajectinformatie en beschikbare downloads.</p><div class="route-tags"><span>Duitsland</span><span>D-routes</span><span>officieel</span></div><a href="https://www.radnetz-deutschland.de/en.html" target="_blank" rel="noreferrer">Open Radnetz <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="CH" data-type="official">
-            <div class="route-card-top"><span class="route-source-logo">SM</span><span class="route-badge badge-account">Plus voor GPX</span></div><h3>SchweizMobil</h3><p>Het officiële Zwitserse netwerk voor nationale, regionale en lokale fietsroutes. GPX-download is onderdeel van SchweizMobil Plus.</p><div class="route-tags"><span>Zwitserland</span><span>officieel</span><span>Alpen</span></div><a href="https://schweizmobil.ch/en/cycling-in-switzerland" target="_blank" rel="noreferrer">Open SchweizMobil <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="IT" data-type="official">
-            <div class="route-card-top"><span class="route-source-logo">BI</span><span class="route-badge badge-planner">Nationaal netwerk</span></div><h3>Bicitalia</h3><p>Het nationale FIAB-netwerk van langeafstandsfietsroutes door Italië, bruikbaar om corridor en officiële routepagina’s te vinden.</p><div class="route-tags"><span>Italië</span><span>FIAB</span><span>lange afstand</span></div><a href="https://www.bicitalia.org/" target="_blank" rel="noreferrer">Open Bicitalia <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="SE" data-type="official">
-            <div class="route-card-top"><span class="route-source-logo">KL</span><span class="route-badge badge-gpx">Direct GPX</span></div><h3>Kattegattleden</h3><p>De eerste nationale fietsroute van Zweden: 390 kilometer langs de westkust van Helsingborg naar Göteborg. De officiële site biedt GPX-bestanden voor beide richtingen.</p><div class="route-tags"><span>Zweden</span><span>kustroute</span><span>8 etappes</span></div><a href="https://kattegattleden.hoodin.com/en/item/ladda-ner-gpx-filer-9/ws8jxpvouxsf02inl57oyen686qv3lba" target="_blank" rel="noreferrer">Download officiële GPX <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="LU" data-type="official">
-            <div class="route-card-top"><span class="route-source-logo">LU</span><span class="route-badge badge-gpx">GPX per route</span></div><h3>Visit Luxembourg</h3><p>De officiële routecatalogus bevat ruim honderd fietstochten, landelijke fietspaden, gravel- en MTB-routes. De detailpagina’s bieden een afzonderlijke GPX-download.</p><div class="route-tags"><span>Luxemburg</span><span>officieel</span><span>gravel en tour</span></div><a href="https://www.visitluxembourg.com/experience-luxembourg/nature-outdoors/cycling" target="_blank" rel="noreferrer">Bekijk routes met GPX <span>↗</span></a>
-          </article>
-          <article class="route-source-card" data-countries="NO DK AT" data-type="official">
-            <div class="route-card-top"><span class="route-source-logo">EV</span><span class="route-badge badge-tip">Beste startpunt</span></div><h3>Noord en Alpen</h3><p>Voor Noorwegen, Denemarken en Oostenrijk is EuroVelo de meest consistente grensoverschrijdende GPX-bron in deze lijst. Verfijn daarna lokaal met cycle.travel of BRouter.</p><div class="route-tags"><span>NO</span><span>DK</span><span>AT</span></div><a href="https://en.eurovelo.com/" target="_blank" rel="noreferrer">Kies een EuroVelo-route <span>↗</span></a>
-          </article>
-        </div>
-        <div class="route-empty" id="route-empty" hidden>Voor deze combinatie staat nog geen aparte bron in de lijst. EuroVelo, cycle.travel en BRouter werken wel Europa-breed.</div>
+      <section class="source-table-grid" aria-label="Routebronnen">
+        <article class="source-table-card">
+          <h2>Plannen en collecties</h2>
+          <table class="source-table">
+            <thead><tr><th>Bron</th><th>Dekking</th><th>Gebruik</th><th>GPX</th></tr></thead>
+            <tbody>
+              <tr><td><a href="https://en.eurovelo.com/" target="_blank" rel="noreferrer">EuroVelo</a></td><td>Europa</td><td>Officieel netwerk</td><td>Direct</td></tr>
+              <tr><td><a href="https://cycle.travel/map" target="_blank" rel="noreferrer">cycle.travel</a></td><td>Europa</td><td>Planner</td><td>Direct</td></tr>
+              <tr><td><a href="https://brouter.de/brouter-web/" target="_blank" rel="noreferrer">BRouter Web</a></td><td>Europa</td><td>Planner</td><td>Direct</td></tr>
+              <tr><td><a href="https://www.komoot.com/plan" target="_blank" rel="noreferrer">Komoot</a></td><td>Europa</td><td>Planner/app</td><td>Account</td></tr>
+              <tr><td><a href="https://bikepacking.com/bikepacking-routes/" target="_blank" rel="noreferrer">BIKEPACKING.com</a></td><td>Wereldwijd</td><td>Collecties</td><td>Wisselt</td></tr>
+              <tr><td><a href="https://www.nederlandfietsland.nl/lf-routes/" target="_blank" rel="noreferrer">Nederland Fietsland</a></td><td>NL</td><td>LF-routes</td><td>Direct</td></tr>
+              <tr><td><a href="https://en.francevelotourisme.com/cycle-route" target="_blank" rel="noreferrer">France Vélo Tourisme</a></td><td>FR</td><td>Officiële routes</td><td>Per route</td></tr>
+            </tbody>
+          </table>
+        </article>
+        <article class="source-table-card">
+          <h2>Landelijke bronnen</h2>
+          <table class="source-table">
+            <thead><tr><th>Bron</th><th>Dekking</th><th>Gebruik</th><th>GPX</th></tr></thead>
+            <tbody>
+              <tr><td><a href="https://www.visitflanders.com/en/discover-flanders/most-beautiful-cycle-routes" target="_blank" rel="noreferrer">Visit Flanders</a></td><td>BE</td><td>Icoonroutes</td><td>Planner</td></tr>
+              <tr><td><a href="https://www.radnetz-deutschland.de/en.html" target="_blank" rel="noreferrer">Radnetz Deutschland</a></td><td>DE</td><td>D-routes</td><td>Per route</td></tr>
+              <tr><td><a href="https://schweizmobil.ch/en/cycling-in-switzerland" target="_blank" rel="noreferrer">SchweizMobil</a></td><td>CH</td><td>Officieel netwerk</td><td>Plus</td></tr>
+              <tr><td><a href="https://www.bicitalia.org/" target="_blank" rel="noreferrer">Bicitalia</a></td><td>IT</td><td>Nationaal netwerk</td><td>Corridor</td></tr>
+              <tr><td><a href="https://kattegattleden.hoodin.com/en/item/ladda-ner-gpx-filer-9/ws8jxpvouxsf02inl57oyen686qv3lba" target="_blank" rel="noreferrer">Kattegattleden</a></td><td>SE</td><td>Kustroute</td><td>Direct</td></tr>
+              <tr><td><a href="https://www.visitluxembourg.com/experience-luxembourg/nature-outdoors/cycling" target="_blank" rel="noreferrer">Visit Luxembourg</a></td><td>LU</td><td>Routecatalogus</td><td>Per route</td></tr>
+              <tr><td><a href="https://en.eurovelo.com/" target="_blank" rel="noreferrer">Noord en Alpen</a></td><td>NO/DK/AT</td><td>Start bij EuroVelo</td><td>Direct</td></tr>
+            </tbody>
+          </table>
+        </article>
       </section>
     </main>
-
-    <a class="route-import-dock is-hidden" href="index.html?route=import"><span>GPX gedownload?</span><strong>Kies bestand op de kaart →</strong></a>
-    <footer class="site-footer"><span>Nook</span><p>Bronnen openen in een nieuw tabblad. Downloads blijven op je eigen apparaat.</p><a href="netwerken.html">Gastnetwerken <span>→</span></a></footer>
-    <script src="routebronnen.js?v=20260615-2"></script>
     <script src="pwa.js?v=20260616-3"></script>
   </body>
 </html>

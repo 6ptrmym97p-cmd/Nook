@@ -5,33 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Netwerken | Nook</title>
     <meta name="theme-color" content="#123127" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://basemaps.cartocdn.com https://unpkg.com https://images.unsplash.com https://firebasestorage.googleapis.com https://mapcentia-www.s3-eu-west-1.amazonaws.com https://commons.wikimedia.org https://upload.wikimedia.org; connect-src 'self'; worker-src 'self'; manifest-src 'self'; frame-src 'none'; upgrade-insecure-requests"
+    />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="manifest" href="manifest.webmanifest?v=20260705-1" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260705-1" />
-    <link rel="icon" href="favicon.ico?v=20260705-1" sizes="any" />
-    <link rel="icon" href="favicon.svg?v=20260705-1" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest?v=20260708-1" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260708-1" />
+    <link rel="icon" href="favicon.ico?v=20260708-1" sizes="any" />
+    <link rel="icon" href="favicon.svg?v=20260708-1" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260706-6" />
+    <link rel="stylesheet" href="styles.css?v=20260708-2" />
   </head>
-  <body>
+  <body class="compact-page-body">
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Nook kaart"><img class="brand-mark" src="favicon.svg?v=20260705-1" alt="" width="38" height="38" aria-hidden="true" /><span>Nook</span></a>
+      <a class="brand" href="index.html" aria-label="Nook kaart"><img class="brand-mark" src="favicon.svg?v=20260708-1" alt="" width="38" height="38" aria-hidden="true" /><span>Nook</span></a>
       <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html">Routes</a><a href="regels.html">Regels</a><a href="netwerken.html" aria-current="page">Netwerken</a></nav>
       <a class="header-action" href="over.html">Over</a>
     </header>
-    <main class="info-main">
-      <section class="info-hero"><div><p class="eyebrow">Gastvrij onderweg</p><h1>Tuinen en fietsers</h1></div><p>De kaart combineert officiële slaapplekken met openbare kaartlagen van gastnetwerken. Contact en reservering lopen altijd via het oorspronkelijke platform.</p></section>
-      <section class="info-content info-card-grid">
-        <article class="info-card"><div class="card-topline"><span class="network-monogram network-wtmg">G</span><span class="status-chip status-good">Openbare kaartlaag</span></div><h2>Welcome To My Garden</h2><p>5.924 openbare tuinpins in Europese landen, waarvan 4.324 met een openbare bronfoto. Bij maximaal inzoomen verschijnen de afzonderlijke tuinen.</p><a class="info-link" href="https://welcometomygarden.org/nl/explore" target="_blank" rel="noreferrer">Open het platform <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="network-monogram network-vodf">V</span><span class="status-chip status-good">Openbare kaartfeed</span></div><h2>Vrienden op de Fiets</h2><p>5.343 openbare kaartpins op 4.577 kaartlocaties in 38 Europese landen. De openbare feed bevat geen locatiefoto’s; hostgegevens en reservering staan bij de bron.</p><a class="info-link" href="https://www.vriendenopdefiets.nl/zoek-een-logeeradres" target="_blank" rel="noreferrer">Open het platform <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="network-monogram network-ws">W</span><span class="status-chip status-mixed">App-kaart</span></div><h2>Warmshowers</h2><p>De mobiele app toont hosts op een kaart. Nook heeft momenteel geen stabiele openbare export of gedocumenteerde feed om die pins betrouwbaar als eigen laag bij te houden.</p><a class="info-link" href="https://play.google.com/store/apps/details?id=org.warmshowers.app" target="_blank" rel="noreferrer">Open de officiële app <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="network-monogram network-open">O</span><span class="status-chip status-good">Officiële data</span></div><h2>Openbare bronnen</h2><p>Ud i Naturen levert 2.480 officiële Deense locaties. OpenStreetMap zoekt aanvullend gratis campings, camp pitches, wilderness huts en eenvoudige shelters in het huidige kaartbeeld van Europa.</p><a class="info-link" href="https://udinaturen.dk/kort" target="_blank" rel="noreferrer">Open Ud i Naturen <span>↗</span></a></article>
+    <main class="compact-main">
+      <section class="compact-header">
+        <div>
+          <p class="eyebrow">Bronnen</p>
+          <h1>Netwerken en kaartlagen</h1>
+        </div>
+        <p>Nook serveert brondata als statische momentopname vanaf je eigen site. Contact, reservering en actuele voorwaarden blijven altijd bij het oorspronkelijke platform.</p>
+      </section>
+      <section class="source-table-grid" aria-label="Netwerken en kaartlagen">
+        <article class="source-table-card">
+          <h2>In de kaart</h2>
+          <table class="source-table">
+            <thead><tr><th>Bron</th><th>Type</th><th>Omvang</th><th>Let op</th></tr></thead>
+            <tbody>
+              <tr><td><a href="https://udinaturen.dk/kort" target="_blank" rel="noreferrer">Ud i Naturen</a></td><td>Officieel DK</td><td>2.480 plekken</td><td>Superieur bij DK-dubbelen</td></tr>
+              <tr><td><a href="https://opencampingmap.org/" target="_blank" rel="noreferrer">OpenStreetMap-campings</a></td><td>Snapshot</td><td>82.084 pins</td><td>Controleer camping zelf</td></tr>
+              <tr><td><a href="https://map.campwild.org/" target="_blank" rel="noreferrer">CampWild</a></td><td>Community</td><td>5.944 pins</td><td>DK-dubbelen onderdrukt</td></tr>
+              <tr><td><a href="https://welcometomygarden.org/nl/explore" target="_blank" rel="noreferrer">Welcome To My Garden</a></td><td>Gasttuinen</td><td>5.921 pins</td><td>Contact via platform</td></tr>
+              <tr><td><a href="https://www.vriendenopdefiets.nl/zoek-een-logeeradres" target="_blank" rel="noreferrer">Vrienden op de Fiets</a></td><td>Gastadressen</td><td>5.341 pins</td><td>Geen hostdetails in Nook</td></tr>
+            </tbody>
+          </table>
+        </article>
+        <article class="source-table-card">
+          <h2>Buiten de kaart</h2>
+          <table class="source-table">
+            <thead><tr><th>Bron</th><th>Status</th><th>Gebruik</th><th>Waarom</th></tr></thead>
+            <tbody>
+              <tr><td><a href="https://play.google.com/store/apps/details?id=org.warmshowers.app" target="_blank" rel="noreferrer">Warmshowers</a></td><td>Niet geïmporteerd</td><td>Officiële app</td><td>Geen stabiele publieke feed</td></tr>
+              <tr><td><a href="routebronnen.html">GPX-routes</a></td><td>Lokaal</td><td>Bestand importeren</td><td>Blijft in jouw browser</td></tr>
+              <tr><td><a href="regels.html">Landenregels</a></td><td>Samenvatting</td><td>Check voor vertrek</td><td>Terreinregels blijven leidend</td></tr>
+              <tr><td><a href="SECURITY.md">Securitybeleid</a></td><td>Repo</td><td>Launchcheck</td><td>Geen accounts, cookies of backend</td></tr>
+            </tbody>
+          </table>
+        </article>
       </section>
     </main>
-    <footer class="site-footer"><span>Nook</span><p>Netwerken blijven eigenaar van contact, reservering en actualiteit.</p><a href="index.html">Open de kaart <span>→</span></a></footer>
     <script src="pwa.js?v=20260616-3"></script>
   </body>
 </html>

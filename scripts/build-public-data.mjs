@@ -16,6 +16,7 @@ const appPath = args.get("--app") || path.resolve("app.js");
 const countryGeoJsonPath = args.get("--countries-geojson") || "";
 const regions = ["81", "82", "83", "84", "85"];
 const types = ["1106", "1111", "1115"];
+const CAMPWILD_DK_OFFICIAL_DUPLICATE_RADIUS_METERS = 100;
 const regionNames = {
   81: "Noord-Jutland",
   82: "Midden-Jutland",
@@ -194,6 +195,17 @@ function countryFor(lat, lng) {
 function numeric(value) {
   const number = Number(value);
   return Number.isFinite(number) ? number : 0;
+}
+
+function distanceMeters(first, second) {
+  const earthRadiusMeters = 6371000;
+  const firstLat = Number(first.lat) * Math.PI / 180;
+  const secondLat = Number(second.lat) * Math.PI / 180;
+  const latDelta = secondLat - firstLat;
+  const lngDelta = (Number(second.lng) - Number(first.lng)) * Math.PI / 180;
+  const haversine = Math.sin(latDelta / 2) ** 2
+    + Math.cos(firstLat) * Math.cos(secondLat) * Math.sin(lngDelta / 2) ** 2;
+  return 2 * earthRadiusMeters * Math.asin(Math.sqrt(haversine));
 }
 
 function buildVodfPins() {
@@ -557,19 +569,50 @@ function normalizeCampwildPlace(place) {
 }
 
 function buildCampwildPlaces() {
-  if (!fs.existsSync(campwildPath)) return [];
-  const snapshot = JSON.parse(fs.readFileSync(campwildPath, "utf8"));
-  return (snapshot.places || [])
+  let places = [];
+  if (fs.existsSync(campwildPath)) {
+    const snapshot = JSON.parse(fs.readFileSync(campwildPath, "utf8"));
+    places = snapshot.places || [];
+  } else {
+    const existingDataDir = path.join(path.dirname(outputPath), "data");
+    places = countryCodes.flatMap((country) => {
+      const filePath = path.join(existingDataDir, `campwild-${country}.json`);
+      if (!fs.existsSync(filePath)) return [];
+      const payload = JSON.parse(fs.readFileSync(filePath, "utf8"));
+      return payload.places || [];
+    });
+  }
+  return places
     .map(normalizeCampwildPlace)
     .filter(Boolean)
     .sort((a, b) => a.country.localeCompare(b.country) || a.id - b.id);
+}
+
+function officialDenmarkDuplicate(sourcePlace, officialPlaces) {
+  if (sourcePlace.country !== "DK") return null;
+  return officialPlaces.find((officialPlace) => distanceMeters(sourcePlace, officialPlace) <= CAMPWILD_DK_OFFICIAL_DUPLICATE_RADIUS_METERS) || null;
+}
+
+function filterCampwildOfficialDuplicates(sourcePlaces, officialPlaces) {
+  const officialDenmarkPlaces = officialPlaces
+    .filter((place) => Number.isFinite(Number(place.lat)) && Number.isFinite(Number(place.lng)));
+  const suppressed = [];
+  const places = sourcePlaces.filter((place) => {
+    const duplicate = officialDenmarkDuplicate(place, officialDenmarkPlaces);
+    if (!duplicate) return true;
+    suppressed.push({ campwildId: place.id, officialId: duplicate.id });
+    return false;
+  });
+  return { places, suppressed };
 }
 
 const vodfPins = buildVodfPins();
 const wtmgPins = buildWtmgPins();
 const denmarkPlaces = buildDenmarkPlaces();
 const campingPlaces = buildCampingPlaces();
-const campwildPlaces = buildCampwildPlaces();
+const campwildRawPlaces = buildCampwildPlaces();
+const campwildDedupe = filterCampwildOfficialDuplicates(campwildRawPlaces, denmarkPlaces);
+const campwildPlaces = campwildDedupe.places;
 const overviewCountries = Object.fromEntries(countryCodes.map((country) => [
   country,
   {
@@ -577,6 +620,8 @@ const overviewCountries = Object.fromEntries(countryCodes.map((country) => [
     wtmg: wtmgPins.filter((pin) => pin.country === country).length,
     camping: campingPlaces.filter((place) => place.country === country).length,
     campwild: campwildPlaces.filter((place) => place.country === country).length,
+    campwildHut: campwildPlaces.filter((place) => place.country === country && place.type === "hut").length,
+    campwildDesignated: campwildPlaces.filter((place) => place.country === country && place.type === "designated").length,
     denmark: country === "DK" ? denmarkPlaces.length : 0,
     denmarkDesignated: country === "DK" ? denmarkPlaces.filter((place) => place.type === "designated").length : 0,
     denmarkHut: country === "DK" ? denmarkPlaces.filter((place) => place.type === "hut").length : 0,
@@ -610,6 +655,7 @@ const output = {
   campwild: {
     source: "https://map.campwild.org/",
     totalVisible: campwildPlaces.length,
+    suppressedOfficialDuplicates: campwildDedupe.suppressed.length,
     places: campwildPlaces,
   },
 };
@@ -651,6 +697,7 @@ for (const country of countryCodes) {
       generatedAt: output.generatedAt,
       source: output.campwild.source,
       country,
+      suppressedOfficialDuplicates: country === "DK" ? campwildDedupe.suppressed.length : 0,
       places: campwildPlaces.filter((place) => place.country === country),
     })}\n`,
   );
@@ -692,6 +739,7 @@ const shellData = {
   campwild: {
     source: output.campwild.source,
     totalVisible: output.campwild.totalVisible,
+    suppressedOfficialDuplicates: output.campwild.suppressedOfficialDuplicates,
     places: [],
   },
 };
@@ -703,3 +751,4 @@ console.log(`Welcome To My Garden: ${wtmgPins.length} openbare kaartpins in de a
 console.log(`Ud i Naturen: ${denmarkPlaces.length} officiële slaapplekken`);
 console.log(`OpenStreetMap-campings: ${campingPlaces.length} kaartpins in de app-landen`);
 console.log(`CampWild: ${campwildPlaces.length} hutten, bivakplekken en shelters in de app-landen`);
+console.log(`CampWild DK-dubbelen onderdrukt via Ud i Naturen: ${campwildDedupe.suppressed.length}`);

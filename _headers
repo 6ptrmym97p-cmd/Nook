@@ -1,0 +1,26 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=(), usb=(), bluetooth=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-ancestors 'none'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://basemaps.cartocdn.com https://unpkg.com https://images.unsplash.com https://firebasestorage.googleapis.com https://mapcentia-www.s3-eu-west-1.amazonaws.com https://commons.wikimedia.org https://upload.wikimedia.org; connect-src 'self'; worker-src 'self'; manifest-src 'self'; frame-src 'none'; upgrade-insecure-requests
+
+/
+  Cache-Control: no-cache
+
+/*.html
+  Cache-Control: no-cache
+
+/app.js
+  Cache-Control: no-cache
+
+/public-data.js
+  Cache-Control: no-cache
+
+/service-worker.js
+  Cache-Control: no-cache
+
+/data/*
+  Cache-Control: public, max-age=86400

@@ -5,46 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Regels | Nook</title>
     <meta name="theme-color" content="#123127" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://basemaps.cartocdn.com https://unpkg.com https://images.unsplash.com https://firebasestorage.googleapis.com https://mapcentia-www.s3-eu-west-1.amazonaws.com https://commons.wikimedia.org https://upload.wikimedia.org; connect-src 'self'; worker-src 'self'; manifest-src 'self'; frame-src 'none'; upgrade-insecure-requests"
+    />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="manifest" href="manifest.webmanifest?v=20260705-1" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260705-1" />
-    <link rel="icon" href="favicon.ico?v=20260705-1" sizes="any" />
-    <link rel="icon" href="favicon.svg?v=20260705-1" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest?v=20260708-1" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260708-1" />
+    <link rel="icon" href="favicon.ico?v=20260708-1" sizes="any" />
+    <link rel="icon" href="favicon.svg?v=20260708-1" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260706-6" />
+    <link rel="stylesheet" href="styles.css?v=20260708-2" />
   </head>
-  <body>
+  <body class="compact-page-body">
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Nook kaart">
-        <img class="brand-mark" src="favicon.svg?v=20260705-1" alt="" width="38" height="38" aria-hidden="true" />
+        <img class="brand-mark" src="favicon.svg?v=20260708-1" alt="" width="38" height="38" aria-hidden="true" />
         <span>Nook</span>
       </a>
       <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html">Routes</a><a href="regels.html" aria-current="page">Regels</a><a href="netwerken.html">Netwerken</a></nav>
       <a class="header-action" href="over.html">Over</a>
     </header>
-    <main class="info-main">
-      <section class="info-hero">
-        <div><p class="eyebrow">Landenwijzer</p><h1>Waar mag je slapen?</h1></div>
-        <p>Een praktische samenvatting voor een fietser met een kleine tent. Lokale borden, tijdelijke verboden en terreinregels blijven altijd leidend.</p>
+    <main class="compact-main">
+      <section class="compact-header">
+        <div>
+          <p class="eyebrow">Landenwijzer</p>
+          <h1>Regels in één scherm</h1>
+        </div>
+        <p>Samenvatting voor fietsers met een kleine tent. Gebruik dit als startpunt; lokale borden, brandgevaar, terreinbeheer en toestemming blijven leidend.</p>
       </section>
-      <section class="info-content info-card-grid">
-        <article class="info-card"><div class="card-topline"><span class="country-code">NL</span><span class="status-chip status-strict">Streng</span></div><h2>Nederland</h2><p>Vrij je tent neerzetten is geen legale basisstrategie. Gebruik toestemming, gastnetwerken en erkende terreinen.</p><ul><li>De oude paalkampeerterreinen zijn gesloten.</li><li>Privéterrein kan met expliciete toestemming.</li><li>Gemeentelijke APV en terreinregels kunnen aanvullend gelden.</li></ul><a class="info-link" href="https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2020/05/sluiten-paalkampeerterreinen" target="_blank" rel="noreferrer">Bekijk officiële bron <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="country-code">BE</span><span class="status-chip status-mixed">Alleen aangewezen</span></div><h2>België</h2><p>Geen algemeen recht op wildkamperen. Gebruik een bivakzone, officieel terrein, gasttuin of vooraf gegeven toestemming.</p><ul><li>Bivakzones van Natuur en Bos reserveer je vooraf en gratis.</li><li>Wallonië en andere beheerders bepalen zelf capaciteit, verblijfsduur en vuurregels.</li><li>Een openbaar bos of natuurreservaat is niet automatisch een slaapplaats.</li></ul><a class="info-link" href="https://natuurenbos.be/activiteiten/bivakzone" target="_blank" rel="noreferrer">Bekijk Natuur en Bos <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="country-code">LU</span><span class="status-chip status-strict">Streng</span></div><h2>Luxemburg</h2><p>Luxemburg kent geen allemansrecht. Plan een officiële plek of regel vooraf toestemming van de eigenaar.</p><ul><li>Bos, routeberm en natuurgebied zijn geen vrije kampeerplaatsen.</li><li>Gemeenten en terreinbeheerders kunnen aanvullende verboden stellen.</li><li>Gebruik de OSM-laag alleen als zoekstart en controleer de beheerder.</li></ul><a class="info-link" href="https://www.visitluxembourg.com/plan-your-stay/stay/camping" target="_blank" rel="noreferrer">Bekijk officiële campings <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="country-code">DE</span><span class="status-chip status-mixed">Per deelstaat</span></div><h2>Duitsland</h2><p>De regels verschillen per deelstaat. Toestemming is de veiligste gratis route; daarnaast bestaan trekkingplaatsen en regionale uitzonderingen.</p><ul><li>Beschermde gebieden zijn uitgesloten.</li><li>Brandenburg en enkele noordelijke deelstaten kennen beperkte mogelijkheden.</li><li>Controleer deelstaat én grondeigendom.</li></ul><a class="info-link" href="https://www.gesetze-im-internet.de/bnatschg_2009/__59.html" target="_blank" rel="noreferrer">Bekijk officiële bron <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="country-code">DK</span><span class="status-chip status-good">Aangewezen vrij</span></div><h2>Denemarken</h2><p>Niet overal wildkamperen, maar wel een groot officieel netwerk van vrije tentbossen, shelters en primitieve plekken.</p><ul><li>Gebruik de specifieke Ud i Naturen-markers.</li><li>Bij vrij tenten geldt meestal één nacht en maximaal twee kleine tenten.</li><li>Vuur alleen waar en wanneer toegestaan.</li></ul><a class="info-link" href="https://eng.naturstyrelsen.dk/experience-nature/sleeping-outside-in-nature" target="_blank" rel="noreferrer">Bekijk officiële bron <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="country-code">SE</span><span class="status-chip status-good">Ruim, met zorg</span></div><h2>Zweden</h2><p>Het allemansrätten maakt doorgaans één of twee nachten mogelijk op geschikte grond, zolang je niet stoort of beschadigt.</p><ul><li>Blijf weg van woningen, akkers en kwetsbare grond.</li><li>Reservaten kunnen strengere regels hebben.</li><li>Vuurverboden gelden direct en kunnen regionaal wisselen.</li></ul><a class="info-link" href="https://www.naturvardsverket.se/en/topics/the-right-of-public-access/activities-and-places/camping--tents/" target="_blank" rel="noreferrer">Bekijk officiële bron <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="country-code">NO</span><span class="status-chip status-good">Ruim, wettelijk</span></div><h2>Noorwegen</h2><p>Op utmark mag je volgens het allemansretten doorgaans zonder toestemming met een kleine tent overnachten.</p><ul><li>Blijf minimaal 150 meter van bewoonde huizen en hutten.</li><li>Maximaal twee nachten op dezelfde plek, behalve in afgelegen berggebied.</li><li>Lokale regels en het vuurverbod van 15 april tot 15 september kunnen beperken; berghutten zijn niet automatisch gratis.</li></ul><a class="info-link" href="https://www.environmentagency.no/areas-of-activity/right-to-roam/camping/" target="_blank" rel="noreferrer">Bekijk officiële bron <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="country-code">FR</span><span class="status-chip status-mixed">Sterk lokaal</span></div><h2>Frankrijk</h2><p>Een licht bivak kan lokaal mogelijk zijn, maar er is geen landelijk recht om overal je tent neer te zetten.</p><ul><li>Vraag toestemming op privégrond.</li><li>Kusten, beschermde of geklasseerde locaties en lokale verbodszones vallen af.</li><li>Ieder nationaal park publiceert eigen zones, tijden en afstanden.</li></ul><a class="info-link" href="https://www.parcsnationaux.fr/" target="_blank" rel="noreferrer">Bekijk nationale parken <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="country-code">CH</span><span class="status-chip status-mixed">Lokaal alpien</span></div><h2>Zwitserland</h2><p>Een enkele zorgvuldige nacht boven de boomgrens is op veel plaatsen mogelijk, maar lokale en beschermingsregels gaan voor.</p><ul><li>Niet in natuurreservaten, wildrustgebieden of het Zwitsers Nationaal Park.</li><li>Vermijd kwetsbare biotopen, uiterwaarden en directe hutomgeving.</li><li>Vraag toestemming op privégrond en gebruikte alpenweiden.</li></ul><a class="info-link" href="https://www.sac-cas.ch/de/umwelt/bergsport-und-umwelt/campieren-und-biwakieren/" target="_blank" rel="noreferrer">Bekijk Swiss Alpine Club <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="country-code">AT</span><span class="status-chip status-strict">Per deelstaat</span></div><h2>Oostenrijk</h2><p>Kamperen en nachtelijk verblijf in bos vereisen toestemming; buiten het bos verschillen de regels per deelstaat en gemeente.</p><ul><li>Forstgesetz §33 sluit vrij kamperen in bos uit.</li><li>Hoogalpien bivak is niet landelijk uniform geregeld.</li><li>Beschermde gebieden hebben vaak aanvullende verboden.</li></ul><a class="info-link" href="https://www.ris.bka.gv.at/NormDokument.wxe?Abfrage=Bundesnormen&amp;Gesetzesnummer=10010371&amp;Paragraf=33" target="_blank" rel="noreferrer">Bekijk Forstgesetz §33 <span>↗</span></a></article>
-        <article class="info-card"><div class="card-topline"><span class="country-code">IT</span><span class="status-chip status-mixed">Regionaal</span></div><h2>Italië</h2><p>Regio, provincie, gemeente en parkbeheer bepalen of een tijdelijk bivak of kamperen buiten een terrein mag.</p><ul><li>Een kort alpien bivak kan anders worden behandeld dan recreatief kamperen.</li><li>Nationale en regionale parken publiceren eigen regels.</li><li>Onbemande bivacco-hutten hebben eigen capaciteit en gebruiksvoorwaarden.</li></ul><a class="info-link" href="https://www.cai.it/" target="_blank" rel="noreferrer">Bekijk Club Alpino Italiano <span>↗</span></a></article>
+      <section class="rules-layout" aria-label="Overnachtingsregels per land">
+        <article class="rules-principles">
+          <h2>Altijd doen</h2>
+          <ul>
+            <li>Check de officiële bron voor vertrek.</li>
+            <li>Vraag toestemming op privégrond.</li>
+            <li>Vermijd reservaten, akkers en huizen.</li>
+            <li>Geen vuur bij droogte of twijfel.</li>
+          </ul>
+        </article>
+        <article class="source-table-card">
+          <h2>Landenmatrix</h2>
+          <table class="source-table rules-table">
+            <thead><tr><th>Land</th><th>Status</th><th>Kernregel</th><th>Bron</th></tr></thead>
+            <tbody>
+              <tr><td>NL</td><td><span class="status-chip status-strict">Streng</span></td><td>Gebruik toestemming, gastnetwerk of terrein.</td><td><a href="https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2020/05/sluiten-paalkampeerterreinen" target="_blank" rel="noreferrer">Staatsbosbeheer</a></td></tr>
+              <tr><td>BE</td><td><span class="status-chip status-mixed">Aangewezen</span></td><td>Bivakzone, terrein of toestemming.</td><td><a href="https://natuurenbos.be/activiteiten/bivakzone" target="_blank" rel="noreferrer">Natuur en Bos</a></td></tr>
+              <tr><td>LU</td><td><span class="status-chip status-strict">Streng</span></td><td>Geen vrij kampeerrecht; plan officieel.</td><td><a href="https://www.visitluxembourg.com/plan-your-stay/stay/camping" target="_blank" rel="noreferrer">Visit Luxembourg</a></td></tr>
+              <tr><td>DE</td><td><span class="status-chip status-mixed">Deelstaat</span></td><td>Toestemming of trekkingplek; check deelstaat.</td><td><a href="https://www.gesetze-im-internet.de/bnatschg_2009/__59.html" target="_blank" rel="noreferrer">BNatSchG</a></td></tr>
+              <tr><td>DK</td><td><span class="status-chip status-good">Aangewezen</span></td><td>Gebruik officiële vrije tentbossen/shelters.</td><td><a href="https://eng.naturstyrelsen.dk/experience-nature/sleeping-outside-in-nature" target="_blank" rel="noreferrer">Naturstyrelsen</a></td></tr>
+              <tr><td>SE</td><td><span class="status-chip status-good">Ruim</span></td><td>Allemansrätten, zorgvuldig en kort.</td><td><a href="https://www.naturvardsverket.se/en/topics/the-right-of-public-access/activities-and-places/camping--tents/" target="_blank" rel="noreferrer">Naturvårdsverket</a></td></tr>
+              <tr><td>NO</td><td><span class="status-chip status-good">Ruim</span></td><td>Utmark, 150 m afstand, meestal max 2 nachten.</td><td><a href="https://www.environmentagency.no/areas-of-activity/right-to-roam/camping/" target="_blank" rel="noreferrer">Environment Agency</a></td></tr>
+              <tr><td>FR</td><td><span class="status-chip status-mixed">Lokaal</span></td><td>Park, gemeente en toestemming bepalen.</td><td><a href="https://www.parcsnationaux.fr/" target="_blank" rel="noreferrer">Parcs nationaux</a></td></tr>
+              <tr><td>CH</td><td><span class="status-chip status-mixed">Lokaal</span></td><td>Vaak alleen zorgvuldig boven boomgrens.</td><td><a href="https://www.sac-cas.ch/de/umwelt/bergsport-und-umwelt/campieren-und-biwakieren/" target="_blank" rel="noreferrer">SAC</a></td></tr>
+              <tr><td>AT</td><td><span class="status-chip status-strict">Deelstaat</span></td><td>Bos alleen met toestemming; check deelstaat.</td><td><a href="https://www.ris.bka.gv.at/NormDokument.wxe?Abfrage=Bundesnormen&amp;Gesetzesnummer=10010371&amp;Paragraf=33" target="_blank" rel="noreferrer">Forstgesetz</a></td></tr>
+              <tr><td>IT</td><td><span class="status-chip status-mixed">Regionaal</span></td><td>Regio, gemeente en parkbeheer bepalen.</td><td><a href="https://www.cai.it/" target="_blank" rel="noreferrer">CAI</a></td></tr>
+            </tbody>
+          </table>
+        </article>
       </section>
     </main>
-    <footer class="site-footer"><span>Nook</span><p>Regels en bronnen voor overnachten onderweg. <a href="netwerken.html">Bekijk gastnetwerken</a></p><a href="index.html">Open de kaart <span>→</span></a></footer>
     <script src="pwa.js?v=20260616-3"></script>
   </body>
 </html>
