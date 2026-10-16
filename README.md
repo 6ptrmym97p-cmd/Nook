@@ -10,7 +10,7 @@ python3 -m http.server 8000
 
 Open daarna `http://localhost:8000`.
 
-Op een HTTPS-host kan Nook via de browser aan het beginscherm worden toegevoegd. De PWA bewaart de website, regels en routebronnen voor offline herladen. Brondata en kaarttegels worden per bekeken land/kaartgebied lokaal gecachet nadat ze eenmaal geladen zijn; nieuwe bronpagina's en nog niet bekeken kaartgebieden vereisen internet.
+Op een HTTPS-host kan Nook via de browser aan het beginscherm worden toegevoegd. De PWA bewaart de website, regels en routebronnen voor offline herladen. De compacte kaartindex, bekeken plekdetails en kaarttegels worden lokaal gecachet nadat ze eenmaal geladen zijn; nieuwe bronpagina's en nog niet bekeken kaartgebieden vereisen internet.
 
 ## Publiek delen
 
@@ -28,7 +28,7 @@ Lees vóór een publieke demo of LinkedIn-post `docs/launch-security.md`. De rep
 - Als locatietoegang niet beschikbaar of geweigerd is, blijft de functie werken vanaf het midden van het huidige kaartbeeld.
 - Losse GPX-waypoints blijven eveneens zichtbaar als eigen slaapplaatsenlaag.
 - Denemarken bevat een momentopname van 2.480 officiële [Ud i Naturen](https://udinaturen.dk/kort)-objecten: vrije tentgebieden, primitieve overnachtingsplekken en shelters. Iedere marker bevat de eigen officiële beschrijving, capaciteit, boekingsstatus en detailpagina.
-- Vrienden op de Fiets en Welcome To My Garden worden bij ver uitzoomen per land samengevat. Dicht ingezoomd verschijnen de afzonderlijke, openbaar gepubliceerde kaartposities. De huidige momentopname van 7 juli 2026 bevat 5.341 respectievelijk 5.921 pins in de Europese landen waar die brondata is gepubliceerd.
+- Vrienden op de Fiets en Welcome To My Garden worden bij ver uitzoomen ruimtelijk geclusterd. Dicht ingezoomd verschijnen de afzonderlijke, openbaar gepubliceerde kaartposities. De huidige momentopname van 7 juli 2026 bevat 5.341 respectievelijk 5.921 pins in de Europese landen waar die brondata is gepubliceerd.
 - Nook gebruikt gewone kaartclusters: ver uitgezoomd zie je tellingen, bij verder inzoomen vallen die uiteen in kleinere clusters en daarna losse pins.
 - Campings staan standaard aan als gewone slaapvorm in het filtermenu. Nook gebruikt OpenStreetMap-objecten met `tourism=camp_site` en `tourism=caravan_site`, opgehaald via OpenCampingMap, als normale bronpins met dezelfde clustering, filters en detailpanelen als andere locaties. De momentopname van 7 juli 2026 bevat 82.084 camping- en camperterreinpins in 47 landen. Losse `camp_pitch`-objecten worden niet als aparte campings getoond, omdat dat vaak individuele staanplaatsen binnen één camping zijn.
 - CampWild publiceert een compacte kaartlaag en GPX/KML-export voor shelters, lean-to's, bivakplekken en hutten. Nook neemt daarvan de duidelijke slaap- en schuiltypes op als vaste hut/shelterlaag: 5.944 pins binnen de app-landen. In Denemarken wint de officiële Ud i Naturen-bron; 92 CampWild-punten binnen 100 meter van een officiële Deense locatie zijn onderdrukt. Per-plekdetails en foto's blijven op de CampWild-detailpagina's.
@@ -42,4 +42,22 @@ Lees vóór een publieke demo of LinkedIn-post `docs/launch-security.md`. De rep
 
 ## Openbare data vernieuwen
 
-`scripts/fetch-wtmg-public.mjs` haalt de openbare WTMG-tuinlaag op. `scripts/fetch-opencampingmap-campings.mjs` haalt OSM-campings op via OpenCampingMap en bewaart die als lokale momentopname; `scripts/fetch-osm-campings.mjs` blijft beschikbaar als directe Overpass-fallback. `scripts/fetch-campwild-public.mjs` haalt de publieke CampWild-kaartlaag op. De bouwstap bewaart in de website alleen kaartpositie en praktische bronvelden. `scripts/build-public-data.mjs` genereert daarna een kleine `public-data.js` met metadata en losse JSON-bestanden in `data/` voor Vrienden op de Fiets, Welcome To My Garden, Ud i Naturen, OpenStreetMap-campings en CampWild.
+`scripts/fetch-wtmg-public.mjs` haalt de openbare WTMG-tuinlaag op. `scripts/fetch-opencampingmap-campings.mjs` haalt OSM-campings op via OpenCampingMap en bewaart die als lokale momentopname; `scripts/fetch-osm-campings.mjs` blijft beschikbaar als directe Overpass-fallback. `scripts/fetch-campwild-public.mjs` haalt de publieke CampWild-kaartlaag op. De bouwstap bewaart in de website alleen kaartpositie en praktische bronvelden. `scripts/build-public-data.mjs` genereert daarna `public-data.js` met metadata en via `scripts/build-map-data.mjs` een compacte binaire kaartindex en kleine detailbestanden in `data/map-details/`. Alle bronvelden blijven behouden.
+
+
+## Kaartprestaties en controles
+
+De kaart gebruikt OpenStreetMap-kaarttegels en Supercluster 8.0.1 (de ruimtelijke clusteringbibliotheek van Mapbox). Landen zijn een optioneel filter; de kaart opent en clustert op echte locaties, ook over de grens. `map-worker.js` bouwt en filtert de index buiten de hoofdthread en stuurt alleen zichtbare clusters/pins terug. Er worden geen duizenden Leaflet-markers meer gemaakt voordat er geclusterd wordt.
+
+De eerste kaartdownload bestaat uit `data/map-index.json` en `data/map-points.bin` (circa 1,6 MB ongecomprimeerd voor 101.770 punten). Volledige beschrijvingen, bronlinks en voorzieningen worden pas opgehaald bij een plekdetail of kandidatenlijst, in batches van maximaal 128 plekken. De oorspronkelijke landbestanden zijn daarmee vervangen, zonder verlies van bronrecords.
+
+Na het vernieuwen van de openbare data maakt `scripts/build-public-data.mjs` automatisch de kaartindex en detailbestanden. De bestaande index/batches kun je zonder externe brondata opnieuw opbouwen met:
+
+```bash
+node scripts/build-map-data.mjs
+node --test scripts/test-map-data.mjs
+```
+
+Bij een datavernieuwing: verhoog ook de asset-/dataversie in `app.js`, `map-worker.js`, `index.html` en `service-worker.js`, zodat offlinecaches de nieuwe index en bijbehorende details samen verversen. Gebruik geen losse oude index met nieuwe detailbestanden.
+
+De kaartbibliotheken staan met hun licenties in `vendor/`; er is geen pakketinstallatie of externe JavaScript-CDN nodig. De Leaflet-stylesheet is gecontroleerd tegen het officiële npm-pakket; de HTML behoudt integriteitscontrole.

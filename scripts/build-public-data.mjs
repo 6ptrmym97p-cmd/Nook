@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { buildMapData } from "./build-map-data.mjs";
 
 const args = new Map();
 for (let index = 2; index < process.argv.length; index += 2) {
@@ -752,3 +753,6 @@ console.log(`Ud i Naturen: ${denmarkPlaces.length} officiële slaapplekken`);
 console.log(`OpenStreetMap-campings: ${campingPlaces.length} kaartpins in de app-landen`);
 console.log(`CampWild: ${campwildPlaces.length} hutten, bivakplekken en shelters in de app-landen`);
 console.log(`CampWild DK-dubbelen onderdrukt via Ud i Naturen: ${campwildDedupe.suppressed.length}`);
+
+const mapIndex = buildMapData(dataDir);
+console.log(`Kaartindex: ${mapIndex.count} plekken in ${mapIndex.chunks.length} detailbestanden`);

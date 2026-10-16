@@ -27,23 +27,23 @@
     />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIINfQ3ynhFrqJ5t8R4VvO+9RmI40Z4k2Y0="
+      href="vendor/leaflet-1.9.4/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin=""
     />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+      href="vendor/leaflet.markercluster-1.5.3/MarkerCluster.css"
       integrity="sha256-YU3qCpj/P06tdPBJGPax0bm6Q1wltfwjsho5TR4+TYc="
       crossorigin=""
     />
     <link
       rel="stylesheet"
-      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+      href="vendor/leaflet.markercluster-1.5.3/MarkerCluster.Default.css"
       integrity="sha256-YSWCMtmNZNwqex4CEw1nQhvFub2lmU7vcCKP+XVwwXA="
       crossorigin=""
     />
-    <link rel="stylesheet" href="styles.css?v=20260708-2" />
+    <link rel="stylesheet" href="styles.css?v=20261016-3" />
   </head>
   <body class="map-app">
     <header class="site-header">
@@ -110,7 +110,7 @@
               <legend>Landen</legend>
               <p class="microcopy country-note" id="country-selection-summary">Dynamisch rond het kaartbeeld.</p>
               <div class="country-filter-actions" aria-label="Snelle landselectie">
-                <button type="button" id="set-auto-countries">Dynamisch</button>
+                <button type="button" id="set-auto-countries">Kaartgebied</button>
                 <button type="button" id="toggle-country-list" aria-controls="country-toggle-grid" aria-expanded="false">Kies landen</button>
                 <button type="button" id="clear-countries">Geen</button>
               </div>
@@ -228,17 +228,17 @@
     </main>
 
     <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      src="vendor/leaflet-1.9.4/leaflet.js"
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
       crossorigin=""
     ></script>
     <script
-      src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"
+      src="vendor/leaflet.markercluster-1.5.3/leaflet.markercluster.js"
       integrity="sha256-Hk4dIpcqOSb0hZjgyvFOP+cEmDXUKKNE/tT542ZbNQg="
       crossorigin=""
     ></script>
     <script src="public-data.js?v=20260708-1"></script>
-    <script src="app.js?v=20261016-2"></script>
+    <script src="app.js?v=20261016-3"></script>
     <script src="pwa.js?v=20260616-3"></script>
   </body>
 </html>

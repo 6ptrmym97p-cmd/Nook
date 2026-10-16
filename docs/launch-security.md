@@ -17,7 +17,7 @@ Gebruik dit als checklist voordat je Nook naar vrienden stuurt of publiek deelt.
 Bij launch is dit het model:
 
 - Bij jou gehost: `public-data.js`, `data/*.json`, HTML, CSS, JS, PWA-iconen en favicon.
-- Extern geladen als asset: kaarttegels van CARTO, fonts van Google Fonts, Leaflet/markercluster via unpkg met SRI, en bronfoto's die al door de bron als publieke afbeelding worden gepubliceerd.
+- Extern geladen als asset: kaarttegels van OpenStreetMap en fonts van Google Fonts (Leaflet, markercluster en Supercluster worden met hun licenties lokaal geserveerd; Leaflet/markercluster behouden SRI), en bronfoto's die al door de bron als publieke afbeelding worden gepubliceerd.
 - Alleen als link: platformpagina's zoals Vrienden op de Fiets, Welcome To My Garden, Ud i Naturen, CampWild en routebronnen.
 - Niet aanwezig: API keys, login, database, betaalgegevens, privé-hostprofielen, ruwe GPX-bestanden van bezoekers.
 

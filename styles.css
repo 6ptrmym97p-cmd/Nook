@@ -3307,3 +3307,17 @@ body.compact-page-body {
     padding: 18px;
   }
 }
+
+/* Spatial clusters stay legible without covering the entire map. */
+.cluster-places {
+  background: var(--forest-dark);
+  border-width: 3px;
+  font-size: 13px;
+  box-shadow: 0 3px 10px rgba(18, 31, 25, 0.2);
+}
+
+.coincident-places {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+}
