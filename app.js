@@ -354,9 +354,10 @@ const overviewSourceCounts = publicData.overview?.countries || {};
 const map = L.map("map", { zoomControl: false }).setView([52.4, 8.8], 4);
 L.control.zoom({ position: "topright" }).addTo(map);
 
-L.tileLayer("https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png", {
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  referrerPolicy: "strict-origin-when-cross-origin",
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 }).addTo(map);
 
 const routeLayer = L.layerGroup().addTo(map);

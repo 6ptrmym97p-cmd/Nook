@@ -1,5 +1,5 @@
-const SHELL_CACHE = "nook-shell-20260708-9";
-const RUNTIME_CACHE = "nook-runtime-20260708-9";
+const SHELL_CACHE = "nook-shell-20261016-1";
+const RUNTIME_CACHE = "nook-runtime-20261016-1";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -8,7 +8,7 @@ const APP_SHELL = [
   "./netwerken.html",
   "./over.html",
   "./styles.css?v=20260708-2",
-  "./app.js?v=20260708-7",
+  "./app.js?v=20261016-1",
   "./public-data.js?v=20260708-1",
   "./favicon.ico?v=20260708-1",
   "./favicon.svg?v=20260708-1",
@@ -66,7 +66,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   const url = new URL(request.url);
-  const isMapTile = url.hostname.endsWith("basemaps.cartocdn.com");
+  const isMapTile = url.hostname === "tile.openstreetmap.org";
   const isStaticAsset = request.destination === "style"
     || request.destination === "script"
     || request.destination === "font"
