@@ -1,0 +1,2 @@
+# Preserve upstream library bytes, including CRLF, for script/style integrity.
+vendor/** -text whitespace=-blank-at-eol
