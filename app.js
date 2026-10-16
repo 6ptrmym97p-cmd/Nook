@@ -385,7 +385,8 @@ function countClusterIcon(className, count, { prefix = "" } = {}) {
 function sourceClusterLayer(className) {
   return L.markerClusterGroup
     ? L.markerClusterGroup({
-        chunkedLoading: true,
+        // Incremental updates must finish before the next filter or viewport update.
+        chunkedLoading: false,
         disableClusteringAtZoom: 15,
         maxClusterRadius: (zoom) => {
           if (zoom < 5) return 132;
@@ -1500,7 +1501,7 @@ function neededSourceChunks(filters) {
   }
 
   const wantsDenmarkTypes = filters.types.has("designated") || filters.types.has("hut");
-  if (countryAllowed("DK", filters) && wantsDenmarkTypes && filters.confidence <= 3 && sourceChunkHasPins("DK", "denmark")) {
+  if (countriesToLoad.includes("DK") && wantsDenmarkTypes && filters.confidence <= 3 && sourceChunkHasPins("DK", "denmark")) {
     chunks.push({ kind: "denmark", country: "DK" });
   }
 
@@ -1571,7 +1572,7 @@ function loadSourceChunk(kind, country) {
     })
     .finally(() => {
       loadingSourceChunks.delete(key);
-      refreshMapPlaces();
+      scheduleViewportRefresh();
     });
 
   loadingSourceChunks.set(key, request);
@@ -1622,9 +1623,46 @@ function hostPinIcon(provider, label) {
   });
 }
 
+const sourceMarkerCache = new WeakMap();
+const sourcePlaceCache = new WeakMap();
+const markerSources = new WeakMap();
+
+function cachedSourceMarker(source, create) {
+  if (!sourceMarkerCache.has(source)) {
+    const marker = create();
+    sourceMarkerCache.set(source, marker);
+    markerSources.set(marker, source);
+  }
+  return sourceMarkerCache.get(source);
+}
+
+function cachedSourcePlace(source, create) {
+  if (!sourcePlaceCache.has(source)) sourcePlaceCache.set(source, create(source));
+  return sourcePlaceCache.get(source);
+}
+
 function addMarkers(layer, markers) {
-  if (layer.addLayers) layer.addLayers(markers);
-  else markers.forEach((marker) => marker.addTo(layer));
+  // Retain clusters and marker objects for places that remain visible.
+  const desired = new Set(markers);
+  const removed = layer.getLayers().filter((marker) => !desired.has(marker));
+  const added = markers.filter((marker) => !layer.hasLayer(marker));
+  if (removed.length) {
+    // Release detailed objects and markers after they leave the visible selection.
+    removed.forEach((marker) => {
+      const source = markerSources.get(marker);
+      if (source) {
+        sourceMarkerCache.delete(source);
+        sourcePlaceCache.delete(source);
+        markerSources.delete(marker);
+      }
+    });
+    if (layer.removeLayers) layer.removeLayers(removed);
+    else removed.forEach((marker) => layer.removeLayer(marker));
+  }
+  if (added.length) {
+    if (layer.addLayers) layer.addLayers(added);
+    else added.forEach((marker) => marker.addTo(layer));
+  }
 }
 
 function vodfPlace(pin) {
@@ -1696,11 +1734,14 @@ function wtmgPlace(pin) {
 
 function renderHospitalityPins() {
   const filters = currentFilters();
-  vodfLayer.clearLayers();
-  wtmgLayer.clearLayers();
   visiblePlaceCounts.hospitality = 0;
-  if (overviewModeActive()) return;
-  if (!filters.types.has("host") || filters.confidence > 2) return;
+  if (overviewModeActive() || !filters.types.has("host") || filters.confidence > 2) {
+    addMarkers(vodfLayer, []);
+    addMarkers(wtmgLayer, []);
+    return;
+  }
+  if (!filters.networks.has("vodf")) addMarkers(vodfLayer, []);
+  if (!filters.networks.has("wtmg")) addMarkers(wtmgLayer, []);
   const bounds = sourceLayerBounds();
 
   if (filters.networks.has("vodf")) {
@@ -1709,12 +1750,12 @@ function renderHospitalityPins() {
       .filter((pin) => inSourceViewport(pin, bounds))
       .filter((pin) => isWithinRoute(pin.lat, pin.lng))
       .map((pin) => {
-        const place = vodfPlace(pin);
+        const place = cachedSourcePlace(pin, vodfPlace);
         addCandidate(pin.lat, pin.lng, place, "vodf");
-        return L.marker([pin.lat, pin.lng], {
+        return cachedSourceMarker(pin, () => L.marker([pin.lat, pin.lng], {
           icon: hostPinIcon("vodf", "V"),
           title: "Vrienden op de Fiets-hostpin",
-        }).on("click", () => renderPlace(place));
+        }).on("click", () => renderPlace(place)));
       });
     addMarkers(vodfLayer, markers);
     visiblePlaceCounts.hospitality += markers.length;
@@ -1726,12 +1767,12 @@ function renderHospitalityPins() {
       .filter((pin) => inSourceViewport(pin, bounds))
       .filter((pin) => isWithinRoute(pin.lat, pin.lng))
       .map((pin) => {
-        const place = wtmgPlace(pin);
+        const place = cachedSourcePlace(pin, wtmgPlace);
         addCandidate(pin.lat, pin.lng, place, "wtmg");
-        return L.marker([pin.lat, pin.lng], {
+        return cachedSourceMarker(pin, () => L.marker([pin.lat, pin.lng], {
           icon: hostPinIcon("wtmg", "G"),
           title: "Welcome To My Garden-tuinpin",
-        }).on("click", () => renderPlace(place));
+        }).on("click", () => renderPlace(place)));
       });
     addMarkers(wtmgLayer, markers);
     visiblePlaceCounts.hospitality += markers.length;
@@ -1773,11 +1814,11 @@ function denmarkPlace(sourcePlace) {
 
 function renderDenmarkPlaces() {
   const filters = currentFilters();
-  denmarkLayer.clearLayers();
   visiblePlaceCounts.denmark = 0;
-  if (overviewModeActive()) return;
-  if (!countryAllowed("DK", filters)) return;
-  if (filters.confidence > 3) return;
+  if (overviewModeActive() || !countryAllowed("DK", filters) || filters.confidence > 3) {
+    addMarkers(denmarkLayer, []);
+    return;
+  }
   const bounds = sourceLayerBounds();
 
   const markers = denmarkPlaces
@@ -1785,15 +1826,15 @@ function renderDenmarkPlaces() {
     .filter((place) => inSourceViewport(place, bounds))
     .filter((place) => isWithinRoute(place.lat, place.lng))
     .map((sourcePlace) => {
-      const place = denmarkPlace(sourcePlace);
+      const place = cachedSourcePlace(sourcePlace, denmarkPlace);
       addCandidate(sourcePlace.lat, sourcePlace.lng, place, "denmark");
-      return L.marker([sourcePlace.lat, sourcePlace.lng], {
+      return cachedSourceMarker(sourcePlace, () => L.marker([sourcePlace.lat, sourcePlace.lng], {
         icon: markerIcon(sourcePlace.type),
         title: `${sourcePlace.name} · ${sourcePlace.decision}`,
-      }).on("click", () => renderPlace(place));
+      }).on("click", () => renderPlace(place)));
     });
 
-  denmarkLayer.addLayers ? denmarkLayer.addLayers(markers) : markers.forEach((marker) => marker.addTo(denmarkLayer));
+  addMarkers(denmarkLayer, markers);
   visiblePlaceCounts.denmark = markers.length;
 }
 
@@ -1825,11 +1866,12 @@ function campwildPlace(sourcePlace) {
 
 function renderCampwildPlaces() {
   const filters = currentFilters();
-  campwildLayer.clearLayers();
   visiblePlaceCounts.campwild = 0;
-  if (overviewModeActive()) return;
   const wantsType = filters.types.has("hut") || filters.types.has("designated");
-  if (!wantsType) return;
+  if (overviewModeActive() || !wantsType) {
+    addMarkers(campwildLayer, []);
+    return;
+  }
   const bounds = sourceLayerBounds();
 
   const markers = campwildPlaces
@@ -1838,12 +1880,12 @@ function renderCampwildPlaces() {
     .filter((place) => inSourceViewport(place, bounds))
     .filter((place) => isWithinRoute(place.lat, place.lng))
     .map((sourcePlace) => {
-      const place = campwildPlace(sourcePlace);
+      const place = cachedSourcePlace(sourcePlace, campwildPlace);
       addCandidate(sourcePlace.lat, sourcePlace.lng, place, "campwild");
-      return L.marker([sourcePlace.lat, sourcePlace.lng], {
+      return cachedSourceMarker(sourcePlace, () => L.marker([sourcePlace.lat, sourcePlace.lng], {
         icon: markerIcon(place.type),
         title: place.name,
-      }).on("click", () => renderPlace(place));
+      }).on("click", () => renderPlace(place)));
     });
 
   addMarkers(campwildLayer, markers);
@@ -2057,13 +2099,9 @@ function campingPlace(sourcePlace) {
 
 function renderCampingPlaces() {
   const filters = currentFilters();
-  campingLayer.clearLayers();
   visiblePlaceCounts.camping = 0;
-  if (overviewModeActive()) {
-    updateCampingStatus();
-    return;
-  }
-  if (!filters.types.has("camping")) {
+  if (overviewModeActive() || !filters.types.has("camping")) {
+    addMarkers(campingLayer, []);
     updateCampingStatus();
     return;
   }
@@ -2074,13 +2112,13 @@ function renderCampingPlaces() {
     .filter((item) => inSourceViewport(item, bounds))
     .filter((item) => isWithinRoute(item.lat, item.lng))
     .flatMap((sourcePlace) => {
-      const item = campingPlace(sourcePlace);
+      const item = cachedSourcePlace(sourcePlace, campingPlace);
       if (!item) return [];
       addCandidate(item.lat, item.lng, item.place, "camping");
-      return L.marker([item.lat, item.lng], {
+      return cachedSourceMarker(sourcePlace, () => L.marker([item.lat, item.lng], {
         icon: markerIcon("camping"),
         title: item.place.name,
-      }).on("click", () => renderPlace(item.place));
+      }).on("click", () => renderPlace(item.place)));
     });
 
   addMarkers(campingLayer, markers);
