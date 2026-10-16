@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
+import { gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 
 export const POINT_TYPES = ["host", "camping", "hut", "designated"];
@@ -61,8 +62,9 @@ export function buildMapData(dataDir) {
     }
   }
   hash.update(buffer);
-  const manifest = { version: hash.digest("hex").slice(0, 16), count, recordBytes: RECORD_BYTES, types: POINT_TYPES, chunks };
+  const manifest = { version: hash.digest("hex").slice(0, 16), count, recordBytes: RECORD_BYTES, gzip: "map-points.bin.gz", types: POINT_TYPES, chunks };
   fs.writeFileSync(path.join(dataDir, "map-points.bin"), buffer);
+  fs.writeFileSync(path.join(dataDir, "map-points.bin.gz"), gzipSync(buffer, { level: 9 }));
   fs.writeFileSync(path.join(dataDir, "map-index.json"), JSON.stringify(manifest) + "\n");
   // The batches replace the original snapshots without duplicating the dataset.
   for (const file of snapshots) fs.unlinkSync(path.join(dataDir, file));

@@ -49,7 +49,7 @@ Lees vóór een publieke demo of LinkedIn-post `docs/launch-security.md`. De rep
 
 De kaart gebruikt OpenStreetMap-kaarttegels en Supercluster 8.0.1 (de ruimtelijke clusteringbibliotheek van Mapbox). Landen zijn een optioneel filter; de kaart opent en clustert op echte locaties, ook over de grens. `map-worker.js` bouwt en filtert de index buiten de hoofdthread en stuurt alleen zichtbare clusters/pins terug. Er worden geen duizenden Leaflet-markers meer gemaakt voordat er geclusterd wordt.
 
-De eerste kaartdownload bestaat uit `data/map-index.json` en `data/map-points.bin` (circa 1,6 MB ongecomprimeerd voor 101.770 punten). Volledige beschrijvingen, bronlinks en voorzieningen worden pas opgehaald bij een plekdetail of kandidatenlijst, in batches van maximaal 128 plekken. De oorspronkelijke landbestanden zijn daarmee vervangen, zonder verlies van bronrecords.
+De eerste kaartdownload bestaat uit `data/map-index.json` en `data/map-points.bin.gz` (circa 865 KB gecomprimeerd voor 101.770 punten). Browsers zonder `DecompressionStream` gebruiken dezelfde punten via `data/map-points.bin` (circa 1,6 MB). Volledige beschrijvingen, bronlinks en voorzieningen worden pas opgehaald bij een plekdetail of kandidatenlijst, in batches van maximaal 128 plekken. De oorspronkelijke landbestanden zijn daarmee vervangen, zonder verlies van bronrecords.
 
 Na het vernieuwen van de openbare data maakt `scripts/build-public-data.mjs` automatisch de kaartindex en detailbestanden. De bestaande index/batches kun je zonder externe brondata opnieuw opbouwen met:
 
@@ -61,3 +61,20 @@ node --test scripts/test-map-data.mjs
 Bij een datavernieuwing: verhoog ook de asset-/dataversie in `app.js`, `map-worker.js`, `index.html` en `service-worker.js`, zodat offlinecaches de nieuwe index en bijbehorende details samen verversen. Gebruik geen losse oude index met nieuwe detailbestanden.
 
 De kaartbibliotheken staan met hun licenties in `vendor/`; er is geen pakketinstallatie of externe JavaScript-CDN nodig. De Leaflet-stylesheet is gecontroleerd tegen het officiële npm-pakket; de HTML behoudt integriteitscontrole.
+
+
+Bij schuiven en knijpzoomen transformeert Leaflet één canvaslaag met de bronpins; er is geen afzonderlijk bewegend HTML-element per pin. Resultaten worden pas na het gebaar ververst. Een buffer rondom het kaartbeeld voorkomt herberekenen bij kleine verschuivingen. Toetsenbord- en schermlezerbediening blijft beschikbaar via bijbehorende knoppen die hun canvaspin markeren bij focus.
+
+Clusterklikken gaan direct naar het volgende kaartgebied. De algemene PWA-bescherming tegen pagina-zoom onderschept geen snelle tikken, dubbel tikken of knijpgebaren binnen de kaart. Kaarttegels laden tijdens het schuiven en alleen voor het uiteindelijke zoomniveau. Permanente kaartknoppen gebruiken geen achtergrondblur meer tijdens kaartbewegingen.
+
+Onder **Filters → Lichte onderkaart** kun je kiezen tussen minder kaartdata met een grovere achtergrond en de oorspronkelijke kaartdetails. Op aanraakschermen staat de lichte variant standaard aan. Beide gebruiken dezelfde OSM-bron en dezelfde exacte pin- en routecoördinaten; de instelling wordt lokaal bewaard.
+
+Een extra browsercontrole is beschikbaar met een geïnstalleerde Playwright/Chromium (aanwezig in de cloudomgeving):
+
+```bash
+node scripts/test-map-browser.cjs
+```
+
+Start daarvoor de lokale server. Met `NOOK_TEST_URL` kun je ook een andere testhost controleren en met `NOOK_CHROMIUM` een lokaal Chromium-pad kiezen. In een proxyomgeving kun je met `NOOK_BROWSER_HOME` een apart browserprofiel met de vertrouwde platform-CA aanwijzen; TLS-controle blijft aan. De controle test echte touch-hitdetectie op canvas, hergebruik bij kleine verschuivingen, toetsenbordfocus en bewaren van het kaartdetailniveau. De native tests controleren daarnaast dat kaartgebaren niet worden geannuleerd en dat de gzip-index exact dezelfde punten bevat als de fallback. De browsercontrole test ook snel achter elkaar tikken op de zoomknop en een echt tweevinger-knijpgebaar, met een controle dat de pinlaag tijdens het gebaar niet wordt herbouwd.
+
+De aanpak volgt de optimalisatieprincipes uit [MapLibre's richtlijnen voor grote datasets](https://maplibre.org/maplibre-gl-js/docs/guides/large-data/) en [deck.gl's performance guide](https://deck.gl/docs/developer-guide/performance): minder tekenen, stabiele lagen, minder updates en gecomprimeerde data.

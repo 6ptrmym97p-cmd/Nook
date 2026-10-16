@@ -1,4 +1,7 @@
 function preventBrowserZoom(event) {
+  // Leaflet handles pinch and double tap itself. Cancelling these gestures on
+  // document also cancels rapid map/control clicks, especially on iOS.
+  if (event.target.closest?.(".leaflet-container")) return;
   event.preventDefault();
 }
 
@@ -8,6 +11,10 @@ function preventBrowserZoom(event) {
 
 let lastTouchEnd = 0;
 document.addEventListener("touchend", (event) => {
+  if (event.target.closest?.(".leaflet-container")) {
+    lastTouchEnd = 0;
+    return;
+  }
   const now = Date.now();
   if (now - lastTouchEnd <= 300) event.preventDefault();
   lastTouchEnd = now;

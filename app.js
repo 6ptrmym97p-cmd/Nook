@@ -345,10 +345,38 @@ const sources = [
 
 const publicData = window.NOOK_DATA || {};
 
-const map = L.map("map", { zoomControl: false }).setView([52.4, 8.8], 4);
-L.control.zoom({ position: "topright" }).addTo(map);
+const BASEMAP_DETAIL_KEY = "nook-light-basemap-v1";
+const savedBaseMapDetail = getUserValue(BASEMAP_DETAIL_KEY);
+const lightBaseMap = savedBaseMapDetail === null ? window.matchMedia("(pointer: coarse)").matches : savedBaseMapDetail === "true";
+const reduceMapMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const map = L.map("map", {
+  zoomControl: false,
+  minZoom: 2,
+  fadeAnimation: false,
+  markerZoomAnimation: false,
+  zoomAnimation: !reduceMapMotion,
+  bounceAtZoomLimits: false,
+  wheelDebounceTime: 80,
+  wheelPxPerZoomLevel: 60,
+}).setView([52.4, 8.8], 4);
+const DirectZoomControl = L.Control.Zoom.extend({
+  _zoomIn(event) {
+    if (!this._disabled) navigateMapTo(map.getCenter(), map.getZoom() + map.options.zoomDelta * (event.shiftKey ? 3 : 1));
+  },
+  _zoomOut(event) {
+    if (!this._disabled) navigateMapTo(map.getCenter(), map.getZoom() - map.options.zoomDelta * (event.shiftKey ? 3 : 1));
+  },
+});
+new DirectZoomControl({ position: "topright" }).addTo(map);
 
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+const baseMap = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  // One native tile covers four old tiles: fewer downloads and less fine detail.
+  tileSize: lightBaseMap ? 512 : 256,
+  zoomOffset: lightBaseMap ? -1 : 0,
+  updateWhenIdle: false,
+  updateWhenZooming: false,
+  updateInterval: 150,
+  keepBuffer: 3,
   maxZoom: 19,
   referrerPolicy: "strict-origin-when-cross-origin",
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -357,6 +385,22 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 const routeLayer = L.layerGroup().addTo(map);
 const locationLayer = L.layerGroup().addTo(map);
 const sourceMapLayer = L.layerGroup().addTo(map);
+map.createPane("sourcePins").style.zIndex = 450;
+const pinRenderer = new L.NookCanvas({ padding: 0.25, pane: "sourcePins" }).addTo(map);
+const pinAccessibility = document.createElement("div");
+pinAccessibility.className = "visually-hidden";
+pinAccessibility.setAttribute("role", "group");
+pinAccessibility.setAttribute("aria-label", "Plekken op de kaart");
+document.querySelector(".map-frame").append(pinAccessibility);
+let accessiblePinKeys = "";
+let mapIsMoving = false;
+
+function navigateMapTo(latlng, zoom) {
+  // Fly animations zoom out, travel, then zoom in and can take several seconds.
+  // Keep direct navigation immediate; ordinary gestures retain native zoom.
+  map.stop();
+  map.setView(latlng, zoom, { animate: false });
+}
 
 function clusterVisual(count) {
   if (count >= 1000) return { size: 62, density: "cluster-density-peak" };
@@ -583,16 +627,16 @@ function boundsAroundPoint(point, radiusKm) {
 
 function focusMapAroundPoint(point, radiusKm = START_LOCATION_RADIUS_KM, options = {}) {
   map.fitBounds(boundsAroundPoint(point, radiusKm), {
-    animate: options.animate ?? true,
+    animate: false,
     padding: [44, 44],
     maxZoom: options.maxZoom || 10,
   });
 }
 
-function focusDetailsAroundMapCenter({ animate = true } = {}) {
+function focusDetailsAroundMapCenter() {
   if (map.getZoom() >= 9) return;
   const center = map.getCenter();
-  map.flyTo([center.lat, center.lng], 9, { animate });
+  navigateMapTo([center.lat, center.lng], 9);
 }
 
 function routeLengthKm(lines) {
@@ -980,7 +1024,7 @@ function requestUserLocation({ openCandidates = false, focusMap = true, focusRad
     hideStartupLocationPrompt();
     drawUserLocation();
     if (focusMap && focusRadiusKm) focusMapAroundPoint(userLocation, focusRadiusKm, { animate: !quiet });
-    else if (focusMap) map.flyTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
+    else if (focusMap) navigateMapTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
     setLocationControlsLoading(false);
     document.querySelector("#locate-me").classList.add("has-location");
     if (!quiet) showLocationStatus("Huidige positie actief. Plekken worden nu vanaf jou gerangschikt.", "success");
@@ -1132,6 +1176,7 @@ const PERSONAL_STORAGE_KEYS = [
   COUNTRY_FILTER_KEY,
   FILTER_PREFERENCES_KEY,
   ROUTE_DISTANCE_KEY,
+  BASEMAP_DETAIL_KEY,
 ];
 const ALL_COUNTRY_CODES = FILTER_COUNTRIES.map((country) => country.code);
 const COUNTRY_CENTERS = Object.fromEntries(FILTER_COUNTRIES.map((country) => [country.code, country.center]));
@@ -1308,7 +1353,7 @@ function fitSelectedCountries() {
   if (!selected.length) return;
   if (selected.length === 1 && COUNTRY_CENTERS[selected[0]]) {
     const [lat, lng, zoom] = COUNTRY_CENTERS[selected[0]];
-    map.flyTo([lat, lng], zoom);
+    navigateMapTo([lat, lng], zoom);
     return;
   }
   const points = selected.flatMap((code) => COUNTRY_BOUNDS[code] || []);
@@ -1343,7 +1388,7 @@ const mapMarkers = new Map();
 const detailBatches = new Map();
 
 function sourceLayerBounds() {
-  return map.getBounds().pad(0.08);
+  return map.getBounds().pad(0.4);
 }
 
 function requestMapSources(filters) {
@@ -1353,7 +1398,7 @@ function requestMapSources(filters) {
       updateMapDataHint();
       return;
     }
-    mapWorker = new Worker("map-worker.js?v=20261016-3");
+    mapWorker = new Worker("map-worker.js?v=20261016-4");
     mapWorker.onmessage = ({ data }) => {
       if (data.type === "ready") {
         mapManifest = data.manifest;
@@ -1366,7 +1411,7 @@ function requestMapSources(filters) {
         return;
       }
       // Ignore late results from a previous viewport or filter selection.
-      if (data.requestId !== mapQueryId) return;
+      if (data.requestId !== mapQueryId || mapIsMoving) return;
       mapDataLoading = false;
       mapDataError = "";
       if (data.type === "leaves") {
@@ -1384,7 +1429,8 @@ function requestMapSources(filters) {
   }
   const enabled = routeFilterEnabled();
   const distance = Number(document.querySelector("#route-distance").value);
-  if (lastWorkerRoute !== routeState || lastWorkerDistance !== distance || lastWorkerRouteEnabled !== enabled) {
+  const routeChanged = lastWorkerRoute !== routeState || lastWorkerDistance !== distance || lastWorkerRouteEnabled !== enabled;
+  if (routeChanged) {
     mapWorker.postMessage({ type: "route", route: enabled ? { grid: routeState.segmentGrid, distanceKm: distance } : null });
     lastWorkerRoute = routeState;
     lastWorkerDistance = distance;
@@ -1392,16 +1438,22 @@ function requestMapSources(filters) {
   }
   const bounds = sourceLayerBounds();
   const candidateBounds = candidatePanelOpen ? boundsAroundPoint(userLocation || map.getCenter(), 95) : null;
+  const selection = {
+    countries: countrySelectionMode === "auto" ? null : [...filters.countries].sort(),
+    types: [...filters.types].sort(), networks: [...filters.networks].sort(), confidence: filters.confidence,
+  };
+  const current = map.getBounds();
+  if (!routeChanged && !candidatePanelOpen && !lastMapQuery?.candidates && !mapDataLoading
+    && lastMapQuery && lastMapQuery.zoom === map.getZoom()
+    && JSON.stringify(lastMapQuery.filters) === JSON.stringify(selection)
+    && current.getWest() >= lastMapQuery.bounds[0] && current.getSouth() >= lastMapQuery.bounds[1]
+    && current.getEast() <= lastMapQuery.bounds[2] && current.getNorth() <= lastMapQuery.bounds[3]) return;
   lastMapQuery = {
     type: "query", requestId: ++mapQueryId,
     bounds: [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()],
     zoom: map.getZoom(), candidates: candidatePanelOpen,
     candidateBounds: candidateBounds ? [candidateBounds.getWest(), candidateBounds.getSouth(), candidateBounds.getEast(), candidateBounds.getNorth()] : null,
-    filters: {
-      // Automatic browsing crosses country borders without selecting a country.
-      countries: countrySelectionMode === "auto" ? null : [...filters.countries].sort(),
-      types: [...filters.types].sort(), networks: [...filters.networks].sort(), confidence: filters.confidence,
-    },
+    filters: selection,
   };
   mapDataLoading = true;
   mapWorker.postMessage(lastMapQuery);
@@ -1447,16 +1499,19 @@ function applyMapSources(data) {
     desired.add(key);
     if (mapMarkers.has(key)) continue;
     const place = cluster ? null : mapPointPlace(feature);
-    const icon = cluster ? countClusterIcon("cluster-places", feature.count)
-      : feature.kind === "vodf" || feature.kind === "wtmg" ? hostPinIcon(feature.kind, feature.kind === "vodf" ? "V" : "G") : markerIcon(feature.type);
-    const marker = L.marker([feature.lat, feature.lng], {
-      icon,
+    const host = feature.kind === "vodf" || feature.kind === "wtmg";
+    const colors = { wild: "#668c50", designated: "#dc7740", hut: "#4d7e8d", host: "#7c6894", ask: "#aa965c", camping: "#7b5b35" };
+    const marker = L.nookPin([feature.lat, feature.lng], {
+      renderer: pinRenderer,
+      radius: cluster ? clusterVisual(feature.count).size / 2 : 16,
+      fillColor: cluster ? "#123127" : host ? (feature.kind === "vodf" ? "#3978b0" : "#cb5e8b") : colors[feature.type],
+      pinLabel: cluster ? compactCount(feature.count) : host ? (feature.kind === "vodf" ? "V" : "G") : sleepTypes[feature.type]?.icon || "?",
       title: cluster ? `${feature.count.toLocaleString("nl-NL")} plekken · zoom in` : place.name,
     }).on("click", () => {
       if (!cluster) { renderPlace(place); return; }
       if (mapDataLoading) return;
       if (feature.zoom <= map.getMaxZoom()) {
-        map.flyTo([feature.lat, feature.lng], Math.max(map.getZoom() + 1, feature.zoom));
+        navigateMapTo([feature.lat, feature.lng], Math.max(map.getZoom() + 1, feature.zoom));
       } else {
         mapDataLoading = true;
         mapWorker.postMessage({ ...lastMapQuery, type: "leaves", cluster: feature.cluster, requestId: ++mapQueryId });
@@ -1471,6 +1526,7 @@ function applyMapSources(data) {
     sourceMapLayer.removeLayer(marker);
     mapMarkers.delete(key);
   }
+  updatePinAccessibility();
   visiblePlaceCounts.hospitality = data.counts.vodf + data.counts.wtmg;
   visiblePlaceCounts.camping = data.counts.camping;
   visiblePlaceCounts.campwild = data.counts.campwild;
@@ -1494,6 +1550,25 @@ function applyMapSources(data) {
       const original = currentCandidates.find((item) => item.place.mapPoint?.id === point.id);
       if (original) original.place = details;
     })).then(() => { if (query === mapQueryId && candidatePanelOpen) updateCandidatePanel(); });
+  }
+}
+
+function updatePinAccessibility() {
+  const keys = [...mapMarkers.keys()].join("|");
+  if (keys === accessiblePinKeys) return;
+  accessiblePinKeys = keys;
+  pinAccessibility.replaceChildren();
+  for (const marker of mapMarkers.values()) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = marker.options.title;
+    button.onclick = () => marker.fire("click");
+    button.onfocus = () => {
+      marker.setStyle({ color: "#e8864a", weight: 4 });
+      map.panInside(marker.getLatLng(), { padding: [36, 36], animate: false });
+    };
+    button.onblur = () => marker.setStyle({ color: "#fffdf8", weight: 2 });
+    pinAccessibility.append(button);
   }
 }
 
@@ -1532,7 +1607,7 @@ function updateMapDataHint() {
 
 function scheduleViewportRefresh() {
   window.clearTimeout(viewportRefreshTimer);
-  viewportRefreshTimer = window.setTimeout(refreshMapPlaces, 60);
+  viewportRefreshTimer = window.setTimeout(() => requestMapSources(currentFilters()), 120);
 }
 
 function hostPinIcon(provider, label) {
@@ -2212,6 +2287,16 @@ function importGpx(file) {
   reader.readAsText(file);
 }
 
+const lightBaseMapControl = document.querySelector("#light-basemap");
+lightBaseMapControl.checked = lightBaseMap;
+lightBaseMapControl.addEventListener("change", () => {
+  const light = lightBaseMapControl.checked;
+  baseMap.remove();
+  L.setOptions(baseMap, { tileSize: light ? 512 : 256, zoomOffset: light ? -1 : 0 });
+  baseMap.addTo(map);
+  setUserValue(BASEMAP_DETAIL_KEY, String(light));
+});
+
 document.querySelectorAll("#sleep-filter input").forEach((control) => {
   control.addEventListener("change", () => {
     saveFilterPreferences();
@@ -2278,7 +2363,7 @@ document.querySelector("#route-list").addEventListener("click", (event) => {
   refreshMapPlaces();
 });
 document.querySelector("#locate-me").addEventListener("click", () => {
-  if (userLocation) map.flyTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
+  if (userLocation) navigateMapTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
   else requestUserLocation({ focusMap: true });
 });
 document.querySelector("#startup-use-location").addEventListener("click", () => {
@@ -2295,7 +2380,7 @@ document.querySelector("#startup-skip-location").addEventListener("click", () =>
 });
 document.querySelector("#show-candidates").addEventListener("click", () => {
   if (userLocation) {
-    map.flyTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
+    navigateMapTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
     openCandidatePanel();
   } else {
     requestUserLocation({ openCandidates: true, focusMap: true });
@@ -2318,7 +2403,7 @@ document.querySelector("#candidate-list").addEventListener("click", (event) => {
   if (!button) return;
   const candidate = displayedCandidates[Number(button.dataset.candidateIndex)];
   if (!candidate) return;
-  map.flyTo([candidate.lat, candidate.lng], Math.max(map.getZoom(), 14));
+  navigateMapTo([candidate.lat, candidate.lng], Math.max(map.getZoom(), 14));
   renderPlace(candidate.place);
 });
 
@@ -2328,7 +2413,14 @@ document.querySelector("#toggle-filters").addEventListener("click", () => {
 });
 document.querySelector("#close-filters").addEventListener("click", () => setFiltersOpen(false));
 document.querySelector("#map-overlay-scrim").addEventListener("click", () => setFiltersOpen(false));
-map.on("moveend zoomend", scheduleViewportRefresh);
+map.on("movestart zoomstart", () => {
+  mapIsMoving = true;
+  window.clearTimeout(viewportRefreshTimer);
+});
+map.on("moveend", () => {
+  mapIsMoving = false;
+  scheduleViewportRefresh();
+});
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
   setFiltersOpen(false);

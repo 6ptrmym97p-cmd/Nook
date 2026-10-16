@@ -5,10 +5,48 @@ import os from "node:os";
 import path from "node:path";
 import vm from "node:vm";
 import crypto from "node:crypto";
+import { gunzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { buildMapData } from "./build-map-data.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
+
+test("PWA zoom protection leaves map pinch gestures and rapid map taps intact", () => {
+  const listeners = new Map();
+  let now = 1000;
+  const context = vm.createContext({
+    document: { addEventListener: (type, listener) => listeners.set(type, listener) },
+    navigator: {}, window: {},
+    Date: { now: () => now },
+  });
+  vm.runInContext(fs.readFileSync(path.join(root, "pwa.js"), "utf8"), context);
+  const event = (map) => ({
+    target: { closest: () => map ? {} : null },
+    prevented: false,
+    preventDefault() { this.prevented = true; },
+  });
+  for (const type of ["gesturestart", "gesturechange", "gestureend"]) {
+    const mapGesture = event(true);
+    listeners.get(type)(mapGesture);
+    assert.equal(mapGesture.prevented, false, `${type} belongs to Leaflet`);
+    const pageGesture = event(false);
+    listeners.get(type)(pageGesture);
+    assert.equal(pageGesture.prevented, true);
+  }
+  for (let i = 0; i < 3; i++) {
+    const tap = event(true);
+    listeners.get("touchend")(tap);
+    assert.equal(tap.prevented, false, "Rapid map taps must still dispatch clicks");
+    now += 80;
+  }
+  const first = event(false);
+  listeners.get("touchend")(first);
+  assert.equal(first.prevented, false);
+  now += 80;
+  const second = event(false);
+  listeners.get("touchend")(second);
+  assert.equal(second.prevented, true, "Page double-tap zoom protection is retained outside the map");
+});
 
 test("vendored map styles and scripts match the HTML integrity checks", () => {
   const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
@@ -43,6 +81,7 @@ test("compact index preserves every point, country, type and complete detail rec
   const { dir, manifest, snapshots } = fixture(t);
   assert.equal(manifest.count, 263);
   const bytes = fs.readFileSync(path.join(dir, "map-points.bin"));
+  assert.deepEqual(gunzipSync(fs.readFileSync(path.join(dir, manifest.gzip))), bytes, "Compressed and fallback indexes must contain exactly the same points");
   const binary = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   assert.equal(bytes.length, manifest.count * 16);
   const restored = new Map();

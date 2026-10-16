@@ -10,12 +10,19 @@ let route = null;
 const providers = ["vodf", "wtmg", "camping", "campwild", "denmark"];
 
 const ready = (async () => {
-  const response = await cachedData("data/map-index.json?v=20261016-3");
+  const response = await cachedData("data/map-index.json?v=20261016-4");
   if (!response.ok) throw new Error(`Kaartindex: HTTP ${response.status}`);
   manifest = await response.json();
-  const binary = await cachedData(`data/map-points.bin?v=${manifest.version}`);
+  const compressed = manifest.gzip && typeof DecompressionStream !== "undefined";
+  const binary = await cachedData(`data/${compressed ? manifest.gzip : "map-points.bin"}?v=${manifest.version}`);
   if (!binary.ok) throw new Error(`Kaartpunten: HTTP ${binary.status}`);
-  const buffer = await binary.arrayBuffer();
+  let buffer = await binary.arrayBuffer();
+  // GitHub Pages does not compress .bin responses. Use explicit compression,
+  // while retaining the plain index for browsers without DecompressionStream.
+  const magic = new Uint8Array(buffer);
+  if (compressed && magic[0] === 0x1f && magic[1] === 0x8b) {
+    buffer = await new Response(new Blob([buffer]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer();
+  }
   if (manifest.recordBytes !== 16 || buffer.byteLength !== manifest.count * 16) throw new Error("Kaartindex is onvolledig");
   const view = new DataView(buffer);
   points = Array.from({ length: manifest.count }, (_, id) => {
@@ -37,7 +44,7 @@ async function cachedData(url) {
   // Workers may start before the service worker controls the first page load.
   // Retain the compact index explicitly so one online visit also works offline.
   if (!("caches" in self)) return fetch(url);
-  const cache = await caches.open("nook-runtime-20261016-3");
+  const cache = await caches.open("nook-runtime-20261016-4");
   const cached = await cache.match(url);
   if (cached) return cached;
   const response = await fetch(url);

@@ -43,7 +43,7 @@
       integrity="sha256-YSWCMtmNZNwqex4CEw1nQhvFub2lmU7vcCKP+XVwwXA="
       crossorigin=""
     />
-    <link rel="stylesheet" href="styles.css?v=20261016-3" />
+    <link rel="stylesheet" href="styles.css?v=20261016-4" />
   </head>
   <body class="map-app">
     <header class="site-header">
@@ -106,6 +106,14 @@
               </div>
               <button class="overlay-close" id="close-filters" type="button" aria-label="Filters sluiten">×</button>
             </div>
+            <fieldset class="filter-block">
+              <legend>Onderkaart</legend>
+              <label class="check-row">
+                <input id="light-basemap" type="checkbox" />
+                Lichte onderkaart
+              </label>
+              <p class="microcopy">Minder data, met een grovere onderkaart. Zet uit voor meer kaartdetail.</p>
+            </fieldset>
             <fieldset class="filter-block country-filter" id="country-filter">
               <legend>Landen</legend>
               <p class="microcopy country-note" id="country-selection-summary">Dynamisch rond het kaartbeeld.</p>
@@ -238,7 +246,8 @@
       crossorigin=""
     ></script>
     <script src="public-data.js?v=20260708-1"></script>
-    <script src="app.js?v=20261016-3"></script>
-    <script src="pwa.js?v=20260616-3"></script>
+    <script src="map-canvas.js?v=20261016-4"></script>
+    <script src="app.js?v=20261016-4"></script>
+    <script src="pwa.js?v=20261016-4"></script>
   </body>
 </html>

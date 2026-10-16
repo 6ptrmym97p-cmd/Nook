@@ -3321,3 +3321,22 @@ body.compact-page-body {
   gap: 8px;
   padding: 16px;
 }
+
+/* Blurring the moving map behind fixed controls forces expensive readback on
+   mobile GPUs. Keep their existing surfaces without that per-frame blur. */
+.map-app .site-header,
+.map-app .map-overlay-button,
+.map-app .map-location-button,
+.map-app .tonight-button,
+.map-app .location-status,
+.map-app .startup-location-card,
+.map-app .map-data-hint {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.map-app .site-header { background: #faf8f1; }
+.map-app .map-overlay-button,
+.map-app .map-location-button,
+.map-app .tonight-button { background: #123127; }
+.map-app .startup-location-card { background: #fffdf8; }
