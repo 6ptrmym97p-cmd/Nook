@@ -1,4 +1,4 @@
-const SHELL_CACHE = "nook-shell-20261018-4";
+const SHELL_CACHE = "nook-shell-20261018-5";
 const RUNTIME_CACHE = "nook-runtime-20261016-4";
 const TILE_CACHE = "nook-tiles-v1";
 const MAX_TILES = 256;
@@ -94,12 +94,9 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   const isMapTile = url.hostname === "tile.openstreetmap.org";
-  const isStaticAsset = request.destination === "style"
-    || request.destination === "script"
-    || request.destination === "font"
-    || request.destination === "image";
 
-  if (url.origin === self.location.origin || isMapTile || isStaticAsset) {
+  // Other cross-origin requests bypass the worker: its CSP (connect-src) would block them.
+  if (url.origin === self.location.origin || isMapTile) {
     event.respondWith(cacheFirst(request, isMapTile));
   }
 });
