@@ -469,10 +469,6 @@ let routeState = {
 };
 
 const ROUTE_GRID_DEGREES = 0.25;
-const START_LOCATION_RADIUS_KM = 80;
-const STARTUP_LOCATION_COPY = "Nook opent dan rond 80 km van jou en rangschikt plekken vanaf je positie.";
-let startupLocationTried = false;
-let startupLocationPromptDismissed = false;
 let viewportRefreshTimer = 0;
 
 function escapeHtml(value = "") {
@@ -627,14 +623,6 @@ function boundsAroundPoint(point, radiusKm) {
     [point.lat - latDelta, point.lng - lngDelta],
     [point.lat + latDelta, point.lng + lngDelta],
   );
-}
-
-function focusMapAroundPoint(point, radiusKm = START_LOCATION_RADIUS_KM, options = {}) {
-  map.fitBounds(boundsAroundPoint(point, radiusKm), {
-    animate: false,
-    padding: [44, 44],
-    maxZoom: options.maxZoom || 10,
-  });
 }
 
 function focusDetailsAroundMapCenter() {
@@ -859,7 +847,7 @@ function updateCandidatePanel() {
     return;
   }
   if (mapDataLoading) {
-    list.innerHTML = '<div class="candidate-empty">Plekken in dit kaartbeeld laden…</div>';
+    list.innerHTML = `<div class="candidate-empty">${mapManifest ? "Geschikte plekken zoeken…" : "Plekken laden…"}</div>`;
     displayedCandidates = [];
     return;
   }
@@ -966,23 +954,6 @@ function showLocationStatus(message, tone = "neutral", { sticky = false } = {}) 
   }
 }
 
-function hideStartupLocationPrompt() {
-  const prompt = document.querySelector("#startup-location-card");
-  if (prompt) prompt.hidden = true;
-}
-
-function showStartupLocationPrompt({ title = "Gebruik je locatie", message = STARTUP_LOCATION_COPY, primaryLabel = "Gebruik locatie" } = {}) {
-  const prompt = document.querySelector("#startup-location-card");
-  if (!prompt || userLocation || startupLocationPromptDismissed) return;
-  const titleElement = document.querySelector("#startup-location-title");
-  const copy = document.querySelector("#startup-location-copy");
-  const primaryButton = document.querySelector("#startup-use-location");
-  if (titleElement) titleElement.textContent = title;
-  if (copy) copy.textContent = message;
-  if (primaryButton) primaryButton.textContent = primaryLabel;
-  prompt.hidden = false;
-}
-
 function updateLocationNote() {
   const note = document.querySelector("#candidate-location-note");
   if (!note) return;
@@ -995,42 +966,27 @@ function updateLocationNote() {
   }
 }
 
-function resumeStartupSourceLoading() {
-  refreshMapPlaces();
-}
-
 function geolocationUnavailableMessage() {
   if (!("geolocation" in navigator)) return "Deze browser ondersteunt geen locatiebepaling.";
   if (!window.isSecureContext) return "GPS werkt op je telefoon alleen via HTTPS. Open de gepubliceerde GitHub Pages-link of gebruik het kaartmidden.";
   return "";
 }
 
-function requestUserLocation({ openCandidates = false, focusMap = true, focusRadiusKm = 0, quiet = false, promptOnError = false } = {}) {
+function requestUserLocation({ openCandidates = false, focusMap = true } = {}) {
   if (openCandidates) openCandidatePanel();
   const unavailableMessage = geolocationUnavailableMessage();
   if (unavailableMessage) {
     locationMessage = unavailableMessage;
     if (openCandidates && focusMap) focusDetailsAroundMapCenter();
-    resumeStartupSourceLoading();
-    if (promptOnError) {
-      startupLocationPromptDismissed = false;
-      showStartupLocationPrompt({
-        title: "Locatie niet beschikbaar",
-        message: unavailableMessage,
-        primaryLabel: "Opnieuw proberen",
-      });
-    } else if (!quiet) {
-      showLocationStatus(unavailableMessage, "warning", { sticky: true });
-    }
+    showLocationStatus(unavailableMessage, "warning", { sticky: true });
     updateLocationNote();
-    updateCandidatePanel();
+    refreshMapPlaces();
     return;
   }
 
-  hideStartupLocationPrompt();
   locationMessage = "Je positie bepalen...";
   setLocationControlsLoading(true);
-  if (!quiet) showLocationStatus("Je positie bepalen...", "neutral");
+  showLocationStatus(locationMessage, "neutral");
   updateLocationNote();
   if (openCandidates) updateCandidatePanel();
 
@@ -1041,80 +997,29 @@ function requestUserLocation({ openCandidates = false, focusMap = true, focusRad
       accuracy: position.coords.accuracy,
     };
     locationMessage = "Je huidige positie is actief.";
-    startupLocationPromptDismissed = true;
-    hideStartupLocationPrompt();
     drawUserLocation();
-    if (focusMap && focusRadiusKm) focusMapAroundPoint(userLocation, focusRadiusKm, { animate: !quiet });
-    else if (focusMap) navigateMapTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
+    if (focusMap) navigateMapTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
     setLocationControlsLoading(false);
     document.querySelector("#locate-me").classList.add("has-location");
-    if (!quiet) showLocationStatus("Huidige positie actief. Plekken worden nu vanaf jou gerangschikt.", "success");
+    showLocationStatus("Huidige positie actief. Plekken worden nu vanaf jou gerangschikt.", "success");
     updateLocationNote();
-    resumeStartupSourceLoading();
+    refreshMapPlaces();
   }, (error) => {
     setLocationControlsLoading(false);
-    const explanation = error.code === error.PERMISSION_DENIED
+    locationMessage = error.code === error.PERMISSION_DENIED
       ? "Locatietoegang is geweigerd. Zet locatie aan voor deze site of gebruik het midden van de kaart."
       : error.code === error.TIMEOUT
         ? "Locatie bepalen duurde te lang. Nook gebruikt nu het midden van de kaart."
         : "Deze browser gaf geen positie door. Nook gebruikt nu het midden van de kaart.";
-    locationMessage = explanation;
     if (openCandidates && focusMap) focusDetailsAroundMapCenter();
-    if (quiet || promptOnError) {
-      startupLocationPromptDismissed = false;
-      showStartupLocationPrompt({
-        title: error.code === error.PERMISSION_DENIED ? "Locatie staat uit" : "Locatie lukte niet",
-        message: `${explanation} Probeer opnieuw of gebruik het kaartmidden.`,
-        primaryLabel: "Opnieuw proberen",
-      });
-    } else {
-      showLocationStatus(explanation, "warning", { sticky: true });
-    }
+    showLocationStatus(locationMessage, "warning", { sticky: true });
     updateLocationNote();
-    updateCandidatePanel();
-    resumeStartupSourceLoading();
+    refreshMapPlaces();
   }, {
     enableHighAccuracy: false,
     timeout: 15000,
     maximumAge: 300000,
   });
-}
-
-async function openAroundCurrentLocation() {
-  if (startupLocationTried || userLocation || hasSavedMapView || new URLSearchParams(location.search).get("route") === "import" || location.hash === "#route-import") return;
-  startupLocationTried = true;
-  const unavailableMessage = geolocationUnavailableMessage();
-  if (unavailableMessage) {
-    resumeStartupSourceLoading();
-    showStartupLocationPrompt({
-      title: "Locatie niet beschikbaar",
-      message: unavailableMessage,
-      primaryLabel: "Toch proberen",
-    });
-    return;
-  }
-  try {
-    if (navigator.permissions?.query) {
-      const permission = await navigator.permissions.query({ name: "geolocation" });
-      if (permission.state === "denied") {
-        resumeStartupSourceLoading();
-        showStartupLocationPrompt({
-          title: "Locatie staat geblokkeerd",
-          message: "Zet locatie aan voor deze site in je browserinstellingen, of gebruik voorlopig het kaartmidden.",
-          primaryLabel: "Opnieuw proberen",
-        });
-        return;
-      }
-      if (permission.state === "granted") {
-        requestUserLocation({ focusMap: true, focusRadiusKm: START_LOCATION_RADIUS_KM, quiet: true, promptOnError: true });
-        return;
-      }
-    }
-  } catch (error) {
-    console.warn("Locatierechten konden niet vooraf worden gelezen.", error);
-  }
-  showStartupLocationPrompt();
-  resumeStartupSourceLoading();
 }
 
 function setFiltersOpen(open) {
@@ -1123,7 +1028,6 @@ function setFiltersOpen(open) {
   if (open) {
     closeCandidatePanel();
     renderEmptyPanel();
-    hideStartupLocationPrompt();
   }
   sidebar.classList.toggle("is-open", open);
   sidebar.setAttribute("aria-hidden", String(!open));
@@ -1654,14 +1558,16 @@ function showCoincidentPlaces(points, page = 0) {
 function updateMapDataHint() {
   const hint = document.querySelector("#map-data-hint");
   if (!hint) return;
+  // Zooming reuses the full index; only the initial download is a loading state.
+  const downloading = mapDataLoading && !mapManifest;
   const empty = !mapDataLoading && !mapMarkers.size && !visiblePlaceCounts.curated && !visiblePlaceCounts.imported;
   document.querySelector("#map-data-copy").textContent = mapDataError
     ? "Plekken konden niet laden. Controleer je verbinding."
-    : mapDataLoading ? "Plekken laden…" : empty ? "Geen plekken in beeld met deze filters. Verplaats de kaart of pas je filters aan." : "";
+    : downloading ? "Plekken laden…" : empty ? "Geen plekken in beeld met deze filters. Verplaats de kaart of pas je filters aan." : "";
   const action = document.querySelector("#map-data-action");
   action.textContent = mapDataError ? "Opnieuw proberen" : "Filters aanpassen";
   action.hidden = !mapDataError && !empty;
-  hint.hidden = !mapDataError && !mapDataLoading && !empty;
+  hint.hidden = !mapDataError && !downloading && !empty;
 }
 
 function retryMapData() {
@@ -2427,18 +2333,6 @@ document.querySelector("#locate-me").addEventListener("click", () => {
   if (userLocation) navigateMapTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
   else requestUserLocation({ focusMap: true });
 });
-document.querySelector("#startup-use-location").addEventListener("click", () => {
-  requestUserLocation({ focusMap: true, focusRadiusKm: START_LOCATION_RADIUS_KM, promptOnError: true });
-});
-document.querySelector("#startup-skip-location").addEventListener("click", () => {
-  startupLocationPromptDismissed = true;
-  hideStartupLocationPrompt();
-  locationMessage = "Nook gebruikt het midden van de kaart.";
-  showLocationStatus(locationMessage, "neutral");
-  updateLocationNote();
-  updateCandidatePanel();
-  resumeStartupSourceLoading();
-});
 document.querySelector("#show-candidates").addEventListener("click", () => {
   if (userLocation) {
     navigateMapTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
@@ -2514,7 +2408,6 @@ restoreCountrySelection();
 restoreFilterPreferences();
 restoreRoute();
 refreshMapPlaces();
-openAroundCurrentLocation();
 function openRouteImportPanelFromLink() {
   const sidebar = document.querySelector("#map-sidebar");
   sidebar.classList.add("no-transition");

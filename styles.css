@@ -698,62 +698,12 @@ h2 {
   background: rgba(74, 50, 27, 0.96);
 }
 
-.startup-location-card {
-  position: absolute;
-  z-index: 1210;
-  top: 18px;
-  left: 50%;
-  display: grid;
-  width: min(430px, calc(100% - 40px));
-  gap: 14px;
-  padding: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 24px;
-  color: var(--ink);
-  background: rgba(255, 253, 248, 0.94);
-  box-shadow: 0 18px 54px rgba(18, 49, 39, 0.18);
-  transform: translateX(-50%);
-  backdrop-filter: blur(18px);
-}
 
-.startup-location-card[hidden] {
-  display: none;
-}
 
-.startup-location-card span {
-  display: block;
-  margin-bottom: 5px;
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
 
-.startup-location-card strong {
-  display: block;
-  font-size: 20px;
-  letter-spacing: -0.03em;
-}
 
-.startup-location-card p {
-  margin: 6px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.45;
-}
 
-.startup-location-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
 
-.startup-location-actions .button {
-  min-height: 40px;
-  padding: 0 14px;
-}
 
 .tonight-button {
   display: inline-flex;
@@ -3102,15 +3052,7 @@ body.compact-page-body {
     max-width: none;
   }
 
-  .startup-location-card {
-    top: 64px;
-    width: calc(100% - 24px);
-    padding: 14px;
-  }
 
-  .startup-location-actions .button {
-    flex: 1;
-  }
 
   .tonight-button {
     flex: 1;
@@ -3283,7 +3225,6 @@ body.compact-page-body {
 .map-app .map-location-button,
 .map-app .tonight-button,
 .map-app .location-status,
-.map-app .startup-location-card,
 .map-app .map-data-hint {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -3293,7 +3234,6 @@ body.compact-page-body {
 .map-app .map-overlay-button,
 .map-app .map-location-button,
 .map-app .tonight-button { background: #123127; }
-.map-app .startup-location-card { background: #fffdf8; }
 
 /* Accessible map actions and readable source pages. */
 .skip-link {
@@ -3385,7 +3325,6 @@ nav a, .header-action { min-height: 44px; display: inline-flex; align-items: cen
 .map-data-hint button { display: block; margin: 4px auto 0; }
 .map-data-hint button[hidden] { display: none; }
 .map-app .leaflet-control-zoom a { width: 44px; height: 44px; }
-.startup-location-actions .button { min-height: 44px; white-space: normal; font-size: 13px; }
 .page-callout {
   display: flex;
   flex-wrap: wrap;

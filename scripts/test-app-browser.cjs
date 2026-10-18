@@ -19,7 +19,8 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
     };
     await page.goto(url(), { waitUntil: "load" });
     await settled();
-    if (await page.locator("#startup-skip-location").isVisible()) await page.locator("#startup-skip-location").click();
+    assert.equal(await page.locator("#startup-location-card").count(), 0, "The initial map has no location popup");
+    assert.equal(await page.evaluate(() => userLocation), null);
     await page.locator("#open-my-route").click();
     assert.ok(await page.locator("#map-sidebar").evaluate((element) => element.open));
     assert.equal(await page.evaluate(() => document.activeElement.id), "choose-gpx");
@@ -131,6 +132,32 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
     await retryPage.waitForFunction(() => !mapDataLoading && !mapDataError && mapMarkers.size > 0);
     console.log("PASS: failed map download recovers via retry without reloading the app");
     await retryContext.close();
+
+    const locationContext = await browser.newContext({ permissions: ["geolocation"], geolocation: { latitude: 52.1, longitude: 5.1, accuracy: 20 } });
+    const locationPage = await locationContext.newPage();
+    await locationPage.addInitScript(() => {
+      window.locationRequestCount = 0;
+      const request = navigator.geolocation.getCurrentPosition.bind(navigator.geolocation);
+      navigator.geolocation.getCurrentPosition = (...args) => { window.locationRequestCount++; return request(...args); };
+    });
+    await locationPage.goto(url(), { waitUntil: "load" });
+    await locationPage.waitForFunction(() => !mapDataLoading);
+    assert.equal(await locationPage.evaluate(() => window.locationRequestCount), 0, "Previously granted permission must not trigger automatic GPS");
+    assert.equal(await locationPage.evaluate(() => userLocation), null);
+    await locationPage.locator("#locate-me").click();
+    await locationPage.waitForFunction(() => userLocation && !mapDataLoading);
+    assert.equal(await locationPage.evaluate(() => window.locationRequestCount), 1);
+    assert.equal(await locationPage.evaluate(() => userLocation.lat), 52.1);
+    await locationPage.reload({ waitUntil: "load" });
+    await locationPage.waitForFunction(() => !mapDataLoading);
+    assert.equal(await locationPage.evaluate(() => window.locationRequestCount), 0);
+    await locationPage.locator("#show-candidates").click();
+    assert.equal(await locationPage.evaluate(() => window.locationRequestCount), 0, "Candidate browsing uses the map until GPS is requested");
+    await locationPage.locator("#candidate-use-location").click();
+    await locationPage.waitForFunction(() => userLocation && !mapDataLoading);
+    assert.equal(await locationPage.evaluate(() => window.locationRequestCount), 1);
+    console.log("PASS: no startup location popup or automatic GPS; both explicit location controls work");
+    await locationContext.close();
 
     // Storage quota failures must not delete the old GPX during migration.
     const quotaContext = await browser.newContext();

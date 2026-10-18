@@ -15,6 +15,10 @@ const { chromium } = require("playwright");
     });
     const page = await context.newPage();
     const errors = [];
+    const indexDownloads = [];
+    context.on("request", (request) => {
+      if (/\/data\/(map-index\.json|map-points\.bin(?:\.gz)?)(?:\?|$)/.test(request.url())) indexDownloads.push(request.url());
+    });
     page.on("pageerror", (error) => errors.push(error.message));
     // Remote tiles/fonts may need the platform proxy CA trusted in Chromium.
     // No external assets are needed to test canvas hit detection locally.
@@ -25,7 +29,23 @@ const { chromium } = require("playwright");
       assert.equal(await page.evaluate(() => mapDataError), "");
     };
     await settled();
-    await page.locator("#startup-skip-location").click();
+    const expectedPlaces = JSON.parse(fs.readFileSync(`${__dirname}/../data/map-index.json`, "utf8")).count;
+    assert.equal(await page.evaluate(() => mapManifest.count), expectedPlaces);
+    const initialDownloads = indexDownloads.length;
+    await context.setOffline(true);
+    for (const [lat, lng, zoom] of [[52.1, 5.1, 9], [59.91, 10.75, 10], [40.42, -3.7, 9]]) {
+      const loadingHintHidden = await page.evaluate(([lat, lng, zoom]) => {
+        map.setView([lat, lng], zoom, { animate: false });
+        refreshMapPlaces();
+        return document.querySelector("#map-data-hint").hidden;
+      }, [lat, lng, zoom]);
+      assert.equal(loadingHintHidden, true, "Reusing loaded positions must not show a download message");
+      await settled();
+      assert.ok(await page.evaluate(() => mapMarkers.size > 0), "Places in an unvisited country are already loaded");
+    }
+    assert.equal(indexDownloads.length, initialDownloads, "Zooming and changing countries must not download another point index");
+    await context.setOffline(false);
+    console.log(`PASS: all ${expectedPlaces.toLocaleString("nl-NL")} positions load at startup; unvisited countries work offline without extra point downloads`);
     await page.evaluate(() => { map.setView([52.1, 5.1], 9, { animate: false }); refreshMapPlaces(); });
     await settled();
     assert.equal(await page.locator(".leaflet-sourcePins-pane canvas").count(), 1);
