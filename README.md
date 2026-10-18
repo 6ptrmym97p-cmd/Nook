@@ -14,6 +14,8 @@ Op een HTTPS-host kan Nook via de browser aan het beginscherm worden toegevoegd.
 
 ## Publiek delen
 
+Het eigen domein is `ridewithnook.com`. De DNS-records voor Cloudflare en controles voor GitHub Pages staan in [de domeininstructies](docs/domein.md).
+
 Lees vóór een publieke demo of LinkedIn-post `docs/launch-security.md`. De repository bevat security headers in `_headers`, een CSP-vangnet in de HTML en statische databestanden in plaats van bezoeker-gestuurde API-verzoeken. Voor echte hostbescherming blijven CDN- of edge-rate-limits nodig.
 
 ## Datakeuzes
