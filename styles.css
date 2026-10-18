@@ -3374,3 +3374,73 @@ nav a, .header-action { min-height: 44px; display: inline-flex; align-items: cen
   .region-guide-facts { grid-template-columns: 1fr; gap: 12px; }
   .region-guide summary { font-size: 14px; }
 }
+
+/* Desktop: content pages fit the viewport; overflow scrolls inside cards, not the page. */
+@media (min-width: 821px) and (min-height: 560px) {
+  body.route-sources-page,
+  body.compact-page-body {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  .compact-main {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    grid-auto-rows: auto;
+    gap: 14px;
+    padding: 20px clamp(18px, 3vw, 44px);
+  }
+  .compact-main > :last-child { min-height: 0; }
+  .route-sources-page .compact-main { grid-template-rows: auto auto minmax(0, 1fr); }
+  .networks-page-body .compact-main { grid-template-rows: auto minmax(0, 1fr); }
+  .compact-header { padding-bottom: 10px; }
+  .compact-header h1 { font-size: clamp(30px, 3.2vw, 44px); }
+  .compact-main .eyebrow { margin-bottom: 6px; }
+  .page-callout { padding: 12px 20px; border-radius: 14px; }
+  .page-callout strong { font-size: 16px; }
+  .page-callout p { font-size: 13px; }
+
+  .source-table-grid { height: 100%; align-items: start; }
+  .source-table-card,
+  .rules-principles,
+  .region-guide-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    max-height: 100%;
+    padding: 16px 20px;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  .source-table-card h2,
+  .rules-principles h2 { font-size: 20px; margin-bottom: 4px; }
+  .source-table { font-size: 13px; }
+  .source-table th,
+  .source-table td { padding: 6px 8px; line-height: 1.35; }
+  .source-table thead th { position: sticky; top: -16px; background: #fffdf8; z-index: 1; }
+  .source-table a { min-height: 28px; }
+
+  /* Regels: matrix and region guides side by side. */
+  .compact-main:has(.rules-layout) {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.36fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .compact-main:has(.rules-layout) > .compact-header { grid-column: 1 / -1; }
+  .rules-layout { height: 100%; align-items: start; grid-template-columns: minmax(180px, 0.3fr) minmax(0, 1fr); }
+  .rules-principles { align-self: start; }
+  .rules-principles ul { gap: 6px; font-size: 13px; line-height: 1.5; }
+  .rules-table td { padding-top: 4px; padding-bottom: 4px; }
+  .rules-table .status-chip { white-space: nowrap; }
+  .region-guide-section { align-self: start; }
+  .region-guide-section h2 { font-size: 20px; margin-bottom: 4px; }
+  .region-guide-section .page-note { font-size: 12.5px; line-height: 1.45; }
+  .region-guide-list { gap: 6px; margin-top: 12px; }
+  .region-guide summary { min-height: 0; padding: 6px 12px; font-size: 13.5px; }
+  .region-guide-content { padding: 0 12px 12px; }
+  .region-guide-content p { margin: 10px 0; font-size: 13px; line-height: 1.55; }
+  .region-guide-facts { grid-template-columns: 1fr; gap: 6px; margin: 10px 0; }
+}
