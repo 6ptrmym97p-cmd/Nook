@@ -2138,6 +2138,16 @@ body.compact-page-body {
   text-underline-offset: 3px;
 }
 
+.networks-page-body .source-table a {
+  overflow-wrap: normal;
+}
+
+@media (max-width: 1024px) {
+  .networks-page-body .source-table-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .rules-layout {
   display: grid;
   min-height: 0;
