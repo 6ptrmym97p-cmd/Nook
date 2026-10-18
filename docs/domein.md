@@ -1,34 +1,44 @@
-# Eigen domein
+# Cloudflare Pages en eigen domein
 
-Nook gebruikt `ridewithnook.com` als domein. Het bestand `CNAME` in de root van de publicatiebranch legt dit vast voor GitHub Pages. De website, kaartgegevens, navigatie en PWA gebruiken relatieve paden, zodat ze ook vanaf de root van het eigen domein werken.
+Nook gebruikt `ridewithnook.com`. De website draait volledig statisch op Cloudflare Pages; een lokale computer of backend is niet nodig. GitHub is de bron voor publicatie.
 
-## Cloudflare
+## Buildinstellingen
 
-Open **ridewithnook.com → DNS → Records** en gebruik deze webrecords:
+- Repository: `6ptrmym97p-cmd/Nook`
+- Production branch: `main`
+- Framework preset: `None`
+- Build command: `node scripts/build-pages.mjs`
+- Build output directory: `dist`
+- Root directory: leeg (repository root)
+- Environment variables / secrets: niet nodig
 
-| Type | Naam | Waarde | Proxystatus |
-| --- | --- | --- | --- |
-| A | `@` | `185.199.108.153` | DNS only |
-| A | `@` | `185.199.109.153` | DNS only |
-| A | `@` | `185.199.110.153` | DNS only |
-| A | `@` | `185.199.111.153` | DNS only |
-| CNAME | `www` | `6ptrmym97p-cmd.github.io` | DNS only |
+De build kopieert de bestaande HTML, CSS, JavaScript, iconen, manifest, `_headers`, `data/` en `vendor/` ongewijzigd naar `dist/`. Documentatie, ontwikkelscripts, Git-metadata en het oude GitHub Pages-bestand `CNAME` worden niet gepubliceerd. Er zijn geen npm-dependencies en er worden tijdens de build geen externe databronnen opgehaald.
 
-Kies bij alle records het grijze wolkje (**DNS only**) en automatische TTL. Verwijder uitsluitend bestaande conflicterende A-, AAAA- of CNAME-records voor `@` en `www`; laat mail- en verificatierecords staan. Het doel van de CNAME bevat geen `https://` en geen `/Nook/`.
+## GitHub-integratie
 
-## GitHub Pages
+Gebruik de officiële Git-integratie van Cloudflare Pages. Productiedeployments vanaf `main` moeten ingeschakeld zijn. Een push naar `main` start dan automatisch een build en publiceert de nieuwe versie na een succesvolle build. De build en hosting draaien bij Cloudflare, onafhankelijk van een MacBook.
 
-Controleer in [Settings → Pages](https://github.com/6ptrmym97p-cmd/Nook/settings/pages) dat de publicatiebron `main` en `/ (root)` is en **Custom domain** op `ridewithnook.com` staat. Bij publicatie vanuit een branch wordt het domein via het bestand `CNAME` ingesteld; bij een eventuele overstap naar een eigen Actions-workflow moet het ook in de Pages-instellingen blijven staan.
+## Eigen domein
 
-GitHub controleert de DNS en vraagt daarna het HTTPS-certificaat aan. Zet **Enforce HTTPS** aan zodra die optie beschikbaar is. GitHub meldt dat DNS-wijzigingen tot 24 uur en een HTTPS-certificaat tot een uur kunnen kosten.
+Voeg `ridewithnook.com` toe onder **Workers & Pages → Nook → Custom domains**. Laat Cloudflare het bijbehorende CNAME-record naar het Pages-project instellen. Voeg ook `www.ridewithnook.com` toe als dat adres gebruikt wordt. Koppel het domein eerst in Pages; alleen een los DNS-record is niet voldoende.
 
-## Controle na koppeling
+Vervang alleen conflicterende webrecords voor deze hostnamen. Mail- en verificatierecords blijven staan. De eerdere GitHub Pages A-records (`185.199.*.153`) zijn voor deze Pages-hosting niet nodig. Het bestaande `CNAME`-bestand is historische GitHub Pages-configuratie; Cloudflare Pages gebruikt zijn eigen custom-domaininstellingen.
 
-- `https://ridewithnook.com/` opent de kaart met plekken.
-- `https://www.ridewithnook.com/` komt uit op hetzelfde hoofddomein.
-- Het oude GitHub Pages-adres verwijst door naar het nieuwe domein.
-- Navigatie, eigen GPX-route, plekdetails en offline herladen werken vanaf de nieuwe root.
+Cloudflare verzorgt HTTPS. Controleer dat de custom domain-status actief is en dat de website via HTTPS opent voordat je de koppeling als voltooid beschouwt.
 
-De domeinregistratie, Cloudflare DNS en GitHub Pages-instelling zijn afzonderlijke stappen. Alleen het toevoegen van `CNAME` bevestigt niet dat DNS of HTTPS al werken.
+## Routing en caching
 
-Bron: [GitHub-documentatie over eigen domeinen](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
+Dit is een website met meerdere HTML-pagina's, geen SPA-router. Relatieve links en `?route=import` / `#route-import` werken vanaf de domeinroot. Cloudflare kan `.html`-adressen naar hun extensieloze URL omleiden.
+
+De bestaande serviceworker bewaart de app-shell en bekeken kaartdata offline. Bij wijzigingen aan app-assets moeten de versies in HTML en `APP_SHELL` en de `SHELL_CACHE`-naam samen worden bijgewerkt, zoals in de bestaande releasewerkwijze. Bij een nieuwe dataset moeten ook de dataversies en de gedeelde runtime-cachenaam in `service-worker.js` en `map-worker.js` worden bijgewerkt. Een GitHub-deployment op zichzelf wist geen browsercaches.
+
+## Controle
+
+```sh
+node scripts/build-pages.mjs
+node --test scripts/test-service-worker.mjs scripts/test-map-data.mjs
+```
+
+Controleer na publicatie de kaart, filters, plekdetails, navigatie, GPX-import, offline herladen en HTTP-securityheaders. Controleer vervolgens met een nieuwe commit dat Cloudflare daadwerkelijk een automatische productiedeployment start.
+
+Bronnen: [Cloudflare Git-integratie](https://developers.cloudflare.com/pages/get-started/git-integration/) en [custom domains](https://developers.cloudflare.com/pages/configuration/custom-domains/).
