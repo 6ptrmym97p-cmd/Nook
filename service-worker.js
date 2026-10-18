@@ -1,5 +1,7 @@
-const SHELL_CACHE = "nook-shell-20261016-5";
+const SHELL_CACHE = "nook-shell-20261018-1";
 const RUNTIME_CACHE = "nook-runtime-20261016-4";
+const TILE_CACHE = "nook-tiles-v1";
+const MAX_TILES = 256;
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -7,10 +9,10 @@ const APP_SHELL = [
   "./regels.html",
   "./netwerken.html",
   "./over.html",
-  "./styles.css?v=20261016-4",
-  "./app.js?v=20261016-4",
+  "./styles.css?v=20261018-1",
+  "./app.js?v=20261018-1",
   "./map-canvas.js?v=20261016-4",
-  "./map-worker.js?v=20261016-4",
+  "./map-worker.js?v=20261018-1",
   "./vendor/supercluster-8.0.1.min.js",
   "./vendor/leaflet-1.9.4/leaflet.js",
   "./vendor/leaflet-1.9.4/leaflet.css",
@@ -24,7 +26,7 @@ const APP_SHELL = [
   "./icon-512.png?v=20261016-5",
   "./apple-touch-icon.png?v=20261016-5",
   "./manifest.webmanifest?v=20261016-5",
-  "./pwa.js?v=20261016-4"
+  "./pwa.js?v=20261018-1"
 ];
 
 self.addEventListener("install", (event) => {
@@ -35,7 +37,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => ![SHELL_CACHE, RUNTIME_CACHE].includes(key)).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(keys.filter((key) => /^nook-(shell|runtime|tiles)-/.test(key) && ![SHELL_CACHE, RUNTIME_CACHE, TILE_CACHE].includes(key)).map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
@@ -44,22 +46,30 @@ async function networkFirst(request) {
   const cache = await caches.open(RUNTIME_CACHE);
   try {
     const response = await fetch(request);
-    if (response.ok) cache.put(request, response.clone());
+    if (response.ok) {
+      try { await cache.put(request, response.clone()); } catch { /* Full storage must not block an online page. */ }
+    }
     return response;
   } catch (error) {
-    return (await cache.match(request)) || (await caches.match(request)) || caches.match("./index.html");
+    // Prefer this release's HTML when an older navigation remains in runtime.
+    const shell = await caches.open(SHELL_CACHE);
+    return (await shell.match(request, { ignoreSearch: true })) || (await cache.match(request)) || shell.match("./index.html");
   }
 }
 
-async function cacheFirst(request) {
+async function cacheFirst(request, isMapTile = false) {
   const cached = await caches.match(request);
   if (cached) return cached;
   const response = await fetch(request);
   if (response.ok || response.type === "opaque") {
-    const cache = await caches.open(RUNTIME_CACHE);
-    await cache.put(request, response.clone());
-    const keys = await cache.keys();
-    if (keys.length > 300) await cache.delete(keys[0]);
+    try {
+      const cache = await caches.open(isMapTile ? TILE_CACHE : RUNTIME_CACHE);
+      await cache.put(request, response.clone());
+      if (isMapTile) {
+        const keys = await cache.keys();
+        await Promise.all(keys.slice(0, Math.max(0, keys.length - MAX_TILES)).map((key) => cache.delete(key)));
+      }
+    } catch { /* Keep serving a successful download if browser storage is full. */ }
   }
   return response;
 }
@@ -81,6 +91,6 @@ self.addEventListener("fetch", (event) => {
     || request.destination === "image";
 
   if (url.origin === self.location.origin || isMapTile || isStaticAsset) {
-    event.respondWith(cacheFirst(request));
+    event.respondWith(cacheFirst(request, isMapTile));
   }
 });

@@ -22,7 +22,8 @@ Lees vóór een publieke demo of LinkedIn-post `docs/launch-security.md`. De rep
 - OpenStreetMap-campings worden als lokale momentopname in `data/` geserveerd. Bezoekers sturen geen live Overpass-zoekopdrachten vanuit Nook.
 - GPX-tracks en routes uit onder meer Komoot kunnen lokaal worden geïmporteerd. Een instelbare corridor van 1–50 kilometer verbergt slaapplaatsen die te ver van de fietsroute liggen; de inhoud verlaat de browser niet.
 - Geïmporteerde GPX-routes blijven als lokale routebibliotheek in de browser staan. Je kunt routes aan- en uitvinken; de afstandsfilter gebruikt alle actieve routes samen. De app bewaart de vereenvoudigde routepunten, niet het ruwe GPX-bestand.
-- Bij openen vraagt Nook om locatietoestemming en probeert de kaart op ongeveer 80 kilometer rond je huidige positie te zetten. Zo blijft de kaart meteen relevant en hoeft niet heel Europa tegelijk te laden.
+- Bij een eerste bezoek biedt Nook aan je locatie te gebruiken. Je kunt ook direct de kaart bekijken. Het laatste kaartbeeld wordt op dit apparaat onthouden, zodat een bezoek aan Regels of Routes je positie niet kwijtraakt.
+- **Mijn route** opent direct de GPX-import. Ongeldige bestanden veranderen de bestaande routelijst niet; landkeuze en de routefilter blijven bewaard. Verwijderde routes kun je tijdens dezelfde sessie herstellen.
 - `Plek voor vannacht` gebruikt, na toestemming, de actuele telefoonpositie. Met 15, 35 of 70 kilometer resterende fietsafstand worden maximaal negen kandidaten gerangschikt. Bij een actieve GPX gebeurt dat op voortgang langs de route; zonder GPX op hemelsbrede afstand.
 - De kandidatenlijst gebruikt dezelfde land-, slaapvorm-, netwerk- en routefilters als de kaart en beperkt het aantal resultaten per bron, zodat één gastnetwerk de lijst niet volledig vult.
 - Als locatietoegang niet beschikbaar of geweigerd is, blijft de functie werken vanaf het midden van het huidige kaartbeeld.
@@ -55,7 +56,7 @@ Na het vernieuwen van de openbare data maakt `scripts/build-public-data.mjs` aut
 
 ```bash
 node scripts/build-map-data.mjs
-node --test scripts/test-map-data.mjs
+node --test scripts/test-map-data.mjs scripts/test-service-worker.mjs
 ```
 
 Bij een datavernieuwing: verhoog ook de asset-/dataversie in `app.js`, `map-worker.js`, `index.html` en `service-worker.js`, zodat offlinecaches de nieuwe index en bijbehorende details samen verversen. Gebruik geen losse oude index met nieuwe detailbestanden.
@@ -65,7 +66,9 @@ De kaartbibliotheken staan met hun licenties in `vendor/`; er is geen pakketinst
 
 Bij schuiven en knijpzoomen transformeert Leaflet één canvaslaag met de bronpins; er is geen afzonderlijk bewegend HTML-element per pin. Resultaten worden pas na het gebaar ververst. Een buffer rondom het kaartbeeld voorkomt herberekenen bij kleine verschuivingen. Toetsenbord- en schermlezerbediening blijft beschikbaar via bijbehorende knoppen die hun canvaspin markeren bij focus.
 
-Clusterklikken gaan direct naar het volgende kaartgebied. De algemene PWA-bescherming tegen pagina-zoom onderschept geen snelle tikken, dubbel tikken of knijpgebaren binnen de kaart. Kaarttegels laden tijdens het schuiven en alleen voor het uiteindelijke zoomniveau. Permanente kaartknoppen gebruiken geen achtergrondblur meer tijdens kaartbewegingen.
+Clusterklikken gaan direct naar het volgende kaartgebied. Browserzoom blijft beschikbaar voor tekst en panelen; de kaart verwerkt eigen knijpgebaren. Er zijn geen globale touch-handlers die snelle tikken op knoppen annuleren. Kaarttegels laden tijdens het schuiven en alleen voor het uiteindelijke zoomniveau. Permanente kaartknoppen en plekpanelen gebruiken geen achtergrondblur tijdens kaartbewegingen.
+
+Kaarttegels hebben een eigen cache met maximaal 256 tegels. Het weggooien van oude tegels verwijdert geen compacte kaartindex of bekeken plekdetails. Offline HTML komt uit de huidige app-versie; een update bewaart lokale routes, voorkeuren en caches van andere apps op hetzelfde domein. Als browseropslag vol is, blijven geslaagde netwerkdownloads bruikbaar.
 
 Onder **Filters → Lichte onderkaart** kun je kiezen tussen minder kaartdata met een grovere achtergrond en de oorspronkelijke kaartdetails. Op aanraakschermen staat de lichte variant standaard aan. Beide gebruiken dezelfde OSM-bron en dezelfde exacte pin- en routecoördinaten; de instelling wordt lokaal bewaard.
 
@@ -73,8 +76,11 @@ Een extra browsercontrole is beschikbaar met een geïnstalleerde Playwright/Chro
 
 ```bash
 node scripts/test-map-browser.cjs
+node scripts/test-app-browser.cjs
 ```
 
 Start daarvoor de lokale server. Met `NOOK_TEST_URL` kun je ook een andere testhost controleren en met `NOOK_CHROMIUM` een lokaal Chromium-pad kiezen. In een proxyomgeving kun je met `NOOK_BROWSER_HOME` een apart browserprofiel met de vertrouwde platform-CA aanwijzen; TLS-controle blijft aan. De controle test echte touch-hitdetectie op canvas, hergebruik bij kleine verschuivingen, toetsenbordfocus en bewaren van het kaartdetailniveau. De native tests controleren daarnaast dat kaartgebaren niet worden geannuleerd en dat de gzip-index exact dezelfde punten bevat als de fallback. De browsercontrole test ook snel achter elkaar tikken op de zoomknop en een echt tweevinger-knijpgebaar, met een controle dat de pinlaag tijdens het gebaar niet wordt herbouwd.
 
 De aanpak volgt de optimalisatieprincipes uit [MapLibre's richtlijnen voor grote datasets](https://maplibre.org/maplibre-gl-js/docs/guides/large-data/) en [deck.gl's performance guide](https://deck.gl/docs/developer-guide/performance): minder tekenen, stabiele lagen, minder updates en gecomprimeerde data.
+
+De tweede browsercontrole doorloopt import, ongeldige GPX-bestanden, verwijderen/herstellen, instellingen en kaartbeeld bewaren, snelle touchkeuzes, plekdetails, downloadherstel en offline herladen. De informatiepagina's worden op 320, 390, 844 en 1440 pixels gecontroleerd op leesbaarheid, bereikbare laatste rijen en zichtbare bronlinks. Zie [de productreview van 18 oktober 2026](docs/product-review-2026-10-18.md) voor bevindingen en resterende verbeterpunten.

@@ -11,7 +11,7 @@ import { buildMapData } from "./build-map-data.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 
-test("PWA zoom protection leaves map pinch gestures and rapid map taps intact", () => {
+test("PWA leaves native page zoom, map gestures and rapid control taps intact", () => {
   const listeners = new Map();
   let now = 1000;
   const context = vm.createContext({
@@ -27,25 +27,25 @@ test("PWA zoom protection leaves map pinch gestures and rapid map taps intact", 
   });
   for (const type of ["gesturestart", "gesturechange", "gestureend"]) {
     const mapGesture = event(true);
-    listeners.get(type)(mapGesture);
+    listeners.get(type)?.(mapGesture);
     assert.equal(mapGesture.prevented, false, `${type} belongs to Leaflet`);
     const pageGesture = event(false);
-    listeners.get(type)(pageGesture);
-    assert.equal(pageGesture.prevented, true);
+    listeners.get(type)?.(pageGesture);
+    assert.equal(pageGesture.prevented, false, "Page pinch zoom remains available");
   }
   for (let i = 0; i < 3; i++) {
     const tap = event(true);
-    listeners.get("touchend")(tap);
+    listeners.get("touchend")?.(tap);
     assert.equal(tap.prevented, false, "Rapid map taps must still dispatch clicks");
     now += 80;
   }
   const first = event(false);
-  listeners.get("touchend")(first);
+  listeners.get("touchend")?.(first);
   assert.equal(first.prevented, false);
   now += 80;
   const second = event(false);
-  listeners.get("touchend")(second);
-  assert.equal(second.prevented, true, "Page double-tap zoom protection is retained outside the map");
+  listeners.get("touchend")?.(second);
+  assert.equal(second.prevented, false, "Rapid taps on page controls must dispatch clicks");
 });
 
 test("vendored map styles and scripts match the HTML integrity checks", () => {
@@ -103,17 +103,25 @@ test("compact index preserves every point, country, type and complete detail rec
   assert.deepEqual(repeated, manifest, "Rebuilding from generated detail batches must be deterministic");
 });
 
-async function worker(t) {
+async function worker(t, cacheFailure = null) {
   const { dir } = fixture(t);
   const messages = [];
   const context = vm.createContext({
     console, DataView, Set, Map,
     fetch: async (url) => {
       const bytes = fs.readFileSync(path.join(dir, url.replace(/^data\//, "").split("?")[0]));
-      return { ok: true, json: async () => JSON.parse(bytes), arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) };
+      return { ok: true, clone: () => ({}), json: async () => JSON.parse(bytes), arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) };
     },
     self: { postMessage: (message) => messages.push(message) },
   });
+  if (cacheFailure) {
+    const caches = { open: async () => {
+      if (cacheFailure === "open") throw new Error("Storage unavailable");
+      return { match: async () => null, put: async () => { throw new Error("QuotaExceededError"); } };
+    } };
+    context.caches = caches;
+    context.self.caches = caches;
+  }
   context.importScripts = (file) => vm.runInContext(fs.readFileSync(path.join(root, file), "utf8"), context);
   vm.runInContext(fs.readFileSync(path.join(root, "map-worker.js"), "utf8"), context);
   let id = 0;
@@ -135,6 +143,14 @@ async function worker(t) {
     filters,
   };
 }
+
+test("worker uses downloaded points when browser storage is unavailable or full", async (t) => {
+  for (const failure of ["open", "write"]) {
+    const w = await worker(t, failure);
+    const result = await w.query();
+    assert.equal(result.points.length, 263, `${failure}: downloaded places remain available`);
+  }
+});
 
 test("worker clusters spatially across borders and queries only the viewport", async (t) => {
   const w = await worker(t);

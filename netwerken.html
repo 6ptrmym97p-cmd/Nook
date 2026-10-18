@@ -2,7 +2,7 @@
 <html lang="nl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Netwerken | Nook</title>
     <meta name="theme-color" content="#123127" />
     <meta
@@ -18,50 +18,51 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20261016-4" />
+    <link rel="stylesheet" href="styles.css?v=20261018-1" />
   </head>
   <body class="compact-page-body">
+    <a class="skip-link" href="#main-content">Naar inhoud</a>
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Nook kaart"><img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="38" height="38" aria-hidden="true" /><span>Nook</span></a>
-      <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html">Routes</a><a href="regels.html">Regels</a><a href="netwerken.html" aria-current="page">Netwerken</a></nav>
+      <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html">Routes</a><a href="regels.html">Regels</a><a href="netwerken.html" aria-current="page">Netwerken</a><a class="mobile-about" href="over.html">Over</a></nav>
       <a class="header-action" href="over.html">Over</a>
     </header>
-    <main class="compact-main">
+    <main id="main-content" tabindex="-1" class="compact-main">
       <section class="compact-header">
         <div>
           <p class="eyebrow">Bronnen</p>
           <h1>Netwerken en kaartlagen</h1>
         </div>
-        <p>Nook serveert brondata als statische momentopname vanaf je eigen site. Contact, reservering en actuele voorwaarden blijven altijd bij het oorspronkelijke platform.</p>
+        <p>Kaartgegevens zijn een momentopname van 7 juli 2026. Controleer beschikbaarheid, kosten en reservering bij de oorspronkelijke bron.</p>
       </section>
       <section class="source-table-grid" aria-label="Netwerken en kaartlagen">
         <article class="source-table-card">
           <h2>In de kaart</h2>
-          <table class="source-table">
-            <thead><tr><th>Bron</th><th>Type</th><th>Omvang</th><th>Let op</th></tr></thead>
-            <tbody>
-              <tr><td><a href="https://udinaturen.dk/kort" target="_blank" rel="noreferrer">Ud i Naturen</a></td><td>Officieel DK</td><td>2.480 plekken</td><td>Superieur bij DK-dubbelen</td></tr>
-              <tr><td><a href="https://opencampingmap.org/" target="_blank" rel="noreferrer">OpenStreetMap-campings</a></td><td>Snapshot</td><td>82.084 pins</td><td>Controleer camping zelf</td></tr>
-              <tr><td><a href="https://map.campwild.org/" target="_blank" rel="noreferrer">CampWild</a></td><td>Community</td><td>5.944 pins</td><td>DK-dubbelen onderdrukt</td></tr>
-              <tr><td><a href="https://welcometomygarden.org/nl/explore" target="_blank" rel="noreferrer">Welcome To My Garden</a></td><td>Gasttuinen</td><td>5.921 pins</td><td>Contact via platform</td></tr>
-              <tr><td><a href="https://www.vriendenopdefiets.nl/zoek-een-logeeradres" target="_blank" rel="noreferrer">Vrienden op de Fiets</a></td><td>Gastadressen</td><td>5.341 pins</td><td>Geen hostdetails in Nook</td></tr>
+          <table role="table" class="source-table">
+            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Bron</th><th scope="col" role="columnheader">Type</th><th scope="col" role="columnheader">Omvang</th><th scope="col" role="columnheader">Let op</th></tr></thead>
+            <tbody role="rowgroup">
+              <tr role="row"><td role="cell" data-label="Bron"><a href="https://udinaturen.dk/kort" target="_blank" rel="noreferrer">Ud i Naturen</a></td><td role="cell" data-label="Type">Officieel DK</td><td role="cell" data-label="Omvang">2.480 plekken</td><td role="cell" data-label="Let op">Officiële bron heeft voorrang</td></tr>
+              <tr role="row"><td role="cell" data-label="Bron"><a href="https://opencampingmap.org/" target="_blank" rel="noreferrer">OpenStreetMap-campings</a></td><td role="cell" data-label="Type">Snapshot</td><td role="cell" data-label="Omvang">82.084 pins</td><td role="cell" data-label="Let op">Controleer camping zelf</td></tr>
+              <tr role="row"><td role="cell" data-label="Bron"><a href="https://map.campwild.org/" target="_blank" rel="noreferrer">CampWild</a></td><td role="cell" data-label="Type">Community</td><td role="cell" data-label="Omvang">5.944 pins</td><td role="cell" data-label="Let op">Dubbele Deense plekken weggelaten</td></tr>
+              <tr role="row"><td role="cell" data-label="Bron"><a href="https://welcometomygarden.org/nl/explore" target="_blank" rel="noreferrer">Welcome To My Garden</a></td><td role="cell" data-label="Type">Gasttuinen</td><td role="cell" data-label="Omvang">5.921 pins</td><td role="cell" data-label="Let op">Contact via platform</td></tr>
+              <tr role="row"><td role="cell" data-label="Bron"><a href="https://www.vriendenopdefiets.nl/zoek-een-logeeradres" target="_blank" rel="noreferrer">Vrienden op de Fiets</a></td><td role="cell" data-label="Type">Gastadressen</td><td role="cell" data-label="Omvang">5.341 pins</td><td role="cell" data-label="Let op">Geen hostdetails in Nook</td></tr>
             </tbody>
           </table>
         </article>
         <article class="source-table-card">
           <h2>Buiten de kaart</h2>
-          <table class="source-table">
-            <thead><tr><th>Bron</th><th>Status</th><th>Gebruik</th><th>Waarom</th></tr></thead>
-            <tbody>
-              <tr><td><a href="https://play.google.com/store/apps/details?id=org.warmshowers.app" target="_blank" rel="noreferrer">Warmshowers</a></td><td>Niet geïmporteerd</td><td>Officiële app</td><td>Geen stabiele publieke feed</td></tr>
-              <tr><td><a href="routebronnen.html">GPX-routes</a></td><td>Lokaal</td><td>Bestand importeren</td><td>Blijft in jouw browser</td></tr>
-              <tr><td><a href="regels.html">Landenregels</a></td><td>Samenvatting</td><td>Check voor vertrek</td><td>Terreinregels blijven leidend</td></tr>
-              <tr><td><a href="SECURITY.md">Securitybeleid</a></td><td>Repo</td><td>Launchcheck</td><td>Geen accounts, cookies of backend</td></tr>
+          <table role="table" class="source-table">
+            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Bron</th><th scope="col" role="columnheader">Status</th><th scope="col" role="columnheader">Gebruik</th><th scope="col" role="columnheader">Waarom</th></tr></thead>
+            <tbody role="rowgroup">
+              <tr role="row"><td role="cell" data-label="Bron"><a href="https://play.google.com/store/apps/details?id=org.warmshowers.app" target="_blank" rel="noreferrer">Warmshowers</a></td><td role="cell" data-label="Status">Niet geïmporteerd</td><td role="cell" data-label="Gebruik">Officiële app</td><td role="cell" data-label="Waarom">Geen stabiele publieke feed</td></tr>
+              <tr role="row"><td role="cell" data-label="Bron"><a href="routebronnen.html">GPX-routes</a></td><td role="cell" data-label="Status">Lokaal</td><td role="cell" data-label="Gebruik">Bestand importeren</td><td role="cell" data-label="Waarom">Blijft in jouw browser</td></tr>
+              <tr role="row"><td role="cell" data-label="Bron"><a href="regels.html">Landenregels</a></td><td role="cell" data-label="Status">Samenvatting</td><td role="cell" data-label="Gebruik">Check voor vertrek</td><td role="cell" data-label="Waarom">Terreinregels blijven leidend</td></tr>
+              <tr role="row"><td role="cell" data-label="Bron"><a href="over.html">Over Nook</a></td><td role="cell" data-label="Status">Zonder account</td><td role="cell" data-label="Gebruik">Privacy en uitleg</td><td role="cell" data-label="Waarom">Routes blijven op dit apparaat</td></tr>
             </tbody>
           </table>
         </article>
       </section>
     </main>
-    <script src="pwa.js?v=20261016-4"></script>
+    <script src="pwa.js?v=20261018-1"></script>
   </body>
 </html>

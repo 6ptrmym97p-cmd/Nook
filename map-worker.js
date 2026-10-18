@@ -44,11 +44,16 @@ async function cachedData(url) {
   // Workers may start before the service worker controls the first page load.
   // Retain the compact index explicitly so one online visit also works offline.
   if (!("caches" in self)) return fetch(url);
-  const cache = await caches.open("nook-runtime-20261016-4");
-  const cached = await cache.match(url);
-  if (cached) return cached;
+  let cache;
+  try {
+    cache = await caches.open("nook-runtime-20261016-4");
+    const cached = await cache.match(url);
+    if (cached) return cached;
+  } catch { /* Private browsing or unavailable storage: use the network. */ }
   const response = await fetch(url);
-  if (response.ok) await cache.put(url, response.clone());
+  if (response.ok && cache) {
+    try { await cache.put(url, response.clone()); } catch { /* A full cache must not hide downloaded points. */ }
+  }
   return response;
 }
 

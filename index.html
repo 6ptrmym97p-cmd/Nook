@@ -2,7 +2,7 @@
 <html lang="nl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta
       name="description"
       content="Kaart voor bikepackers en tourfietsers: vind slaapplekken, importeer GPX-routes en filter op afstand, land en type."
@@ -43,9 +43,10 @@
       integrity="sha256-YSWCMtmNZNwqex4CEw1nQhvFub2lmU7vcCKP+XVwwXA="
       crossorigin=""
     />
-    <link rel="stylesheet" href="styles.css?v=20261016-4" />
+    <link rel="stylesheet" href="styles.css?v=20261018-1" />
   </head>
   <body class="map-app">
+    <a class="skip-link" href="#main-content">Naar inhoud</a>
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Nook kaart">
         <img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="38" height="38" aria-hidden="true" />
@@ -56,23 +57,29 @@
         <a href="routebronnen.html">Routes</a>
         <a href="regels.html">Regels</a>
         <a href="netwerken.html">Netwerken</a>
-      </nav>
+      <a class="mobile-about" href="over.html">Over</a></nav>
       <a class="header-action" href="over.html">Over</a>
     </header>
 
-    <main class="map-main">
+    <main id="main-content" tabindex="-1" class="map-main">
       <section class="map-section" id="kaart">
         <h1 class="visually-hidden">Nook: sleep spots for people on the move</h1>
 
         <div class="map-shell">
           <div class="map-frame">
             <div id="map" aria-label="Kaart met slaapplekken"></div>
-            <div class="map-data-hint" id="map-data-hint" hidden></div>
+            <div class="map-data-hint" id="map-data-hint" role="status" hidden>
+              <span id="map-data-copy"></span>
+              <button id="map-data-action" type="button" hidden>Opnieuw proberen</button>
+            </div>
           </div>
 
           <div class="map-actions" aria-label="Kaartacties">
             <button class="map-overlay-button filter-toggle" id="toggle-filters" type="button" aria-controls="map-sidebar" aria-expanded="false">
-              <span aria-hidden="true">☷</span> Filters
+              <span aria-hidden="true">☷</span> Filters <small id="filter-count" hidden></small>
+            </button>
+            <button class="map-overlay-button route-toggle" id="open-my-route" type="button" aria-controls="map-sidebar">
+              <span aria-hidden="true">↝</span> Mijn route
             </button>
           </div>
           <div class="map-decision-actions" aria-label="Onderweg kiezen">
@@ -85,7 +92,7 @@
             </button>
           </div>
           <p class="location-status" id="location-status" aria-live="polite" hidden></p>
-          <div class="startup-location-card" id="startup-location-card" role="dialog" aria-labelledby="startup-location-title" hidden>
+          <div class="startup-location-card" id="startup-location-card" role="region" aria-labelledby="startup-location-title" hidden>
             <div>
               <span>Start dichtbij</span>
               <strong id="startup-location-title">Gebruik je locatie</strong>
@@ -93,38 +100,18 @@
             </div>
             <div class="startup-location-actions">
               <button class="button button-primary" id="startup-use-location" type="button">Gebruik locatie</button>
-              <button class="button button-quiet" id="startup-skip-location" type="button">Kaartmidden</button>
+              <button class="button button-quiet" id="startup-skip-location" type="button">Bekijk de kaart</button>
             </div>
           </div>
-          <div class="map-overlay-scrim" id="map-overlay-scrim" hidden></div>
-
-          <aside class="map-sidebar" id="map-sidebar" aria-label="Kaartfilters" aria-hidden="true">
+          <dialog class="map-sidebar" id="map-sidebar" aria-labelledby="filters-title" aria-hidden="true">
             <div class="overlay-panel-heading">
               <div>
                 <span>Kaartinstellingen</span>
-                <strong>Wat wil je zien?</strong>
+                <strong id="filters-title">Wat wil je zien?</strong>
               </div>
               <button class="overlay-close" id="close-filters" type="button" aria-label="Filters sluiten">×</button>
             </div>
-            <fieldset class="filter-block">
-              <legend>Onderkaart</legend>
-              <label class="check-row">
-                <input id="light-basemap" type="checkbox" />
-                Lichte onderkaart
-              </label>
-              <p class="microcopy">Minder data, met een grovere onderkaart. Zet uit voor meer kaartdetail.</p>
-            </fieldset>
-            <fieldset class="filter-block country-filter" id="country-filter">
-              <legend>Landen</legend>
-              <p class="microcopy country-note" id="country-selection-summary">Dynamisch rond het kaartbeeld.</p>
-              <div class="country-filter-actions" aria-label="Snelle landselectie">
-                <button type="button" id="set-auto-countries">Kaartgebied</button>
-                <button type="button" id="toggle-country-list" aria-controls="country-toggle-grid" aria-expanded="false">Kies landen</button>
-                <button type="button" id="clear-countries">Geen</button>
-              </div>
-              <div class="country-toggle-grid" id="country-toggle-grid" hidden></div>
-            </fieldset>
-
+            <div class="filter-content">
             <fieldset class="filter-block sleep-filter" id="sleep-filter">
               <legend>Slaapvorm</legend>
               <label class="check-row">
@@ -172,19 +159,35 @@
               </p>
             </fieldset>
 
+            <fieldset class="filter-block country-filter" id="country-filter">
+              <legend>Landen</legend>
+              <p class="microcopy country-note" id="country-selection-summary">Dynamisch rond het kaartbeeld.</p>
+              <div class="country-filter-actions" aria-label="Snelle landselectie">
+                <button type="button" id="set-auto-countries">Kaartgebied</button>
+                <button type="button" id="toggle-country-list" aria-controls="country-toggle-grid" aria-expanded="false">Kies landen</button>
+                <button type="button" id="clear-countries">Geen</button>
+              </div>
+              <div class="country-toggle-grid" id="country-toggle-grid" hidden></div>
+            </fieldset>
+
             <fieldset class="filter-block route-filter" id="route-import">
               <legend>Mijn route</legend>
-              <label class="button button-quiet gpx-button" for="gpx-file">
+              <button class="button button-quiet gpx-button" id="choose-gpx" type="button">
                 Kies GPX uit Bestanden
-              </label>
-              <input id="gpx-file" class="visually-hidden" type="file" accept=".gpx,application/gpx+xml,application/xml,text/xml" />
+              </button>
+              <input id="gpx-file" class="visually-hidden" type="file" aria-labelledby="choose-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml" />
               <a class="route-source-link" href="routebronnen.html">Nog geen GPX? Vind een route <span>→</span></a>
+              <p class="route-feedback" id="route-feedback" role="status" hidden></p>
               <div class="route-library" id="route-library" hidden>
                 <div class="route-library-heading">
                   <span>Bewaarde GPX-routes</span>
                   <small id="route-library-count">0 routes</small>
                 </div>
                 <div class="route-list" id="route-list"></div>
+              </div>
+              <div class="route-undo" id="route-undo" hidden>
+                <span id="route-undo-message" role="status"></span>
+                <button id="undo-route-removal" type="button">Herstellen</button>
               </div>
               <div class="route-distance-control">
                 <label for="route-distance">Maximale afstand van route</label>
@@ -207,10 +210,23 @@
               </p>
             </fieldset>
 
-          </aside>
+            <fieldset class="filter-block">
+              <legend>Onderkaart</legend>
+              <label class="check-row">
+                <input id="light-basemap" type="checkbox" />
+                Lichte onderkaart
+              </label>
+              <p class="microcopy">Minder data, met een grovere onderkaart. Zet uit voor meer kaartdetail.</p>
+            </fieldset>
+            </div>
+            <div class="filter-footer">
+              <button class="button button-primary" id="show-filtered-map" type="button">Toon kaart</button>
+              <button class="filter-reset" id="reset-filters" type="button">Reset filters</button>
+            </div>
+          </dialog>
 
-          <aside class="place-panel" id="place-panel" aria-live="polite" aria-hidden="true"></aside>
-          <aside class="candidate-panel" id="candidate-panel" aria-live="polite" aria-hidden="true">
+          <aside class="place-panel" id="place-panel" aria-label="Plekdetails" tabindex="-1" aria-live="polite" aria-hidden="true" inert></aside>
+          <aside class="candidate-panel" id="candidate-panel" aria-label="Plekken voor vannacht" tabindex="-1" aria-hidden="true" inert>
             <div class="candidate-heading">
               <div><span>Onderweg kiezen</span><strong>Plekken voor vannacht</strong></div>
               <button class="candidate-close" id="close-candidates" type="button" aria-label="Kandidaten sluiten">×</button>
@@ -225,9 +241,9 @@
             </div>
             <div class="candidate-horizon" aria-label="Hoe ver wil je nog fietsen?">
               <span>Nog fietsen</span>
-              <button type="button" data-horizon="15">15 km</button>
-              <button type="button" data-horizon="35" class="is-active">35 km</button>
-              <button type="button" data-horizon="70">70 km</button>
+              <button type="button" data-horizon="15" aria-pressed="false">15 km</button>
+              <button type="button" data-horizon="35" aria-pressed="true" class="is-active">35 km</button>
+              <button type="button" data-horizon="70" aria-pressed="false">70 km</button>
             </div>
             <div class="candidate-list" id="candidate-list"></div>
           </aside>
@@ -247,7 +263,7 @@
     ></script>
     <script src="public-data.js?v=20260708-1"></script>
     <script src="map-canvas.js?v=20261016-4"></script>
-    <script src="app.js?v=20261016-4"></script>
-    <script src="pwa.js?v=20261016-4"></script>
+    <script src="app.js?v=20261018-1"></script>
+    <script src="pwa.js?v=20261018-1"></script>
   </body>
 </html>

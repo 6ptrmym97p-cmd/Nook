@@ -2,7 +2,7 @@
 <html lang="nl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Regels | Nook</title>
     <meta name="theme-color" content="#123127" />
     <meta
@@ -18,22 +18,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20261016-4" />
+    <link rel="stylesheet" href="styles.css?v=20261018-1" />
   </head>
   <body class="compact-page-body">
+    <a class="skip-link" href="#main-content">Naar inhoud</a>
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Nook kaart">
         <img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="38" height="38" aria-hidden="true" />
         <span>Nook</span>
       </a>
-      <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html">Routes</a><a href="regels.html" aria-current="page">Regels</a><a href="netwerken.html">Netwerken</a></nav>
+      <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html">Routes</a><a href="regels.html" aria-current="page">Regels</a><a href="netwerken.html">Netwerken</a><a class="mobile-about" href="over.html">Over</a></nav>
       <a class="header-action" href="over.html">Over</a>
     </header>
-    <main class="compact-main">
+    <main id="main-content" tabindex="-1" class="compact-main">
       <section class="compact-header">
         <div>
           <p class="eyebrow">Landenwijzer</p>
-          <h1>Regels in één scherm</h1>
+          <h1>Waar mag je overnachten?</h1>
         </div>
         <p>Samenvatting voor fietsers met een kleine tent. Gebruik dit als startpunt; lokale borden, brandgevaar, terreinbeheer en toestemming blijven leidend.</p>
       </section>
@@ -49,25 +50,25 @@
         </article>
         <article class="source-table-card">
           <h2>Landenmatrix</h2>
-          <table class="source-table rules-table">
-            <thead><tr><th>Land</th><th>Status</th><th>Kernregel</th><th>Bron</th></tr></thead>
-            <tbody>
-              <tr><td>NL</td><td><span class="status-chip status-strict">Streng</span></td><td>Gebruik toestemming, gastnetwerk of terrein.</td><td><a href="https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2020/05/sluiten-paalkampeerterreinen" target="_blank" rel="noreferrer">Staatsbosbeheer</a></td></tr>
-              <tr><td>BE</td><td><span class="status-chip status-mixed">Aangewezen</span></td><td>Bivakzone, terrein of toestemming.</td><td><a href="https://natuurenbos.be/activiteiten/bivakzone" target="_blank" rel="noreferrer">Natuur en Bos</a></td></tr>
-              <tr><td>LU</td><td><span class="status-chip status-strict">Streng</span></td><td>Geen vrij kampeerrecht; plan officieel.</td><td><a href="https://www.visitluxembourg.com/plan-your-stay/stay/camping" target="_blank" rel="noreferrer">Visit Luxembourg</a></td></tr>
-              <tr><td>DE</td><td><span class="status-chip status-mixed">Deelstaat</span></td><td>Toestemming of trekkingplek; check deelstaat.</td><td><a href="https://www.gesetze-im-internet.de/bnatschg_2009/__59.html" target="_blank" rel="noreferrer">BNatSchG</a></td></tr>
-              <tr><td>DK</td><td><span class="status-chip status-good">Aangewezen</span></td><td>Gebruik officiële vrije tentbossen/shelters.</td><td><a href="https://eng.naturstyrelsen.dk/experience-nature/sleeping-outside-in-nature" target="_blank" rel="noreferrer">Naturstyrelsen</a></td></tr>
-              <tr><td>SE</td><td><span class="status-chip status-good">Ruim</span></td><td>Allemansrätten, zorgvuldig en kort.</td><td><a href="https://www.naturvardsverket.se/en/topics/the-right-of-public-access/activities-and-places/camping--tents/" target="_blank" rel="noreferrer">Naturvårdsverket</a></td></tr>
-              <tr><td>NO</td><td><span class="status-chip status-good">Ruim</span></td><td>Utmark, 150 m afstand, meestal max 2 nachten.</td><td><a href="https://www.environmentagency.no/areas-of-activity/right-to-roam/camping/" target="_blank" rel="noreferrer">Environment Agency</a></td></tr>
-              <tr><td>FR</td><td><span class="status-chip status-mixed">Lokaal</span></td><td>Park, gemeente en toestemming bepalen.</td><td><a href="https://www.parcsnationaux.fr/" target="_blank" rel="noreferrer">Parcs nationaux</a></td></tr>
-              <tr><td>CH</td><td><span class="status-chip status-mixed">Lokaal</span></td><td>Vaak alleen zorgvuldig boven boomgrens.</td><td><a href="https://www.sac-cas.ch/de/umwelt/bergsport-und-umwelt/campieren-und-biwakieren/" target="_blank" rel="noreferrer">SAC</a></td></tr>
-              <tr><td>AT</td><td><span class="status-chip status-strict">Deelstaat</span></td><td>Bos alleen met toestemming; check deelstaat.</td><td><a href="https://www.ris.bka.gv.at/NormDokument.wxe?Abfrage=Bundesnormen&amp;Gesetzesnummer=10010371&amp;Paragraf=33" target="_blank" rel="noreferrer">Forstgesetz</a></td></tr>
-              <tr><td>IT</td><td><span class="status-chip status-mixed">Regionaal</span></td><td>Regio, gemeente en parkbeheer bepalen.</td><td><a href="https://www.cai.it/" target="_blank" rel="noreferrer">CAI</a></td></tr>
+          <table role="table" class="source-table rules-table">
+            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Land</th><th scope="col" role="columnheader">Status</th><th scope="col" role="columnheader">Kernregel</th><th scope="col" role="columnheader">Bron</th></tr></thead>
+            <tbody role="rowgroup">
+              <tr role="row"><td role="cell" data-label="Land">NL</td><td role="cell" data-label="Status"><span class="status-chip status-strict">Streng</span></td><td role="cell" data-label="Kernregel">Gebruik toestemming, gastnetwerk of terrein.</td><td role="cell" data-label="Bron"><a href="https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2020/05/sluiten-paalkampeerterreinen" target="_blank" rel="noreferrer">Staatsbosbeheer</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Land">BE</td><td role="cell" data-label="Status"><span class="status-chip status-mixed">Aangewezen</span></td><td role="cell" data-label="Kernregel">Bivakzone, terrein of toestemming.</td><td role="cell" data-label="Bron"><a href="https://natuurenbos.be/activiteiten/bivakzone" target="_blank" rel="noreferrer">Natuur en Bos</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Land">LU</td><td role="cell" data-label="Status"><span class="status-chip status-strict">Streng</span></td><td role="cell" data-label="Kernregel">Geen vrij kampeerrecht; plan officieel.</td><td role="cell" data-label="Bron"><a href="https://www.visitluxembourg.com/plan-your-stay/stay/camping" target="_blank" rel="noreferrer">Visit Luxembourg</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Land">DE</td><td role="cell" data-label="Status"><span class="status-chip status-mixed">Deelstaat</span></td><td role="cell" data-label="Kernregel">Toestemming of trekkingplek; check deelstaat.</td><td role="cell" data-label="Bron"><a href="https://www.gesetze-im-internet.de/bnatschg_2009/__59.html" target="_blank" rel="noreferrer">BNatSchG</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Land">DK</td><td role="cell" data-label="Status"><span class="status-chip status-good">Aangewezen</span></td><td role="cell" data-label="Kernregel">Gebruik officiële vrije tentbossen/shelters.</td><td role="cell" data-label="Bron"><a href="https://eng.naturstyrelsen.dk/experience-nature/sleeping-outside-in-nature" target="_blank" rel="noreferrer">Naturstyrelsen</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Land">SE</td><td role="cell" data-label="Status"><span class="status-chip status-good">Ruim</span></td><td role="cell" data-label="Kernregel">Allemansrätten, zorgvuldig en kort.</td><td role="cell" data-label="Bron"><a href="https://www.naturvardsverket.se/en/topics/the-right-of-public-access/activities-and-places/camping--tents/" target="_blank" rel="noreferrer">Naturvårdsverket</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Land">NO</td><td role="cell" data-label="Status"><span class="status-chip status-good">Ruim</span></td><td role="cell" data-label="Kernregel">Utmark, 150 m afstand, meestal max 2 nachten.</td><td role="cell" data-label="Bron"><a href="https://www.environmentagency.no/areas-of-activity/right-to-roam/camping/" target="_blank" rel="noreferrer">Environment Agency</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Land">FR</td><td role="cell" data-label="Status"><span class="status-chip status-mixed">Lokaal</span></td><td role="cell" data-label="Kernregel">Park, gemeente en toestemming bepalen.</td><td role="cell" data-label="Bron"><a href="https://www.parcsnationaux.fr/" target="_blank" rel="noreferrer">Parcs nationaux</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Land">CH</td><td role="cell" data-label="Status"><span class="status-chip status-mixed">Lokaal</span></td><td role="cell" data-label="Kernregel">Vaak alleen zorgvuldig boven boomgrens.</td><td role="cell" data-label="Bron"><a href="https://www.sac-cas.ch/de/umwelt/bergsport-und-umwelt/campieren-und-biwakieren/" target="_blank" rel="noreferrer">SAC</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Land">AT</td><td role="cell" data-label="Status"><span class="status-chip status-strict">Deelstaat</span></td><td role="cell" data-label="Kernregel">Bos alleen met toestemming; check deelstaat.</td><td role="cell" data-label="Bron"><a href="https://www.ris.bka.gv.at/NormDokument.wxe?Abfrage=Bundesnormen&amp;Gesetzesnummer=10010371&amp;Paragraf=33" target="_blank" rel="noreferrer">Forstgesetz</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Land">IT</td><td role="cell" data-label="Status"><span class="status-chip status-mixed">Regionaal</span></td><td role="cell" data-label="Kernregel">Regio, gemeente en parkbeheer bepalen.</td><td role="cell" data-label="Bron"><a href="https://www.cai.it/" target="_blank" rel="noreferrer">CAI</a></td></tr>
             </tbody>
           </table>
         </article>
       </section>
     </main>
-    <script src="pwa.js?v=20261016-4"></script>
+    <script src="pwa.js?v=20261018-1"></script>
   </body>
 </html>

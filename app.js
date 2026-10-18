@@ -344,6 +344,9 @@ const sources = [
 ];
 
 const publicData = window.NOOK_DATA || {};
+const MAP_VIEW_KEY = "nook-map-view-v1";
+const savedMapView = storedJson(MAP_VIEW_KEY);
+const hasSavedMapView = validMapPoint(savedMapView) && Number.isFinite(savedMapView.zoom) && savedMapView.zoom >= 2 && savedMapView.zoom <= 19;
 
 const BASEMAP_DETAIL_KEY = "nook-light-basemap-v1";
 const savedBaseMapDetail = getUserValue(BASEMAP_DETAIL_KEY);
@@ -358,7 +361,7 @@ const map = L.map("map", {
   bounceAtZoomLimits: false,
   wheelDebounceTime: 80,
   wheelPxPerZoomLevel: 60,
-}).setView([52.4, 8.8], 4);
+}).setView(hasSavedMapView ? [savedMapView.lat, savedMapView.lng] : [52.4, 8.8], hasSavedMapView ? savedMapView.zoom : 4);
 const DirectZoomControl = L.Control.Zoom.extend({
   _zoomIn(event) {
     if (!this._disabled) navigateMapTo(map.getCenter(), map.getZoom() + map.options.zoomDelta * (event.shiftKey ? 3 : 1));
@@ -448,6 +451,7 @@ const LEGACY_ROUTE_KEY = "nook-saved-route-v1";
 let importedWaypoints = [];
 let savedRoutes = [];
 let routesPersisted = true;
+let removedRoutes = [];
 let currentCandidates = [];
 let displayedCandidates = [];
 let userLocation = null;
@@ -692,6 +696,8 @@ function markerIcon(type) {
 function renderEmptyPanel(title = "Kies een plek", message = "Klik op een marker voor regels, bron en praktische aandachtspunten.") {
   placeDetailSequence++;
   const panel = document.querySelector("#place-panel");
+  if (panel.contains(document.activeElement)) document.querySelector("#map").focus({ preventScroll: true });
+  panel.inert = true;
   panel.classList.remove("is-open");
   panel.setAttribute("aria-hidden", "true");
   panel.innerHTML = `
@@ -715,6 +721,8 @@ function showPlaceMessage(title, message) {
   panel.prepend(close);
   panel.classList.add("is-open");
   panel.setAttribute("aria-hidden", "false");
+  panel.inert = false;
+  panel.focus({ preventScroll: true });
 }
 
 function renderPlace(place) {
@@ -773,9 +781,12 @@ function renderPlace(place) {
   `;
   panel.classList.add("is-open");
   panel.setAttribute("aria-hidden", "false");
+  panel.inert = false;
   panel.querySelector(".place-panel-close").addEventListener("click", () => renderEmptyPanel());
   panel.querySelector(".place-photo")?.addEventListener("error", (event) => event.currentTarget.closest(".place-photo-wrap")?.remove());
   setFiltersOpen(false);
+  panel.scrollTop = 0;
+  panel.focus({ preventScroll: true });
 }
 
 function formatDistance(distanceKm) {
@@ -842,6 +853,11 @@ function updateCandidatePanel() {
   if (!candidatePanelOpen) return;
   const list = document.querySelector("#candidate-list");
   const intro = document.querySelector("#candidate-intro");
+  if (mapDataError) {
+    displayedCandidates = [];
+    list.innerHTML = '<div class="candidate-empty"><strong>Plekken konden niet laden.</strong><span>Controleer je verbinding en probeer opnieuw.</span><button class="button button-quiet" type="button" data-retry-map>Opnieuw proberen</button></div>';
+    return;
+  }
   if (mapDataLoading) {
     list.innerHTML = '<div class="candidate-empty">Plekken in dit kaartbeeld laden…</div>';
     displayedCandidates = [];
@@ -860,7 +876,8 @@ function updateCandidatePanel() {
     list.innerHTML = `
       <div class="candidate-empty">
         <strong>Geen passende plekken binnen ${candidateHorizonKm} km.</strong>
-        <span>Vergroot “nog fietsen”, verruim je filters of zoek openbare OSM-plekken in dit kaartbeeld.</span>
+        <span>Kies een grotere afstand, verplaats de kaart of verruim je filters.</span>
+        <button class="button button-quiet" type="button" data-open-filters>Filters aanpassen</button>
       </div>`;
     return;
   }
@@ -882,11 +899,13 @@ function updateCandidatePanel() {
 function openCandidatePanel() {
   candidatePanelOpen = true;
   const panel = document.querySelector("#candidate-panel");
-  document.querySelector("#place-panel").classList.remove("is-open");
-  document.querySelector("#place-panel").setAttribute("aria-hidden", "true");
+  renderEmptyPanel();
   setFiltersOpen(false);
   panel.classList.add("is-open");
   panel.setAttribute("aria-hidden", "false");
+  panel.inert = false;
+  panel.focus({ preventScroll: true });
+  panel.scrollTop = 0;
   if (!userLocation) focusDetailsAroundMapCenter();
   refreshMapPlaces();
 }
@@ -894,6 +913,8 @@ function openCandidatePanel() {
 function closeCandidatePanel() {
   candidatePanelOpen = false;
   const panel = document.querySelector("#candidate-panel");
+  if (panel?.contains(document.activeElement)) document.querySelector("#show-candidates").focus({ preventScroll: true });
+  if (panel) panel.inert = true;
   panel?.classList.remove("is-open");
   panel?.setAttribute("aria-hidden", "true");
   if (map.getZoom() < 9) scheduleViewportRefresh();
@@ -1060,7 +1081,7 @@ function requestUserLocation({ openCandidates = false, focusMap = true, focusRad
 }
 
 async function openAroundCurrentLocation() {
-  if (startupLocationTried || userLocation) return;
+  if (startupLocationTried || userLocation || hasSavedMapView || new URLSearchParams(location.search).get("route") === "import" || location.hash === "#route-import") return;
   startupLocationTried = true;
   const unavailableMessage = geolocationUnavailableMessage();
   if (unavailableMessage) {
@@ -1099,11 +1120,38 @@ async function openAroundCurrentLocation() {
 function setFiltersOpen(open) {
   const sidebar = document.querySelector("#map-sidebar");
   const toggle = document.querySelector("#toggle-filters");
-  const scrim = document.querySelector("#map-overlay-scrim");
+  if (open) {
+    closeCandidatePanel();
+    renderEmptyPanel();
+    hideStartupLocationPrompt();
+  }
   sidebar.classList.toggle("is-open", open);
   sidebar.setAttribute("aria-hidden", String(!open));
   toggle.setAttribute("aria-expanded", String(open));
-  scrim.hidden = !open;
+  if (open && !sidebar.open) sidebar.showModal();
+  if (!open && sidebar.open) sidebar.close();
+}
+
+function updateFilterSummary() {
+  const count = [...document.querySelectorAll('#sleep-filter input:not(:checked)')].length
+    + Number(countrySelectionMode !== "auto") + Number(routeFilterEnabled());
+  const badge = document.querySelector("#filter-count");
+  badge.textContent = String(count);
+  badge.hidden = !count;
+  document.querySelector("#toggle-filters").setAttribute("aria-label", count ? `Filters, ${count} actieve beperkingen` : "Filters");
+}
+
+function resetFilters() {
+  document.querySelectorAll('#sleep-filter input').forEach((input) => { input.checked = true; });
+  document.querySelector("#route-filter-active").checked = false;
+  setAutoCountries({ announce: false });
+  saveFilterPreferences();
+  refreshMapPlaces();
+}
+
+function saveMapView() {
+  const center = map.getCenter().wrap();
+  setUserValue(MAP_VIEW_KEY, JSON.stringify({ lat: center.lat, lng: center.lng, zoom: map.getZoom() }));
 }
 
 function currentFilters() {
@@ -1395,10 +1443,12 @@ function requestMapSources(filters) {
   if (!mapWorker) {
     if (!("Worker" in window)) {
       mapDataError = "Deze browser ondersteunt de kaartberekening niet. Probeer een recente browser.";
+      mapDataLoading = false;
       updateMapDataHint();
+      updateCandidatePanel();
       return;
     }
-    mapWorker = new Worker("map-worker.js?v=20261016-4");
+    mapWorker = new Worker("map-worker.js?v=20261018-1");
     mapWorker.onmessage = ({ data }) => {
       if (data.type === "ready") {
         mapManifest = data.manifest;
@@ -1408,6 +1458,7 @@ function requestMapSources(filters) {
         mapDataLoading = false;
         mapDataError = data.message;
         updateMapDataHint();
+        updateCandidatePanel();
         return;
       }
       // Ignore late results from a previous viewport or filter selection.
@@ -1425,6 +1476,7 @@ function requestMapSources(filters) {
       mapDataLoading = false;
       mapDataError = "De kaart kon niet laden. Controleer je verbinding en laad de pagina opnieuw.";
       updateMapDataHint();
+      updateCandidatePanel();
     };
   }
   const enabled = routeFilterEnabled();
@@ -1456,6 +1508,7 @@ function requestMapSources(filters) {
     filters: selection,
   };
   mapDataLoading = true;
+  mapDataError = "";
   mapWorker.postMessage(lastMapQuery);
   updateMapDataHint();
   updateCandidatePanel();
@@ -1601,8 +1654,22 @@ function showCoincidentPlaces(points, page = 0) {
 function updateMapDataHint() {
   const hint = document.querySelector("#map-data-hint");
   if (!hint) return;
-  hint.textContent = mapDataError || (mapDataLoading ? "Plekken in dit kaartbeeld laden…" : !mapMarkers.size && !visiblePlaceCounts.curated && !visiblePlaceCounts.imported ? "Geen plekken in dit kaartbeeld met deze filters." : "");
-  hint.hidden = !hint.textContent;
+  const empty = !mapDataLoading && !mapMarkers.size && !visiblePlaceCounts.curated && !visiblePlaceCounts.imported;
+  document.querySelector("#map-data-copy").textContent = mapDataError
+    ? "Plekken konden niet laden. Controleer je verbinding."
+    : mapDataLoading ? "Plekken laden…" : empty ? "Geen plekken in beeld met deze filters. Verplaats de kaart of pas je filters aan." : "";
+  const action = document.querySelector("#map-data-action");
+  action.textContent = mapDataError ? "Opnieuw proberen" : "Filters aanpassen";
+  action.hidden = !mapDataError && !empty;
+  hint.hidden = !mapDataError && !mapDataLoading && !empty;
+}
+
+function retryMapData() {
+  mapWorker?.terminate();
+  mapWorker = null;
+  lastMapQuery = null;
+  lastWorkerRoute = null;
+  refreshMapPlaces();
 }
 
 function scheduleViewportRefresh() {
@@ -1816,6 +1883,7 @@ function filterPreferenceState() {
     networks: [...document.querySelectorAll("[data-network]")]
       .map((input) => ({ value: input.dataset.network, checked: input.checked })),
     candidateHorizonKm,
+    routeFilterActive: document.querySelector("#route-filter-active").checked,
   };
 }
 
@@ -1826,6 +1894,9 @@ function saveFilterPreferences() {
 function restoreFilterPreferences() {
   const preferences = storedJson(FILTER_PREFERENCES_KEY);
   if (!preferences || typeof preferences !== "object") return;
+  if (typeof preferences.routeFilterActive === "boolean") {
+    document.querySelector("#route-filter-active").checked = preferences.routeFilterActive;
+  }
   const hasLegacyCampingLayer = Object.prototype.hasOwnProperty.call(preferences, "campingLayer");
 
   if (Array.isArray(preferences.sleepTypes)) {
@@ -1849,6 +1920,7 @@ function restoreFilterPreferences() {
     candidateHorizonKm = Number(preferences.candidateHorizonKm);
     document.querySelectorAll("[data-horizon]").forEach((button) => {
       button.classList.toggle("is-active", Number(button.dataset.horizon) === candidateHorizonKm);
+      button.setAttribute("aria-pressed", String(Number(button.dataset.horizon) === candidateHorizonKm));
     });
   }
 }
@@ -1935,10 +2007,15 @@ function xmlText(element, tagName) {
 
 function coordinatesFromElements(elements) {
   return elements.flatMap((element) => {
+    if (!element.getAttribute("lat")?.trim() || !element.getAttribute("lon")?.trim()) return [];
     const lat = Number(element.getAttribute("lat"));
     const lng = Number(element.getAttribute("lon"));
-    return Number.isFinite(lat) && Number.isFinite(lng) ? [{ lat, lng }] : [];
+    return validMapPoint({ lat, lng }) ? [{ lat, lng }] : [];
   });
+}
+
+function validMapPoint(point) {
+  return Number.isFinite(point?.lat) && Math.abs(point.lat) <= 90 && Number.isFinite(point?.lng) && Math.abs(point.lng) <= 180;
 }
 
 function renderImportedWaypoints() {
@@ -1987,6 +2064,7 @@ function refreshMapPlaces() {
   requestMapSources(currentFilters());
   updateRouteStatus();
   updateCountryFilterControls();
+  updateFilterSummary();
 }
 
 function setRouteControls(hasActiveTrack, hasSavedRoutes = hasActiveTrack) {
@@ -2012,13 +2090,13 @@ function emptyRouteState() {
 
 function validRouteLines(lines) {
   return (Array.isArray(lines) ? lines : [])
-    .map((line) => (Array.isArray(line) ? line : []).filter((point) => Number.isFinite(point.lat) && Number.isFinite(point.lng)))
+    .map((line) => (Array.isArray(line) ? line : []).filter(validMapPoint))
     .filter((line) => line.length > 1);
 }
 
 function validRouteWaypoints(waypoints) {
   return (Array.isArray(waypoints) ? waypoints : [])
-    .filter((item) => Number.isFinite(item.lat) && Number.isFinite(item.lng) && item.place)
+    .filter((item) => validMapPoint(item) && item.place)
     .slice(0, 5000);
 }
 
@@ -2087,12 +2165,12 @@ function renderRouteLibrary() {
 
 function saveRouteLibrary() {
   const saved = setUserValue(ROUTE_LIBRARY_KEY, JSON.stringify(savedRoutes));
-  removeUserValue(LEGACY_ROUTE_KEY);
+  if (saved) removeUserValue(LEGACY_ROUTE_KEY);
   routesPersisted = saved;
   return saved;
 }
 
-function rebuildActiveRoutes({ fitPoints = null } = {}) {
+function rebuildActiveRoutes({ fitPoints = null, fit = false } = {}) {
   const activeRoutes = savedRoutes.filter((route) => route.enabled);
   const activeTrackRoutes = activeRoutes.filter((route) => route.lines.length);
   const activeLines = activeTrackRoutes.flatMap((route) => route.lines);
@@ -2118,7 +2196,7 @@ function rebuildActiveRoutes({ fitPoints = null } = {}) {
   renderRouteLibrary();
 
   const boundsPoints = fitPoints || (activeLines.length ? activeLines.flat() : importedWaypoints);
-  if (boundsPoints.length) {
+  if ((fit || fitPoints) && boundsPoints.length) {
     map.fitBounds(L.latLngBounds(boundsPoints.map((point) => [point.lat, point.lng])), { padding: [34, 34], maxZoom: 11 });
   }
 }
@@ -2133,8 +2211,7 @@ function restoreRoute() {
     if (restoredRoutes.length) {
       savedRoutes = restoredRoutes;
       routesPersisted = true;
-      document.querySelector("#route-filter-active").checked = true;
-      rebuildActiveRoutes();
+      rebuildActiveRoutes({ fit: !hasSavedMapView });
       return true;
     }
 
@@ -2152,138 +2229,119 @@ function restoreRoute() {
     if (!legacyRoute) return false;
     savedRoutes = [legacyRoute];
     saveRouteLibrary();
-    document.querySelector("#route-filter-active").checked = true;
-    rebuildActiveRoutes();
+    rebuildActiveRoutes({ fit: !hasSavedMapView });
     return true;
   } catch (error) {
     console.warn("Bewaarde GPX-routes konden niet worden hersteld.", error);
-    removeUserValue(ROUTE_LIBRARY_KEY);
     return false;
   }
 }
 
 function clearRoute() {
-  routeLayer.clearLayers();
-  importedLayer.clearLayers();
-  savedRoutes = [];
-  importedWaypoints = [];
-  routeState = emptyRouteState();
-  removeUserValue(ROUTE_LIBRARY_KEY);
-  removeUserValue(LEGACY_ROUTE_KEY);
-  routesPersisted = true;
-  setRouteControls(false, false);
-  renderRouteLibrary();
+  removeSavedRoutes(savedRoutes.map((route) => route.id));
+}
+
+function removeSavedRoutes(ids) {
+  removedRoutes = savedRoutes.flatMap((route, index) => ids.includes(route.id) ? [{ route, index }] : []);
+  if (!removedRoutes.length) return;
+  savedRoutes = savedRoutes.filter((route) => !ids.includes(route.id));
+  saveRouteLibrary();
+  document.querySelector("#route-undo-message").textContent = removedRoutes.length === 1 ? `${removedRoutes[0].route.name} verwijderd.` : `${removedRoutes.length} routes verwijderd.`;
+  document.querySelector("#route-undo").hidden = false;
+  rebuildActiveRoutes();
   refreshMapPlaces();
+  document.querySelector("#undo-route-removal").focus({ preventScroll: true });
+}
+
+function undoRouteRemoval() {
+  for (const { route, index } of removedRoutes) {
+    if (!savedRoutes.some((item) => item.id === route.id)) savedRoutes.splice(Math.min(index, savedRoutes.length), 0, route);
+  }
+  removedRoutes = [];
+  document.querySelector("#route-undo").hidden = true;
+  const saved = saveRouteLibrary();
+  rebuildActiveRoutes();
+  refreshMapPlaces();
+  showRouteFeedback(saved ? "Verwijderde routes hersteld en bewaard." : "Routes hersteld, maar opslaan op dit apparaat is niet gelukt.", !saved);
+  document.querySelector("#choose-gpx").focus({ preventScroll: true });
+}
+
+function showRouteFeedback(message, error = false) {
+  const feedback = document.querySelector("#route-feedback");
+  feedback.textContent = message;
+  feedback.hidden = !message;
+  feedback.classList.toggle("is-error", error);
 }
 
 function importGpx(file) {
-  const status = document.querySelector("#route-status");
+  if (file.size > 20 * 1024 * 1024) {
+    showRouteFeedback("Dit bestand is groter dan 20 MB. Exporteer een kortere of vereenvoudigde GPX-route en probeer opnieuw.", true);
+    return;
+  }
   const reader = new FileReader();
-  status.textContent = `${file.name} lezen…`;
-
-  reader.onerror = () => {
-    status.textContent = "Dit GPX-bestand kon niet worden gelezen.";
-  };
-
+  showRouteFeedback(`${file.name} lezen…`);
+  reader.onerror = () => showRouteFeedback("Dit GPX-bestand kon niet worden gelezen. Kies het bestand opnieuw.", true);
   reader.onload = () => {
-    const documentXml = new DOMParser().parseFromString(reader.result, "application/xml");
-    if (documentXml.querySelector("parsererror")) {
-      status.textContent = "Dit bestand bevat geen geldige GPX-XML.";
-      return;
-    }
-
-    const trackLines = [...documentXml.getElementsByTagNameNS("*", "trkseg")]
-      .map((segment) => coordinatesFromElements([...segment.getElementsByTagNameNS("*", "trkpt")]))
-      .filter((line) => line.length > 1);
-    const routeLines = [...documentXml.getElementsByTagNameNS("*", "rte")]
-      .map((route) => coordinatesFromElements([...route.getElementsByTagNameNS("*", "rtept")]))
-      .filter((line) => line.length > 1);
-    const rawLines = trackLines.length ? trackLines : routeLines;
-    const waypointElements = [...documentXml.getElementsByTagNameNS("*", "wpt")];
-
-    if (!rawLines.length && !waypointElements.length) {
-      status.textContent = "Geen track, route of waypoint in dit GPX-bestand gevonden.";
-      return;
-    }
-
-    const routeWaypoints = waypointElements.slice(0, 5000).flatMap((waypoint, index) => {
-      const lat = Number(waypoint.getAttribute("lat"));
-      const lng = Number(waypoint.getAttribute("lon"));
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return [];
-
-      const name = xmlText(waypoint, "name") || `GPX-plek ${index + 1}`;
-      const description = xmlText(waypoint, "desc") || xmlText(waypoint, "cmt") || "Geïmporteerd waypoint zonder aanvullende beschrijving.";
-      const linkElement = [...waypoint.getElementsByTagNameNS("*", "link")][0];
-      const link = linkElement?.getAttribute("href");
-      const sourceUrl = link && /^https?:\/\//i.test(link) ? link : "https://www.openstreetmap.org/";
-      const place = {
-        name,
-        lat,
-        lng,
-        location: `${lat.toFixed(5)}, ${lng.toFixed(5)} · geïmporteerd uit ${file.name}`,
-        type: "hut",
-        confidence: 1,
-        sourceLabel: `GPX: ${file.name}`,
-        sourceUrl,
-        description,
-        stay: "Controleer bij bron",
-        cost: "Niet uit GPX af te leiden",
-        water: "Niet uit GPX af te leiden",
-        caution: "Een GPX-bestand kan verouderd zijn. Controleer prijs, reservering, toegang en actuele staat bij de oorspronkelijke bron of lokale beheerder.",
-      };
-      return [{ lat, lng, place }];
-    });
-
-    if (rawLines.length) {
-      const allRawPoints = rawLines.flat();
-      const preparedLines = prepareRouteLines(rawLines);
-      const metadata = [...documentXml.getElementsByTagNameNS("*", "metadata")][0];
-      const track = [...documentXml.getElementsByTagNameNS("*", "trk")][0];
-      const route = [...documentXml.getElementsByTagNameNS("*", "rte")][0];
-      const routeName = xmlText(metadata || documentXml, "name")
-        || xmlText(track || documentXml, "name")
-        || xmlText(route || documentXml, "name")
-        || file.name.replace(/\.gpx$/i, "");
-      const routeRecord = normalizeRouteRecord({
-        id: routeId(file.name),
-        name: routeName,
-        fileName: file.name,
-        originalSize: file.size,
-        pointCount: allRawPoints.length,
-        lengthKm: routeLengthKm(rawLines),
-        lines: preparedLines,
-        waypoints: routeWaypoints,
-        enabled: true,
-        importedAt: new Date().toISOString(),
+    try {
+      const xml = new DOMParser().parseFromString(reader.result, "application/xml");
+      if (xml.querySelector("parsererror") || xml.documentElement?.localName !== "gpx") {
+        showRouteFeedback("Dit is geen geldig GPX-bestand. Je bewaarde routes zijn behouden.", true);
+        return;
+      }
+      const trackLines = [...xml.getElementsByTagNameNS("*", "trkseg")]
+        .map((segment) => coordinatesFromElements([...segment.getElementsByTagNameNS("*", "trkpt")]))
+        .filter((line) => line.length > 1);
+      const routeLines = [...xml.getElementsByTagNameNS("*", "rte")]
+        .map((route) => coordinatesFromElements([...route.getElementsByTagNameNS("*", "rtept")]))
+        .filter((line) => line.length > 1);
+      const rawLines = trackLines.length ? trackLines : routeLines;
+      const waypoints = [...xml.getElementsByTagNameNS("*", "wpt")].slice(0, 5000).flatMap((waypoint, index) => {
+        const [point] = coordinatesFromElements([waypoint]);
+        if (!point) return [];
+        const { lat, lng } = point;
+        const name = xmlText(waypoint, "name") || `GPX-plek ${index + 1}`;
+        const description = xmlText(waypoint, "desc") || xmlText(waypoint, "cmt") || "Geïmporteerd waypoint zonder aanvullende beschrijving.";
+        const link = [...waypoint.getElementsByTagNameNS("*", "link")][0]?.getAttribute("href");
+        return [{ lat, lng, place: {
+          name, lat, lng, description,
+          location: `${lat.toFixed(5)}, ${lng.toFixed(5)} · geïmporteerd uit ${file.name}`,
+          type: "hut", confidence: 1, sourceLabel: `GPX: ${file.name}`,
+          sourceUrl: link && /^https?:\/\//i.test(link) ? link : "https://www.openstreetmap.org/",
+          stay: "Controleer bij bron", cost: "Niet uit GPX af te leiden", water: "Niet uit GPX af te leiden",
+          caution: "Een GPX-bestand kan verouderd zijn. Controleer prijs, reservering, toegang en actuele staat bij de oorspronkelijke bron of lokale beheerder.",
+        } }];
       });
-      savedRoutes.push(routeRecord);
-      const saved = saveRouteLibrary();
-      document.querySelector("#route-filter-active").checked = true;
-      setSelectedCountries(ALL_COUNTRY_CODES, { fit: false, announce: false });
-      rebuildActiveRoutes({ fitPoints: allRawPoints });
-      refreshMapPlaces();
-      const sizeLabel = formatFileSize(file.size);
-      status.textContent = `${routeName} toegevoegd (${Math.round(routeRecord.lengthKm).toLocaleString("nl-NL")} km${sizeLabel ? ` · ${sizeLabel}` : ""}).${saved ? " Lokaal bewaard." : " Staat tijdelijk op de kaart, maar paste niet in browseropslag."}`;
-    } else {
-      const waypointRoute = normalizeRouteRecord({
-        id: routeId(file.name),
-        name: file.name.replace(/\.gpx$/i, "") || "GPX-waypoints",
-        fileName: file.name,
-        originalSize: file.size,
-        lines: [],
-        waypoints: routeWaypoints,
-        enabled: true,
-        importedAt: new Date().toISOString(),
+      if (!rawLines.length && !waypoints.length) {
+        showRouteFeedback("Geen route of waypoints met geldige coördinaten gevonden. Je bewaarde routes zijn behouden.", true);
+        return;
+      }
+      const metadata = [...xml.getElementsByTagNameNS("*", "metadata")][0];
+      const track = [...xml.getElementsByTagNameNS("*", "trk")][0];
+      const route = [...xml.getElementsByTagNameNS("*", "rte")][0];
+      const name = xmlText(metadata || track || route || xml, "name") || file.name.replace(/\.gpx$/i, "") || "GPX-route";
+      const record = normalizeRouteRecord({
+        id: routeId(file.name), name, fileName: file.name, originalSize: file.size,
+        pointCount: rawLines.reduce((total, line) => total + line.length, 0),
+        lengthKm: routeLengthKm(rawLines), lines: prepareRouteLines(rawLines), waypoints,
+        enabled: true, importedAt: new Date().toISOString(),
       });
-      savedRoutes.push(waypointRoute);
+      if (!record) {
+        showRouteFeedback("Deze GPX bevat geen bruikbare route of waypoints. Je bewaarde routes zijn behouden.", true);
+        return;
+      }
+      savedRoutes.push(record);
+      if (rawLines.length) document.querySelector("#route-filter-active").checked = true;
       const saved = saveRouteLibrary();
-      rebuildActiveRoutes({ fitPoints: routeWaypoints });
+      saveFilterPreferences();
+      rebuildActiveRoutes({ fitPoints: rawLines.length ? rawLines.flat() : waypoints });
       refreshMapPlaces();
-      const sizeLabel = formatFileSize(file.size);
-      status.textContent = `${routeWaypoints.length} losse GPX-waypoints toegevoegd${sizeLabel ? ` (${sizeLabel})` : ""}; dit bestand bevat geen route of track.${saved ? " Lokaal bewaard." : " Staat tijdelijk op de kaart, maar paste niet in browseropslag."}`;
+      const detail = rawLines.length ? `${Math.round(record.lengthKm).toLocaleString("nl-NL")} km` : `${waypoints.length} waypoints`;
+      showRouteFeedback(`${name} toegevoegd (${detail}). ${saved ? "Bewaard op dit apparaat." : "Tijdelijk zichtbaar: opslaan op dit apparaat is niet gelukt."}`, !saved);
+    } catch (error) {
+      console.warn("GPX kon niet worden geïmporteerd.", error);
+      showRouteFeedback("Deze GPX kon niet worden verwerkt. Probeer een nieuwe export; je eerdere routes zijn behouden.", true);
     }
   };
-
   reader.readAsText(file);
 }
 
@@ -2329,6 +2387,9 @@ document.querySelector("#gpx-file").addEventListener("change", (event) => {
   if (file) importGpx(file);
   event.target.value = "";
 });
+document.querySelector("#choose-gpx").addEventListener("click", () => document.querySelector("#gpx-file").click());
+document.querySelector("#undo-route-removal").addEventListener("click", undoRouteRemoval);
+document.querySelector("#open-my-route").addEventListener("click", openRouteImportPanelFromLink);
 document.querySelector("#route-distance").addEventListener("input", updateRouteStatus);
 document.querySelector("#route-distance").addEventListener("change", (event) => {
   setUserValue(ROUTE_DISTANCE_KEY, event.target.value);
@@ -2342,7 +2403,10 @@ document.querySelectorAll("[data-route-distance]").forEach((button) => {
     refreshMapPlaces();
   });
 });
-document.querySelector("#route-filter-active").addEventListener("change", refreshMapPlaces);
+document.querySelector("#route-filter-active").addEventListener("change", () => {
+  saveFilterPreferences();
+  refreshMapPlaces();
+});
 document.querySelector("#clear-route").addEventListener("click", clearRoute);
 document.querySelector("#route-list").addEventListener("change", (event) => {
   const checkbox = event.target.closest("[data-route-toggle]");
@@ -2357,10 +2421,7 @@ document.querySelector("#route-list").addEventListener("change", (event) => {
 document.querySelector("#route-list").addEventListener("click", (event) => {
   const button = event.target.closest("[data-route-remove]");
   if (!button) return;
-  savedRoutes = savedRoutes.filter((route) => route.id !== button.dataset.routeRemove);
-  saveRouteLibrary();
-  rebuildActiveRoutes();
-  refreshMapPlaces();
+  removeSavedRoutes([button.dataset.routeRemove]);
 });
 document.querySelector("#locate-me").addEventListener("click", () => {
   if (userLocation) navigateMapTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
@@ -2383,7 +2444,7 @@ document.querySelector("#show-candidates").addEventListener("click", () => {
     navigateMapTo([userLocation.lat, userLocation.lng], Math.max(map.getZoom(), 13));
     openCandidatePanel();
   } else {
-    requestUserLocation({ openCandidates: true, focusMap: true });
+    openCandidatePanel();
   }
 });
 document.querySelector("#candidate-use-location").addEventListener("click", () => {
@@ -2394,11 +2455,14 @@ document.querySelectorAll("[data-horizon]").forEach((button) => {
   button.addEventListener("click", () => {
     candidateHorizonKm = Number(button.dataset.horizon);
     document.querySelectorAll("[data-horizon]").forEach((item) => item.classList.toggle("is-active", item === button));
+    document.querySelectorAll("[data-horizon]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
     saveFilterPreferences();
     updateCandidatePanel();
   });
 });
 document.querySelector("#candidate-list").addEventListener("click", (event) => {
+  if (event.target.closest("[data-open-filters]")) { setFiltersOpen(true); return; }
+  if (event.target.closest("[data-retry-map]")) { retryMapData(); return; }
   const button = event.target.closest("[data-candidate-index]");
   if (!button) return;
   const candidate = displayedCandidates[Number(button.dataset.candidateIndex)];
@@ -2412,20 +2476,32 @@ document.querySelector("#toggle-filters").addEventListener("click", () => {
   setFiltersOpen(!isOpen);
 });
 document.querySelector("#close-filters").addEventListener("click", () => setFiltersOpen(false));
-document.querySelector("#map-overlay-scrim").addEventListener("click", () => setFiltersOpen(false));
+document.querySelector("#show-filtered-map").addEventListener("click", () => setFiltersOpen(false));
+document.querySelector("#reset-filters").addEventListener("click", resetFilters);
+document.querySelector("#map-data-action").addEventListener("click", () => mapDataError ? retryMapData() : setFiltersOpen(true));
+document.querySelector("#map-sidebar").addEventListener("cancel", (event) => {
+  event.preventDefault();
+  setFiltersOpen(false);
+});
+document.querySelector("#map-sidebar").addEventListener("click", (event) => {
+  if (event.target !== event.currentTarget) return;
+  const bounds = event.currentTarget.getBoundingClientRect();
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) setFiltersOpen(false);
+});
 map.on("movestart zoomstart", () => {
   mapIsMoving = true;
   window.clearTimeout(viewportRefreshTimer);
 });
 map.on("moveend", () => {
   mapIsMoving = false;
+  saveMapView();
   scheduleViewportRefresh();
 });
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
-  setFiltersOpen(false);
-  closeCandidatePanel();
-  renderEmptyPanel();
+  if (document.querySelector("#map-sidebar").open) return;
+  if (candidatePanelOpen) closeCandidatePanel();
+  else renderEmptyPanel();
 });
 
 renderCountryFilter();
@@ -2441,21 +2517,17 @@ refreshMapPlaces();
 openAroundCurrentLocation();
 function openRouteImportPanelFromLink() {
   const sidebar = document.querySelector("#map-sidebar");
-  const mapShell = document.querySelector(".map-shell");
   sidebar.classList.add("no-transition");
   setFiltersOpen(true);
   const routeImport = document.querySelector("#route-import");
   routeImport.classList.add("is-highlighted");
   const positionRouteImport = () => {
-    mapShell.scrollTop = 0;
-    sidebar.scrollTop = Math.max(0, routeImport.offsetTop - 18);
+    document.querySelector("#choose-gpx").focus({ preventScroll: true });
+    document.querySelector(".filter-content").scrollTop = Math.max(0, routeImport.offsetTop - 12);
   };
   history.replaceState(null, "", window.location.pathname);
   positionRouteImport();
   requestAnimationFrame(positionRouteImport);
-  window.setTimeout(positionRouteImport, 120);
-  window.setTimeout(positionRouteImport, 500);
-  window.setTimeout(positionRouteImport, 1000);
   window.setTimeout(() => sidebar.classList.remove("no-transition"), 350);
   window.setTimeout(() => routeImport.classList.remove("is-highlighted"), 2200);
 }
