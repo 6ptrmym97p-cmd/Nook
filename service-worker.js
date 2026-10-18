@@ -53,7 +53,16 @@ async function networkFirst(request) {
   } catch (error) {
     // Prefer this release's HTML when an older navigation remains in runtime.
     const shell = await caches.open(SHELL_CACHE);
-    return (await shell.match(request, { ignoreSearch: true })) || (await cache.match(request)) || shell.match("./index.html");
+    const url = new URL(request.url);
+    // Pages redirects /over.html to /over; retain the correct offline page.
+    const htmlUrl = new URL(url);
+    if (!htmlUrl.pathname.split("/").pop().includes(".")) {
+      htmlUrl.pathname += htmlUrl.pathname.endsWith("/") ? "index.html" : ".html";
+    }
+    return (await shell.match(request, { ignoreSearch: true }))
+      || (await shell.match(htmlUrl.href, { ignoreSearch: true }))
+      || (await cache.match(request))
+      || shell.match("./index.html");
   }
 }
 

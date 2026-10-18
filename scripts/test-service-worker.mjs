@@ -94,3 +94,13 @@ test("a full browser cache does not block successful network responses", async (
     assert.equal(await response.text(), "network response");
   }
 });
+
+test("offline navigation resolves Cloudflare Pages extensionless HTML URLs", async () => {
+  const app = setup();
+  const shell = await app.caches.open(app.names.shell);
+  await shell.put("over.html", new Response("about page"));
+  await shell.put("index.html", new Response("map page"));
+  app.setOffline();
+  const response = await app.fetch("over?from=map", "navigate", "document");
+  assert.equal(await response.text(), "about page");
+});
