@@ -147,9 +147,6 @@ const MAP_VIEW_KEY = "nook-map-view-v1";
 const savedMapView = storedJson(MAP_VIEW_KEY);
 const hasSavedMapView = validMapPoint(savedMapView) && Number.isFinite(savedMapView.zoom) && savedMapView.zoom >= 2 && savedMapView.zoom <= 19;
 
-const BASEMAP_DETAIL_KEY = "nook-light-basemap-v1";
-const savedBaseMapDetail = getUserValue(BASEMAP_DETAIL_KEY);
-const lightBaseMap = savedBaseMapDetail === null ? window.matchMedia("(pointer: coarse)").matches : savedBaseMapDetail === "true";
 const reduceMapMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const map = L.map("map", {
   zoomControl: false,
@@ -172,9 +169,6 @@ const DirectZoomControl = L.Control.Zoom.extend({
 new DirectZoomControl({ position: "topright" }).addTo(map);
 
 const baseMap = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  // One native tile covers four old tiles: fewer downloads and less fine detail.
-  tileSize: lightBaseMap ? 512 : 256,
-  zoomOffset: lightBaseMap ? -1 : 0,
   updateWhenIdle: false,
   updateWhenZooming: false,
   updateInterval: 150,
@@ -924,7 +918,6 @@ const PERSONAL_STORAGE_KEYS = [
   COUNTRY_FILTER_KEY,
   FILTER_PREFERENCES_KEY,
   ROUTE_DISTANCE_KEY,
-  BASEMAP_DETAIL_KEY,
 ];
 const ALL_COUNTRY_CODES = FILTER_COUNTRIES.map((country) => country.code);
 const COUNTRY_CENTERS = Object.fromEntries(FILTER_COUNTRIES.map((country) => [country.code, country.center]));
@@ -2017,16 +2010,6 @@ function importGpx(file) {
   };
   reader.readAsText(file);
 }
-
-const lightBaseMapControl = document.querySelector("#light-basemap");
-lightBaseMapControl.checked = lightBaseMap;
-lightBaseMapControl.addEventListener("change", () => {
-  const light = lightBaseMapControl.checked;
-  baseMap.remove();
-  L.setOptions(baseMap, { tileSize: light ? 512 : 256, zoomOffset: light ? -1 : 0 });
-  baseMap.addTo(map);
-  setUserValue(BASEMAP_DETAIL_KEY, String(light));
-});
 
 document.querySelectorAll("#sleep-filter input").forEach((control) => {
   control.addEventListener("change", () => {

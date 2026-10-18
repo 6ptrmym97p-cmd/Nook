@@ -124,20 +124,11 @@ const { chromium } = require("playwright");
     await page.evaluate(() => document.activeElement.blur());
     console.log("PASS: keyboard focus highlights its canvas marker");
 
-    const originalTileSize = await page.evaluate(() => baseMap.options.tileSize);
-    await page.evaluate(() => {
-      lightBaseMapControl.checked = !lightBaseMapControl.checked;
-      lightBaseMapControl.dispatchEvent(new Event("change"));
-    });
-    assert.notEqual(await page.evaluate(() => baseMap.options.tileSize), originalTileSize);
+    assert.equal(await page.evaluate(() => baseMap.options.tileSize), 256);
+    assert.equal(await page.evaluate(() => baseMap.options.zoomOffset), 0);
     assert.equal(await page.evaluate(() => baseMap.options.updateWhenIdle), false);
     assert.equal(await page.evaluate(() => baseMap.options.updateWhenZooming), false);
-    const stored = await page.evaluate(() => localStorage.getItem(BASEMAP_DETAIL_KEY));
-    await page.reload({ waitUntil: "domcontentloaded" });
-    await settled();
-    assert.equal(await page.evaluate(() => String(lightBaseMapControl.checked)), stored);
-    assert.notEqual(await page.evaluate(() => baseMap.options.tileSize), originalTileSize);
-    console.log("PASS: light/detailed basemap switch persists");
+    console.log("PASS: detailed basemap is always used");
     assert.deepEqual(errors, []);
     await context.close();
   } finally {

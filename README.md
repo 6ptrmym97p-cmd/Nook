@@ -72,7 +72,7 @@ Clusterklikken gaan direct naar het volgende kaartgebied. Browserzoom blijft bes
 
 Kaarttegels hebben een eigen cache met maximaal 256 tegels. Het weggooien van oude tegels verwijdert geen compacte kaartindex of bekeken plekdetails. Offline HTML komt uit de huidige app-versie; een update bewaart lokale routes, voorkeuren en caches van andere apps op hetzelfde domein. Als browseropslag vol is, blijven geslaagde netwerkdownloads bruikbaar.
 
-Onder **Filters → Lichte onderkaart** kun je kiezen tussen minder kaartdata met een grovere achtergrond en de oorspronkelijke kaartdetails. Op aanraakschermen staat de lichte variant standaard aan. Beide gebruiken dezelfde OSM-bron en dezelfde exacte pin- en routecoördinaten; de instelling wordt lokaal bewaard.
+De onderkaart gebruikt altijd de gedetailleerde OSM-tegels (256 px), op elk apparaat.
 
 Een extra browsercontrole is beschikbaar met een geïnstalleerde Playwright/Chromium (aanwezig in de cloudomgeving):
 
