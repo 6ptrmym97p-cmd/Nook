@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { buildMapData } from "./build-map-data.mjs";
+import { loadCountryLookup } from "./country-lookup.mjs";
 
 const args = new Map();
 for (let index = 2; index < process.argv.length; index += 2) {
@@ -57,58 +58,11 @@ function pointInPolygon(lat, lng, polygon) {
   return inside;
 }
 
-function coordinateBounds(coordinates, bounds = { south: 90, west: 180, north: -90, east: -180 }) {
-  if (!Array.isArray(coordinates)) return bounds;
-  if (coordinates.length >= 2 && Number.isFinite(coordinates[0]) && Number.isFinite(coordinates[1])) {
-    const [lng, lat] = coordinates;
-    bounds.south = Math.min(bounds.south, lat);
-    bounds.west = Math.min(bounds.west, lng);
-    bounds.north = Math.max(bounds.north, lat);
-    bounds.east = Math.max(bounds.east, lng);
-    return bounds;
-  }
-  coordinates.forEach((entry) => coordinateBounds(entry, bounds));
-  return bounds;
-}
-
-function boundsContain(bounds, lat, lng) {
-  return lat >= bounds.south && lat <= bounds.north && lng >= bounds.west && lng <= bounds.east;
-}
-
-function polygonContainsPoint(rings, lat, lng) {
-  if (!rings?.length || !pointInPolygon(lat, lng, rings[0])) return false;
-  return !rings.slice(1).some((hole) => pointInPolygon(lat, lng, hole));
-}
-
-function geometryContainsPoint(geometry, lat, lng) {
-  if (!geometry) return false;
-  if (geometry.type === "Polygon") return polygonContainsPoint(geometry.coordinates, lat, lng);
-  if (geometry.type === "MultiPolygon") {
-    return geometry.coordinates.some((polygon) => polygonContainsPoint(polygon, lat, lng));
-  }
-  return false;
-}
-
-function buildGeoCountryFeatures() {
-  if (!countryGeoJsonPath || !fs.existsSync(countryGeoJsonPath)) return [];
-  const allowed = new Set(countryCodes);
-  const geojson = JSON.parse(fs.readFileSync(countryGeoJsonPath, "utf8"));
-  return (geojson.features || [])
-    .map((feature) => ({
-      code: feature.properties?.["ISO3166-1-Alpha-2"],
-      geometry: feature.geometry,
-      bounds: coordinateBounds(feature.geometry?.coordinates),
-    }))
-    .filter((feature) => allowed.has(feature.code));
-}
-
-const geoCountryFeatures = buildGeoCountryFeatures();
+const lookupCountry = loadCountryLookup(countryGeoJsonPath, countryCodes);
 
 function countryFor(lat, lng) {
-  const geoMatch = geoCountryFeatures.find((feature) => (
-    boundsContain(feature.bounds, lat, lng) && geometryContainsPoint(feature.geometry, lat, lng)
-  ));
-  if (geoMatch) return geoMatch.code;
+  const geoMatch = lookupCountry(lat, lng);
+  if (geoMatch) return geoMatch;
 
   const inJutland = lat >= 54.78 && lat <= 57.85 && lng >= 7.65 && lng <= 10.95;
   const inDanishIslands = lat >= 54.45 && lat <= 56.25 && lng > 10.5 && lng <= 12.95;
@@ -209,7 +163,17 @@ function distanceMeters(first, second) {
   return 2 * earthRadiusMeters * Math.asin(Math.sqrt(haversine));
 }
 
+// Sources without a fresh raw export keep their currently published places.
+function publishedItems(kind) {
+  const indexPath = path.join(path.dirname(outputPath), "data", "map-index.json");
+  if (!fs.existsSync(indexPath)) return [];
+  return JSON.parse(fs.readFileSync(indexPath, "utf8")).chunks
+    .filter((chunk) => chunk.kind === kind)
+    .flatMap((chunk) => JSON.parse(fs.readFileSync(path.join(path.dirname(indexPath), chunk.file), "utf8")));
+}
+
 function buildVodfPins() {
+  if (!fs.existsSync(vodfPath)) return publishedItems("vodf");
   const raw = fs.readFileSync(vodfPath, "utf8")
     .replace(/^var gastadressen = /, "")
     .replace(/;?\s*$/, "");
@@ -418,7 +382,7 @@ function buildDenmarkPlaces() {
   const hasRawUdData = regions.some((region) => types.some((type) => fs.existsSync(path.join(udDir, `ud-${region}-${type}.json`))));
 
   if (!hasRawUdData) {
-    if (!fs.existsSync(existingSnapshotPath)) return [];
+    if (!fs.existsSync(existingSnapshotPath)) return publishedItems("denmark").sort((a, b) => a.name.localeCompare(b.name, "da"));
     return (JSON.parse(fs.readFileSync(existingSnapshotPath, "utf8")).places || [])
       .sort((a, b) => a.name.localeCompare(b.name, "da"));
   }

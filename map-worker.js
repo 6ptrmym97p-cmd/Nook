@@ -10,7 +10,7 @@ let route = null;
 const providers = ["vodf", "wtmg", "camping", "campwild", "denmark"];
 
 const ready = (async () => {
-  const response = await cachedData("data/map-index.json?v=20261016-4");
+  const response = await cachedData("data/map-index.json?v=20261018-6");
   if (!response.ok) throw new Error(`Kaartindex: HTTP ${response.status}`);
   manifest = await response.json();
   const compressed = manifest.gzip && typeof DecompressionStream !== "undefined";

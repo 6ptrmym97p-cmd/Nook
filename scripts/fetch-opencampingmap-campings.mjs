@@ -3,6 +3,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadCountryLookup } from "./country-lookup.mjs";
 
 const args = new Map(process.argv.slice(2).map((arg) => {
   const [key, ...value] = arg.split("=");
@@ -16,6 +17,8 @@ const endpoint = args.get("--endpoint") || "https://opencampingmap.org/getcampsi
 const timeoutSeconds = Number(args.get("--timeout") || 90);
 const requestDelayMs = Number(args.get("--delay-ms") || 700);
 const maxRetries = Number(args.get("--retries") || 2);
+// --grid=DEG fetches the whole world in DEG° tiles instead of one bbox per country.
+const gridDegrees = Number(args.get("--grid") || 0);
 const selectedCountries = String(args.get("--countries") || "")
   .split(",")
   .map((code) => code.trim().toUpperCase())
@@ -38,49 +41,11 @@ const countries = selectedCountries.length
   : allCountries;
 const countryCodes = countries.map((country) => country.code);
 
-let countryFeatures = [];
-if (countriesGeoJsonPath && fs.existsSync(countriesGeoJsonPath)) {
-  const geojson = JSON.parse(fs.readFileSync(countriesGeoJsonPath, "utf8"));
-  const wanted = new Set(countryCodes);
-  countryFeatures = (geojson.features || []).filter((feature) => {
-    const props = feature.properties || {};
-    const code = props.ISO_A2 || props.iso_a2 || props.ISO2 || props.WB_A2;
-    return wanted.has(code);
-  }).map((feature) => ({
-    code: feature.properties.ISO_A2 || feature.properties.iso_a2 || feature.properties.ISO2 || feature.properties.WB_A2,
-    geometry: feature.geometry,
-  }));
-}
-
-function pointInRing(lng, lat, ring) {
-  let inside = false;
-  for (let index = 0, previous = ring.length - 1; index < ring.length; previous = index, index += 1) {
-    const [xi, yi] = ring[index];
-    const [xj, yj] = ring[previous];
-    const intersects = ((yi > lat) !== (yj > lat))
-      && (lng < ((xj - xi) * (lat - yi)) / (yj - yi || Number.EPSILON) + xi);
-    if (intersects) inside = !inside;
-  }
-  return inside;
-}
-
-function pointInPolygon(lng, lat, polygon) {
-  if (!polygon?.length || !pointInRing(lng, lat, polygon[0])) return false;
-  return !polygon.slice(1).some((ring) => pointInRing(lng, lat, ring));
-}
-
-function pointInGeometry(lng, lat, geometry) {
-  if (!geometry) return false;
-  if (geometry.type === "Polygon") return pointInPolygon(lng, lat, geometry.coordinates);
-  if (geometry.type === "MultiPolygon") return geometry.coordinates.some((polygon) => pointInPolygon(lng, lat, polygon));
-  return false;
-}
+const lookupCountry = loadCountryLookup(countriesGeoJsonPath, countryCodes);
 
 function countryFor(lat, lng) {
-  if (countryFeatures.length) {
-    const match = countryFeatures.find((feature) => pointInGeometry(lng, lat, feature.geometry));
-    if (match) return match.code;
-  }
+  const match = lookupCountry(lat, lng);
+  if (match) return match;
   const matches = countries
     .filter((country) => {
       const [[south, west], [north, east]] = country.bounds;
@@ -220,7 +185,21 @@ async function fetchCountry(country) {
 const placeMap = new Map();
 const failedCountries = [];
 
-for (const country of countries) {
+const targets = gridDegrees > 0 ? worldTiles(gridDegrees) : countries;
+
+function worldTiles(step) {
+  const tiles = [];
+  for (let south = -60; south < 84; south += step) {
+    for (let west = -180; west < 180; west += step) {
+      const north = Math.min(84, south + step);
+      const east = Math.min(180, west + step);
+      tiles.push({ code: `${south},${west}`, bounds: [[south, west], [north, east]] });
+    }
+  }
+  return tiles;
+}
+
+for (const country of targets) {
   try {
     const features = await fetchCountry(country);
     let added = 0;

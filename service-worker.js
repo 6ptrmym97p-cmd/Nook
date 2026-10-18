@@ -1,5 +1,5 @@
-const SHELL_CACHE = "nook-shell-20261018-8";
-const RUNTIME_CACHE = "nook-runtime-20261016-4";
+const SHELL_CACHE = "nook-shell-20261018-9";
+const RUNTIME_CACHE = "nook-runtime-20261018-6";
 const TILE_CACHE = "nook-tiles-v1";
 const MAX_TILES = 256;
 const APP_SHELL = [
@@ -10,16 +10,16 @@ const APP_SHELL = [
   "./netwerken.html",
   "./over.html",
   "./styles.css?v=20261018-5",
-  "./app.js?v=20261018-5",
+  "./app.js?v=20261018-6",
   "./map-canvas.js?v=20261016-4",
-  "./map-worker.js?v=20261018-1",
+  "./map-worker.js?v=20261018-2",
   "./vendor/supercluster-8.0.1.min.js",
   "./vendor/leaflet-1.9.4/leaflet.js",
   "./vendor/leaflet-1.9.4/leaflet.css",
   "./vendor/leaflet.markercluster-1.5.3/leaflet.markercluster.js",
   "./vendor/leaflet.markercluster-1.5.3/MarkerCluster.css",
   "./vendor/leaflet.markercluster-1.5.3/MarkerCluster.Default.css",
-  "./public-data.js?v=20260708-1",
+  "./public-data.js?v=20261018-1",
   "./favicon.ico?v=20261016-5",
   "./favicon.svg?v=20261016-5",
   "./icon-192.png?v=20261016-5",

@@ -1,6 +1,6 @@
 # Nook
 
-Nook is een Nederlandstalige kaart voor bikepackers en tourfietsers in Europa. De app helpt bij het vinden van slaapplekken langs een route. De vaste bronlagen bevatten netwerkdata voor 38 Europese landen, officiële Deense plekken en OpenStreetMap-campings; eigen GPX-data blijft lokaal in de browser.
+Nook is een Nederlandstalige kaart voor bikepackers en tourfietsers, wereldwijd. De app helpt bij het vinden van slaapplekken langs een route. De vaste bronlagen bevatten OpenStreetMap-campings, CampWild-shelters en Welcome To My Garden-tuinen in 233 landen en gebieden, plus Vrienden op de Fiets en officiële Deense plekken; eigen GPX-data blijft lokaal in de browser.
 
 ## Starten
 
@@ -31,10 +31,10 @@ Lees vóór een publieke demo of LinkedIn-post `docs/launch-security.md`. De rep
 - Als locatietoegang niet beschikbaar of geweigerd is, blijft de functie werken vanaf het midden van het huidige kaartbeeld.
 - Losse GPX-waypoints blijven eveneens zichtbaar als eigen slaapplaatsenlaag.
 - Denemarken bevat een momentopname van 2.480 officiële [Ud i Naturen](https://udinaturen.dk/kort)-objecten: vrije tentgebieden, primitieve overnachtingsplekken en shelters. Iedere marker bevat de eigen officiële beschrijving, capaciteit, boekingsstatus en detailpagina.
-- Vrienden op de Fiets en Welcome To My Garden worden bij ver uitzoomen ruimtelijk geclusterd. Dicht ingezoomd verschijnen de afzonderlijke, openbaar gepubliceerde kaartposities. De huidige momentopname van 7 juli 2026 bevat 5.341 respectievelijk 5.921 pins in de Europese landen waar die brondata is gepubliceerd.
+- Vrienden op de Fiets en Welcome To My Garden worden bij ver uitzoomen ruimtelijk geclusterd. Dicht ingezoomd verschijnen de afzonderlijke, openbaar gepubliceerde kaartposities. Vrienden op de Fiets is een momentopname van 7 juli 2026 (5.341 pins); Welcome To My Garden van 18 oktober 2026 (6.772 pins, wereldwijd).
 - Nook gebruikt gewone kaartclusters: ver uitgezoomd zie je tellingen, bij verder inzoomen vallen die uiteen in kleinere clusters en daarna losse pins.
-- Campings staan standaard aan als gewone slaapvorm in het filtermenu. Nook gebruikt OpenStreetMap-objecten met `tourism=camp_site` en `tourism=caravan_site`, opgehaald via OpenCampingMap, als normale bronpins met dezelfde clustering, filters en detailpanelen als andere locaties. De momentopname van 7 juli 2026 bevat 82.084 camping- en camperterreinpins in 47 landen. Losse `camp_pitch`-objecten worden niet als aparte campings getoond, omdat dat vaak individuele staanplaatsen binnen één camping zijn.
-- CampWild publiceert een compacte kaartlaag en GPX/KML-export voor shelters, lean-to's, bivakplekken en hutten. Nook neemt daarvan de duidelijke slaap- en schuiltypes op als vaste hut/shelterlaag: 5.944 pins binnen de app-landen. In Denemarken wint de officiële Ud i Naturen-bron; 92 CampWild-punten binnen 100 meter van een officiële Deense locatie zijn onderdrukt. Per-plekdetails en foto's blijven op de CampWild-detailpagina's.
+- Campings staan standaard aan als gewone slaapvorm in het filtermenu. Nook gebruikt OpenStreetMap-objecten met `tourism=camp_site` en `tourism=caravan_site`, opgehaald via OpenCampingMap, als normale bronpins met dezelfde clustering, filters en detailpanelen als andere locaties. De momentopname van 18 oktober 2026 bevat 199.621 camping- en camperterreinpins wereldwijd. Het land van iedere plek volgt uit exacte landsgrenzen (datasets/geo-countries), niet uit een rechthoek om het land. Losse `camp_pitch`-objecten worden niet als aparte campings getoond, omdat dat vaak individuele staanplaatsen binnen één camping zijn.
+- CampWild publiceert een compacte kaartlaag en GPX/KML-export voor shelters, lean-to's, bivakplekken en hutten. Nook neemt daarvan de duidelijke slaap- en schuiltypes op als vaste hut/shelterlaag: 6.095 pins wereldwijd (18 oktober 2026). In Denemarken wint de officiële Ud i Naturen-bron; 93 CampWild-punten binnen 100 meter van een officiële Deense locatie zijn onderdrukt. Per-plekdetails en foto's blijven op de CampWild-detailpagina's.
 - Locatiefoto's van Welcome To My Garden en Ud i Naturen worden in het detailpaneel getoond wanneer de bron een openbare afbeelding publiceert. OpenStreetMap-afbeeldingen worden gebruikt wanneer een `image`- of Wikimedia Commons-verwijzing aanwezig is.
 - De openbare Vrienden-op-de-Fiets-feed bevat geen fotoveld; die pins blijven daarom zonder afbeelding.
 - De hospitalitypins bevatten alleen coördinaten en generieke voorzieningen. Host-ID's, namen, adressen, profielteksten en contactgegevens worden niet opgenomen.
@@ -47,12 +47,23 @@ Lees vóór een publieke demo of LinkedIn-post `docs/launch-security.md`. De rep
 
 `scripts/fetch-wtmg-public.mjs` haalt de openbare WTMG-tuinlaag op. `scripts/fetch-opencampingmap-campings.mjs` haalt OSM-campings op via OpenCampingMap en bewaart die als lokale momentopname; `scripts/fetch-osm-campings.mjs` blijft beschikbaar als directe Overpass-fallback. `scripts/fetch-campwild-public.mjs` haalt de publieke CampWild-kaartlaag op. De bouwstap bewaart in de website alleen kaartpositie en praktische bronvelden. `scripts/build-public-data.mjs` genereert daarna `public-data.js` met metadata en via `scripts/build-map-data.mjs` een compacte binaire kaartindex en kleine detailbestanden in `data/map-details/`. Alle bronvelden blijven behouden.
 
+Wereldwijd vernieuwen (landsgrenzen uit [datasets/geo-countries](https://github.com/datasets/geo-countries), publiek domein via Natural Earth):
+
+```bash
+curl -sSL -o /tmp/countries.geojson https://raw.githubusercontent.com/datasets/geo-countries/main/data/countries.geojson
+node scripts/fetch-opencampingmap-campings.mjs --grid=15 --countries-geojson=/tmp/countries.geojson --output=/tmp/nook-osm-campings.json --timeout=180
+node scripts/fetch-campwild-public.mjs --output=/tmp/campwild-places.json
+node scripts/fetch-wtmg-public.mjs /tmp/wtmg-public.json
+node scripts/build-public-data.mjs --countries-geojson /tmp/countries.geojson
+```
+
+Zonder ruwe Vrienden-op-de-Fiets- of Ud-i-Naturen-export houdt de build de nu gepubliceerde plekken van die bronnen aan. `scripts/generate-countries.mjs --countries-geojson=…` vult de landenlijst in `app.js` aan voor nieuwe landen; bestaande, handmatig afgestelde landen blijven staan.
 
 ## Kaartprestaties en controles
 
 De kaart gebruikt OpenStreetMap-kaarttegels en Supercluster 8.0.1 (de ruimtelijke clusteringbibliotheek van Mapbox). Landen zijn een optioneel filter; de kaart opent en clustert op echte locaties, ook over de grens. `map-worker.js` bouwt en filtert de index buiten de hoofdthread en stuurt alleen zichtbare clusters/pins terug. Er worden geen duizenden Leaflet-markers meer gemaakt voordat er geclusterd wordt.
 
-Alle 101.770 kaartposities worden meteen bij het openen geladen, ongeacht land of zoomniveau. Inzoomen gebruikt diezelfde reeds geladen index; de aantallen zijn clusters van bestaande plekken. De eerste kaartdownload bestaat uit `data/map-index.json` en `data/map-points.bin.gz` (circa 865 KB gecomprimeerd voor 101.770 punten). Browsers zonder `DecompressionStream` gebruiken dezelfde punten via `data/map-points.bin` (circa 1,6 MB). Volledige beschrijvingen, bronlinks en voorzieningen worden pas opgehaald bij een plekdetail of kandidatenlijst, in batches van maximaal 128 plekken. De oorspronkelijke landbestanden zijn daarmee vervangen, zonder verlies van bronrecords.
+Alle 220.309 kaartposities worden meteen bij het openen geladen, ongeacht land of zoomniveau. Inzoomen gebruikt diezelfde reeds geladen index; de aantallen zijn clusters van bestaande plekken. De eerste kaartdownload bestaat uit `data/map-index.json` en `data/map-points.bin.gz` (circa 1,9 MB gecomprimeerd voor 220.309 punten). Browsers zonder `DecompressionStream` gebruiken dezelfde punten via `data/map-points.bin` (circa 3,5 MB). Volledige beschrijvingen, bronlinks en voorzieningen worden pas opgehaald bij een plekdetail of kandidatenlijst, in batches van maximaal 128 plekken. De oorspronkelijke landbestanden zijn daarmee vervangen, zonder verlies van bronrecords.
 
 Na het vernieuwen van de openbare data maakt `scripts/build-public-data.mjs` automatisch de kaartindex en detailbestanden. De bestaande index/batches kun je zonder externe brondata opnieuw opbouwen met:
 
