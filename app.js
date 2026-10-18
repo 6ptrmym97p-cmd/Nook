@@ -1538,7 +1538,7 @@ function renderSources() {
 function osmPhoto(tags) {
   if (/^https?:\/\//i.test(tags.image || "")) return tags.image;
   const commonsFile = String(tags.wikimedia_commons || "").replace(/^File:/i, "");
-  if (!commonsFile) return "";
+  if (!commonsFile || /^Category:/i.test(commonsFile)) return "";
   return `https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(commonsFile)}?width=900`;
 }
 
