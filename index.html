@@ -43,7 +43,7 @@
       integrity="sha256-YSWCMtmNZNwqex4CEw1nQhvFub2lmU7vcCKP+XVwwXA="
       crossorigin=""
     />
-    <link rel="stylesheet" href="styles.css?v=20261018-2" />
+    <link rel="stylesheet" href="styles.css?v=20261018-3" />
   </head>
   <body class="map-app">
     <a class="skip-link" href="#main-content">Naar inhoud</a>
@@ -104,11 +104,6 @@
             <fieldset class="filter-block sleep-filter" id="sleep-filter">
               <legend>Slaapvorm</legend>
               <label class="check-row">
-                <input type="checkbox" value="wild" checked />
-                <span class="legend-dot dot-wild"></span>
-                Vrij kamperen
-              </label>
-              <label class="check-row">
                 <input type="checkbox" value="designated" checked />
                 <span class="legend-dot dot-designated"></span>
                 Aangewezen gratis plek
@@ -138,11 +133,8 @@
                 <span class="legend-dot dot-camping"></span>
                 Campings <small>OSM</small>
               </label>
-              <label class="check-row">
-                <input type="checkbox" value="ask" checked />
-                <span class="legend-dot dot-ask"></span>
-                Toestemming vragen
-              </label>
+              <p class="microcopy">Getallen tonen hoeveel locaties bij elkaar liggen. Zoom in voor losse plekken.</p>
+              <p class="microcopy"><a href="regels.html#regiogids">Regels voor vrij kamperen en toestemming →</a></p>
               <p class="microcopy" id="camping-status" aria-live="polite">
                 Campings staan aan als gewone OSM-bronpins.
               </p>
@@ -252,7 +244,7 @@
     ></script>
     <script src="public-data.js?v=20260708-1"></script>
     <script src="map-canvas.js?v=20261016-4"></script>
-    <script src="app.js?v=20261018-2"></script>
+    <script src="app.js?v=20261018-3"></script>
     <script src="pwa.js?v=20261018-1"></script>
   </body>
 </html>

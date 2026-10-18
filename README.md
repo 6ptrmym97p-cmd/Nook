@@ -18,7 +18,7 @@ Lees vóór een publieke demo of LinkedIn-post `docs/launch-security.md`. De rep
 
 ## Datakeuzes
 
-- De ingebouwde regiomarkers zijn oriëntatiepunten, geen exacte kampeeradressen.
+- De regiogidsen staan als uitklapbare achtergrondinformatie bij **Regels**, niet als kaartpins of kandidaten voor vannacht. De kaart telt alleen bronlocaties en eigen GPX-waypoints. Clusterbollen gebruiken dezelfde groene, ronde stijl. Vrij kamperen en toestemming zijn gebiedsregels, geen aparte locatiecategorieën zonder bronpunten.
 - OpenStreetMap-campings worden als lokale momentopname in `data/` geserveerd. Bezoekers sturen geen live Overpass-zoekopdrachten vanuit Nook.
 - GPX-tracks en routes uit onder meer Komoot kunnen lokaal worden geïmporteerd. Een instelbare corridor van 1–50 kilometer verbergt slaapplaatsen die te ver van de fietsroute liggen; de inhoud verlaat de browser niet.
 - Geïmporteerde GPX-routes blijven als lokale routebibliotheek in de browser staan. Je kunt routes aan- en uitvinken; de afstandsfilter gebruikt alle actieve routes samen. De app bewaart de vereenvoudigde routepunten, niet het ruwe GPX-bestand.

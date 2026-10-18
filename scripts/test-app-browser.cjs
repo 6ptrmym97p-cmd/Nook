@@ -21,6 +21,14 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
     await settled();
     assert.equal(await page.locator("#startup-location-card").count(), 0, "The initial map has no location popup");
     assert.equal(await page.evaluate(() => userLocation), null);
+    assert.equal(await page.locator(".leaflet-marker-icon").count(), 0, "General region guides are not represented as campsite pins or separate clusters");
+    await page.evaluate(() => { map.setView([53.05, 13.3], 9, { animate: false }); refreshMapPlaces(); });
+    await page.locator("#show-candidates").click();
+    await settled();
+    assert.ok(await page.evaluate(() => currentCandidates.length > 0));
+    assert.equal(await page.evaluate(() => currentCandidates.some((candidate) => candidate.place.approximate || candidate.provider === "curated")), false, "Only location records, not regional guidance, may become overnight candidates");
+    await page.keyboard.press("Escape");
+    console.log("PASS: region guides do not appear as map locations, cluster counts or overnight candidates");
     await page.locator("#open-my-route").click();
     assert.ok(await page.locator("#map-sidebar").evaluate((element) => element.open));
     assert.equal(await page.evaluate(() => document.activeElement.id), "choose-gpx");
@@ -114,7 +122,13 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
           const bounds = await last.boundingBox();
           assert.ok(bounds.y < height && bounds.y + bounds.height > 58, `${path}: last row is reachable`);
           assert.ok(await page.locator(".source-table td").first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize) >= 14));
-          if (path === "regels.html") assert.equal(await page.locator('.rules-table td:last-child a:visible').count(), 11);
+          if (path === "regels.html") {
+            assert.equal(await page.locator('.rules-table td:last-child a:visible').count(), 11);
+            assert.equal(await page.locator("#regiogids .region-guide").count(), 11);
+            await page.locator("#regio-brandenburg summary").click();
+            assert.ok(await page.locator("#regio-brandenburg").evaluate((element) => element.open));
+            assert.match(await page.locator("#regio-brandenburg a").getAttribute("href"), /^https:\/\/bravors\.brandenburg\.de\//);
+          }
         }
       }
     }

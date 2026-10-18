@@ -7,207 +7,6 @@ const sleepTypes = {
   camping: { label: "Camping", icon: "C" },
 };
 
-const places = [
-  {
-    id: "smaland",
-    name: "Småland: meren en productiebos",
-    location: "Regio Växjö · Zweden",
-    country: "SE",
-    lat: 56.88,
-    lng: 14.8,
-    type: "wild",
-    confidence: 3,
-    sourceLabel: "Naturvårdsverket",
-    sourceUrl: "https://www.naturvardsverket.se/en/topics/the-right-of-public-access/activities-and-places/camping--tents/",
-    description: "Een kansrijke regio voor een discrete nacht volgens het allemansrätten. Zoek ongecultiveerde grond, ruim uit zicht van woningen en controleer lokale natuurreservaatregels.",
-    stay: "1–2 nachten",
-    cost: "Gratis",
-    water: "Zelf filteren of aanvullen",
-    caution: "Geen recht op vuur. Bij droogte kan een volledig vuurverbod gelden. Blijf weg van huizen, akkers en kwetsbare natuur.",
-    photo: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=82",
-  },
-  {
-    id: "brandenburg",
-    name: "Brandenburgse merenregio",
-    location: "Ten noorden van Berlijn · Duitsland",
-    country: "DE",
-    lat: 53.05,
-    lng: 13.3,
-    type: "ask",
-    confidence: 2,
-    sourceLabel: "Brandenburg regelgeving",
-    sourceUrl: "https://bravors.brandenburg.de/gesetze/bbgnatschag_2013",
-    description: "Voor niet-gemotoriseerde reizigers bestaan in Brandenburg ruimere mogelijkheden dan in veel andere deelstaten, maar eigendom, bosrecht en beschermde gebieden blijven bepalend.",
-    stay: "Doorgaans 1 nacht",
-    cost: "Gratis met geldige toestemming",
-    water: "Niet gegarandeerd",
-    caution: "Beschouw een mooi bosperceel niet automatisch als toestemming. Kies liever een trekkingplaats of vraag de eigenaar.",
-    photo: "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=900&q=82",
-  },
-  {
-    id: "utrecht",
-    name: "Utrechtse Heuvelrug",
-    location: "Provincie Utrecht · Nederland",
-    country: "NL",
-    lat: 52.05,
-    lng: 5.35,
-    type: "host",
-    confidence: 3,
-    sourceLabel: "Vrienden op de Fiets",
-    sourceUrl: "https://www.vriendenopdefiets.nl/",
-    description: "Geen vrije kampeerregio. Wel een logische corridor om via een gastnetwerk, particuliere tuin of expliciete toestemming een betaalbare plek te regelen.",
-    stay: "Op afspraak",
-    cost: "Platformafhankelijk",
-    water: "Bij host",
-    caution: "Wildkamperen is hier geen legale standaardoptie. Gebruik een gastnetwerk of vraag vóór aankomst toestemming op privéterrein.",
-    photo: "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?auto=format&fit=crop&w=900&q=82",
-  },
-  {
-    id: "skane",
-    name: "Skåneleden shelters",
-    location: "Skåne · Zweden",
-    country: "SE",
-    lat: 56.05,
-    lng: 13.65,
-    type: "hut",
-    confidence: 2,
-    sourceLabel: "OpenStreetMap + lokale routebeheerder",
-    sourceUrl: "https://www.skaneleden.se/en",
-    description: "Langs langeafstandsroutes staan shelters en eenvoudige rustplekken. Controleer per shelter of reserveren, vuur maken of tenten ernaast is toegestaan.",
-    stay: "Meestal 1 nacht",
-    cost: "Vaak gratis",
-    water: "Niet altijd aanwezig",
-    caution: "Een sheltermarkering zegt niets over beschikbaarheid. Neem altijd een tent mee als uitwijkmogelijkheid.",
-    photo: "https://images.unsplash.com/photo-1504851149312-7a075b496cc7?auto=format&fit=crop&w=900&q=82",
-  },
-  {
-    id: "hardangervidda",
-    name: "Noorse utmark",
-    location: "Hardangervidda-regio · Noorwegen",
-    country: "NO",
-    lat: 60.2,
-    lng: 7.45,
-    type: "wild",
-    confidence: 3,
-    sourceLabel: "Norwegian Environment Agency",
-    sourceUrl: "https://www.environmentagency.no/areas-of-activity/right-to-roam/camping/",
-    description: "In Noorse utmark mag je doorgaans met een kleine tent overnachten. Deze regiopin markeert geen specifieke standplaats: controleer ter plaatse of de grond werkelijk onbebouwd en ongecultiveerd is.",
-    stay: "Maximaal 2 nachten; langer in afgelegen berggebied",
-    cost: "Gratis",
-    water: "Zelf beoordelen en behandelen",
-    caution: "Blijf minstens 150 meter van bewoonde huizen en hutten. Lokale regels gelden onder meer in drukbezochte gebieden; vuur in of bij bos is normaal verboden van 15 april tot 15 september. Een DNT- of andere berghut is niet automatisch gratis.",
-    photo: "https://images.unsplash.com/photo-1520769669658-f07657f5a307?auto=format&fit=crop&w=900&q=82",
-  },
-  {
-    id: "belgium-bivouac",
-    name: "Belgische bivakzones",
-    location: "Ardennen en Vlaamse natuurgebieden · België",
-    country: "BE",
-    lat: 50.35,
-    lng: 5.45,
-    type: "designated",
-    confidence: 2,
-    sourceLabel: "Agentschap voor Natuur en Bos",
-    sourceUrl: "https://natuurenbos.be/activiteiten/bivakzone",
-    description: "Vrij kamperen is geen algemene optie, maar België heeft eenvoudige bivakzones langs wandel- en fietsroutes. Gebruik de losse OSM-pins om aangewezen plekken te vinden en controleer daarna de beheerder.",
-    stay: "ANB-zones vooraf gratis reserveren; elders volgens beheerder",
-    cost: "Vaak gratis",
-    water: "Wisselend",
-    caution: "Deze marker is een regio-aanwijzing, geen slaapplaats. Vlaanderen, Wallonië en lokale beheerders hanteren eigen voorwaarden; natuurreservaten zijn geen vrije kampeerterreinen.",
-    photo: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=82",
-  },
-  {
-    id: "france-bivouac",
-    name: "Franse bivakregio's",
-    location: "Alpen, Pyreneeën en andere routegebieden · Frankrijk",
-    country: "FR",
-    lat: 45.15,
-    lng: 6.15,
-    type: "ask",
-    confidence: 2,
-    sourceLabel: "Parcs nationaux de France",
-    sourceUrl: "https://www.parcsnationaux.fr/fr",
-    description: "Frankrijk kent geen universeel vrij-kampeerrecht. Een licht bivak kan lokaal zijn toegestaan, vooral op doorgaande routes, maar ieder nationaal park, natuurgebied en elke gemeente kan eigen zones en tijden bepalen.",
-    stay: "Meestal alleen van avond tot ochtend waar toegestaan",
-    cost: "Gratis waar expliciet toegestaan",
-    water: "Niet gegarandeerd",
-    caution: "Vraag toestemming op privégrond en controleer de parkpagina. Kusten, beschermde of geklasseerde locaties, wegen en lokaal verboden zones vallen af; in mediterrane gebieden gelden strenge vuurregels.",
-    photo: "https://images.unsplash.com/photo-1486911278844-a81c5267e227?auto=format&fit=crop&w=900&q=82",
-  },
-  {
-    id: "luxembourg",
-    name: "Luxemburg: toestemming of officiële plek",
-    location: "Mullerthal en Oesling · Luxemburg",
-    country: "LU",
-    lat: 49.85,
-    lng: 6.1,
-    type: "ask",
-    confidence: 2,
-    sourceLabel: "Visit Luxembourg",
-    sourceUrl: "https://www.visitluxembourg.com/plan-your-stay/stay/camping",
-    description: "Luxemburg heeft geen allemansrecht. Plan op een officiële camping of een expliciet toegestane plek en beschouw bos, natuurgebied en routeberm niet als vrije overnachtingsgrond.",
-    stay: "Op afspraak of volgens terreinregels",
-    cost: "Wisselend",
-    water: "Bij officiële locatie",
-    caution: "Deze regiopin is alleen een waarschuwing en zoekstart. Gebruik OSM voor gemarkeerde plekken of vraag de eigenaar vooraf toestemming.",
-    photo: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=900&q=82",
-  },
-  {
-    id: "swiss-alps",
-    name: "Zwitserse hoogalpiene bivakzone",
-    location: "Boven de boomgrens · Zwitserland",
-    country: "CH",
-    lat: 46.65,
-    lng: 8.25,
-    type: "wild",
-    confidence: 2,
-    sourceLabel: "Swiss Alpine Club",
-    sourceUrl: "https://www.sac-cas.ch/de/umwelt/bergsport-und-umwelt/campieren-und-biwakieren/",
-    description: "Een enkele, zorgvuldige nacht boven de boomgrens is op veel plaatsen mogelijk, maar Zwitserland kent kantonale en gemeentelijke beperkingen en veel strikt beschermde gebieden.",
-    stay: "Eén nacht, laat opzetten en vroeg vertrekken",
-    cost: "Gratis waar toegestaan",
-    water: "Zelf beoordelen en behandelen",
-    caution: "Niet in natuurreservaten, wildrustgebieden of het Zwitsers Nationaal Park. Vermijd rivieroevers en uiterwaarden, blijf uit zicht van hutten en vraag toestemming bij alpenweiden of privégrond.",
-    photo: "https://images.unsplash.com/photo-1531310197839-ccf54634509e?auto=format&fit=crop&w=900&q=82",
-  },
-  {
-    id: "austria-alps",
-    name: "Oostenrijk: bos is uitgesloten",
-    location: "Alpenregio · Oostenrijk",
-    country: "AT",
-    lat: 47.25,
-    lng: 12.25,
-    type: "ask",
-    confidence: 3,
-    sourceLabel: "Oostenrijks Forstgesetz §33",
-    sourceUrl: "https://www.ris.bka.gv.at/NormDokument.wxe?Abfrage=Bundesnormen&Gesetzesnummer=10010371&Paragraf=33",
-    description: "Kamperen of 's nachts verblijven in Oostenrijks bos vereist toestemming van de eigenaar. Buiten het bos verschillen de regels per deelstaat en gemeente; hoogalpien nood- of kort bivak is geen landelijk vrijbriefje.",
-    stay: "Alleen met toestemming of volgens lokale regeling",
-    cost: "Wisselend",
-    water: "Niet gegarandeerd",
-    caution: "Zet niet zomaar een tent in bos, natuur- of landschapsbeschermingsgebied. Zoek een expliciete trekkingplek, hut of vraag de gemeente en grondeigenaar.",
-    photo: "https://images.unsplash.com/photo-1464278533981-50106e6176b1?auto=format&fit=crop&w=900&q=82",
-  },
-  {
-    id: "italian-alps",
-    name: "Italiaans bivacco",
-    location: "Alpen en Apennijnen · Italië",
-    country: "IT",
-    lat: 46.15,
-    lng: 10.45,
-    type: "ask",
-    confidence: 2,
-    sourceLabel: "Club Alpino Italiano",
-    sourceUrl: "https://www.cai.it/",
-    description: "Italië regelt kamperen vooral regionaal, provinciaal, gemeentelijk en per park. Een tijdelijk alpien bivak kan anders worden behandeld dan recreatief kamperen, maar is niet automatisch toegestaan.",
-    stay: "Alleen volgens regionale of parkregels",
-    cost: "Gratis waar bivak expliciet is toegestaan",
-    water: "Niet gegarandeerd",
-    caution: "Controleer de gemeente of parkbeheerder vóór aankomst. Gebruik onbemande bivacco-hutten alleen volgens hun eigen regels en neem in brandgevoelige gebieden geen enkel risico met vuur.",
-    photo: "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=900&q=82",
-  },
-];
-
 const countries = [
   {
     code: "NL",
@@ -442,10 +241,8 @@ function sourceClusterLayer(className) {
     : L.layerGroup().addTo(map);
 }
 
-const curatedLayer = sourceClusterLayer("cluster-curated");
 const importedLayer = sourceClusterLayer("cluster-imported");
-const markerIndex = new Map();
-const visiblePlaceCounts = { curated: 0, hospitality: 0, denmark: 0, campwild: 0, camping: 0, imported: 0 };
+const visiblePlaceCounts = { hospitality: 0, denmark: 0, campwild: 0, camping: 0, imported: 0 };
 const ROUTE_LIBRARY_KEY = "nook-saved-routes-v1";
 const LEGACY_ROUTE_KEY = "nook-saved-route-v1";
 let importedWaypoints = [];
@@ -676,8 +473,8 @@ function markerIcon(type) {
   return L.divIcon({
     className: "",
     html: `<div class="sleep-marker marker-${type}"><span>${config.icon}</span></div>`,
-    iconSize: [36, 36],
-    iconAnchor: [18, 34],
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
   });
 }
 
@@ -785,7 +582,6 @@ function formatDistance(distanceKm) {
 
 function candidateProviderLabel(provider) {
   return {
-    curated: "Nook-regiogids",
     denmark: "Ud i Naturen",
     campwild: "CampWild",
     osm: "OpenStreetMap",
@@ -1181,10 +977,6 @@ function storedJson(key) {
   }
 }
 
-function countryAllowed(countryCode, filters = currentFilters()) {
-  return Boolean(countryCode && filters.countries.has(countryCode));
-}
-
 function orderedCountryCodes(codes) {
   const set = new Set(codes);
   return ALL_COUNTRY_CODES.filter((code) => set.has(code));
@@ -1489,7 +1281,6 @@ function applyMapSources(data) {
   visiblePlaceCounts.campwild = data.counts.campwild;
   visiblePlaceCounts.denmark = data.counts.denmark;
   currentCandidates = [];
-  renderCuratedMarkers();
   renderImportedWaypoints();
   data.points.forEach((point) => addCandidate(point.lat, point.lng, mapPointPlace(point), point.kind));
   updateMapDataHint();
@@ -1560,7 +1351,7 @@ function updateMapDataHint() {
   if (!hint) return;
   // Zooming reuses the full index; only the initial download is a loading state.
   const downloading = mapDataLoading && !mapManifest;
-  const empty = !mapDataLoading && !mapMarkers.size && !visiblePlaceCounts.curated && !visiblePlaceCounts.imported;
+  const empty = !mapDataLoading && !mapMarkers.size && !visiblePlaceCounts.imported;
   document.querySelector("#map-data-copy").textContent = mapDataError
     ? "Plekken konden niet laden. Controleer je verbinding."
     : downloading ? "Plekken laden…" : empty ? "Geen plekken in beeld met deze filters. Verplaats de kaart of pas je filters aan." : "";
@@ -1716,30 +1507,6 @@ function campwildPlace(sourcePlace) {
     ],
     caution: "CampWild is communitydata. Controleer de bronpagina, lokale regels, borden en actuele staat voordat je deze plek als overnachting plant.",
   };
-}
-
-function renderCuratedMarkers() {
-  const filters = currentFilters();
-  curatedLayer.clearLayers();
-  markerIndex.clear();
-  visiblePlaceCounts.curated = 0;
-
-  const markers = places
-    .filter((place) => countryAllowed(place.country, filters))
-    .filter((place) => filters.types.has(place.type))
-    .filter((place) => place.confidence >= filters.confidence)
-    .filter((place) => sourceLayerBounds().contains([place.lat, place.lng]))
-    .filter((place) => isWithinRoute(place.lat, place.lng))
-    .map((place) => {
-      const displayPlace = { ...place, approximate: true };
-      addCandidate(place.lat, place.lng, displayPlace, "curated");
-      const marker = L.marker([place.lat, place.lng], { icon: markerIcon(place.type), title: place.name })
-        .on("click", () => renderPlace(displayPlace));
-      markerIndex.set(place.id, marker);
-      visiblePlaceCounts.curated += 1;
-      return marker;
-    });
-  addMarkers(curatedLayer, markers);
 }
 
 function renderCountries() {

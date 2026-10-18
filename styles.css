@@ -1244,92 +1244,16 @@ select {
   width: 100%;
   height: 100%;
   place-items: center;
-  border: 3px solid rgba(255, 255, 255, 0.84);
-  border-radius: 999px;
-  color: white;
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1;
-  box-shadow: 0 5px 16px rgba(18, 31, 25, 0.28);
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  color: var(--white);
+  background: var(--forest-dark);
+  font: 700 12px/1 system-ui, sans-serif;
 }
 
 .map-count-cluster strong {
   font: inherit;
   line-height: 1;
-}
-
-.map-count-cluster span {
-  display: block;
-  margin-bottom: 2px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-}
-
-.cluster-density-low {
-  opacity: 0.9;
-}
-
-.cluster-density-normal {
-  border-width: 3px;
-}
-
-.cluster-density-medium {
-  border-width: 3px;
-  font-size: 13px;
-}
-
-.cluster-density-high {
-  border-width: 4px;
-  font-size: 15px;
-  box-shadow: 0 0 0 10px rgba(18, 49, 39, 0.12), 0 8px 22px rgba(18, 31, 25, 0.3);
-}
-
-.cluster-density-peak {
-  border-width: 4px;
-  font-size: 16px;
-  box-shadow: 0 0 0 13px rgba(18, 49, 39, 0.14), 0 10px 28px rgba(18, 31, 25, 0.34);
-}
-
-.cluster-vodf {
-  background: rgba(57, 120, 176, 0.94);
-  box-shadow: 0 0 0 8px rgba(57, 120, 176, 0.2), 0 5px 16px rgba(18, 31, 25, 0.28);
-}
-
-.cluster-wtmg {
-  background: rgba(203, 94, 139, 0.95);
-  box-shadow: 0 0 0 8px rgba(203, 94, 139, 0.2), 0 5px 16px rgba(18, 31, 25, 0.28);
-}
-
-.cluster-camping {
-  background: rgba(123, 91, 53, 0.95);
-  box-shadow: 0 0 0 8px rgba(123, 91, 53, 0.2), 0 5px 16px rgba(18, 31, 25, 0.28);
-}
-
-.cluster-official {
-  background: rgba(47, 121, 88, 0.95);
-  box-shadow: 0 0 0 8px rgba(47, 121, 88, 0.18), 0 5px 16px rgba(18, 31, 25, 0.28);
-}
-
-.cluster-curated {
-  background: rgba(162, 140, 72, 0.95);
-  box-shadow: 0 0 0 8px rgba(162, 140, 72, 0.18), 0 5px 16px rgba(18, 31, 25, 0.28);
-}
-
-.cluster-osm {
-  background: rgba(65, 121, 150, 0.95);
-  box-shadow: 0 0 0 8px rgba(65, 121, 150, 0.18), 0 5px 16px rgba(18, 31, 25, 0.28);
-}
-
-.cluster-imported {
-  background: rgba(103, 139, 78, 0.95);
-  box-shadow: 0 0 0 8px rgba(103, 139, 78, 0.18), 0 5px 16px rgba(18, 31, 25, 0.28);
-}
-
-.cluster-overview {
-  background: rgba(38, 92, 118, 0.96);
-  box-shadow: 0 0 0 8px rgba(38, 92, 118, 0.2), 0 5px 16px rgba(18, 31, 25, 0.28);
 }
 
 .host-map-pin {
@@ -1825,20 +1749,16 @@ select {
 
 .sleep-marker {
   display: grid;
-  width: 36px !important;
-  height: 36px !important;
+  width: 32px !important;
+  height: 32px !important;
   place-items: center;
-  border: 3px solid var(--white);
-  border-radius: 50% 50% 50% 12px;
-  transform: rotate(-45deg);
-  box-shadow: 0 6px 16px rgba(20, 38, 30, 0.28);
+  border: 2px solid var(--white);
+  border-radius: 50%;
 }
 
 .sleep-marker span {
-  transform: rotate(45deg);
   color: white;
-  font-size: 14px;
-  font-weight: 700;
+  font: 700 12px system-ui, sans-serif;
 }
 
 .marker-wild { background: #668c50; }
@@ -3410,4 +3330,37 @@ nav a, .header-action { min-height: 44px; display: inline-flex; align-items: cen
 }
 @media (max-height: 500px) {
   .map-sidebar { top: 12px; bottom: 12px; height: calc(100dvh - 24px); }
+}
+
+.region-guide-section {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--white);
+}
+.region-guide-section h2 { margin: 0 0 12px; font-size: 30px; }
+.region-guide-list { display: grid; gap: 10px; margin-top: 22px; }
+.region-guide { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.region-guide summary {
+  min-height: 48px;
+  padding: 14px 18px;
+  color: var(--forest-dark);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.region-guide summary::marker { color: var(--forest); }
+.region-guide summary:focus-visible { outline: 3px solid var(--forest); outline-offset: -4px; }
+.region-guide summary:hover { background: var(--surface-soft); }
+.region-guide[open] summary { border-bottom: 1px solid var(--line); }
+.region-guide-content { padding: 2px 18px 18px; }
+.region-guide-content p { margin: 14px 0; font-size: 14px; line-height: 1.7; }
+.region-guide-location { color: var(--muted); }
+.region-guide-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 20px 0; }
+.region-guide-facts dt { color: var(--muted); font-size: 12px; }
+.region-guide-facts dd { margin: 4px 0 0; font-size: 14px; line-height: 1.6; }
+@media (max-width: 560px) {
+  .region-guide-section { padding: 20px; }
+  .region-guide-facts { grid-template-columns: 1fr; gap: 12px; }
+  .region-guide summary { font-size: 14px; }
 }
