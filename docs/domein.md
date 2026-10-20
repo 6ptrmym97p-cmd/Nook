@@ -32,11 +32,21 @@ Dit is een website met meerdere HTML-pagina's, geen SPA-router. Relatieve links 
 
 De bestaande serviceworker bewaart de app-shell en bekeken kaartdata offline. Bij wijzigingen aan app-assets moeten de versies in HTML en `APP_SHELL` en de `SHELL_CACHE`-naam samen worden bijgewerkt, zoals in de bestaande releasewerkwijze. Bij een nieuwe dataset moeten ook de dataversies en de gedeelde runtime-cachenaam in `service-worker.js` en `map-worker.js` worden bijgewerkt. Een GitHub-deployment op zichzelf wist geen browsercaches.
 
+## Feedbackformulier (tips, klachten, bugs)
+
+De knop **Feedback** stuurt meldingen naar de Pages Function `functions/api/feedback.js`, die ze bewaart in Cloudflare KV. Cloudflare Pages pakt de map `functions/` automatisch op. Eenmalig instellen:
+
+1. **Storage & Databases → KV → Create namespace**, naam bijvoorbeeld `nook-feedback`.
+2. **Workers & Pages → Nook → Settings → Bindings → Add → KV namespace**: variabelenaam `FEEDBACK`, namespace `nook-feedback`. Doe dit voor Production (en eventueel Preview).
+3. Start een nieuwe deployment (**Deployments → … → Retry deployment**) zodat de koppeling actief wordt.
+
+Zolang de koppeling ontbreekt, krijgt een bezoeker de melding dat feedback nog niet is ingesteld. Meldingen lezen: open de namespace onder **KV**; sleutels `feedback:<tijdstip>:<id>` staan op datum, met soort en een voorvertoning als metadata. Het IP-adres wordt niet opgeslagen; alleen gehasht en één uur lang als limiet van vijf berichten per bezoeker per uur.
+
 ## Controle
 
 ```sh
 node scripts/build-pages.mjs
-node --test scripts/test-service-worker.mjs scripts/test-map-data.mjs
+node --test scripts/test-service-worker.mjs scripts/test-map-data.mjs scripts/test-feedback.mjs
 ```
 
 Controleer na publicatie de kaart, filters, plekdetails, navigatie, GPX-import, offline herladen en HTTP-securityheaders. Controleer vervolgens met een nieuwe commit dat Cloudflare daadwerkelijk een automatische productiedeployment start.

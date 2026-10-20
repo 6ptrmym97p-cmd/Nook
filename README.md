@@ -69,7 +69,7 @@ Na het vernieuwen van de openbare data maakt `scripts/build-public-data.mjs` aut
 
 ```bash
 node scripts/build-map-data.mjs
-node --test scripts/test-map-data.mjs scripts/test-service-worker.mjs
+node --test scripts/test-map-data.mjs scripts/test-service-worker.mjs scripts/test-feedback.mjs
 ```
 
 Bij een datavernieuwing: verhoog ook de asset-/dataversie in `app.js`, `map-worker.js`, `index.html` en `service-worker.js`, zodat offlinecaches de nieuwe index en bijbehorende details samen verversen. Gebruik geen losse oude index met nieuwe detailbestanden.

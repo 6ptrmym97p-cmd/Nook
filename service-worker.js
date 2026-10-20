@@ -1,4 +1,4 @@
-const SHELL_CACHE = "nook-shell-20261018-9";
+const SHELL_CACHE = "nook-shell-20261020-1";
 const RUNTIME_CACHE = "nook-runtime-20261018-6";
 const TILE_CACHE = "nook-tiles-v1";
 const MAX_TILES = 256;
@@ -9,7 +9,7 @@ const APP_SHELL = [
   "./regels.html",
   "./netwerken.html",
   "./over.html",
-  "./styles.css?v=20261018-5",
+  "./styles.css?v=20261020-1",
   "./app.js?v=20261018-6",
   "./map-canvas.js?v=20261016-4",
   "./map-worker.js?v=20261018-2",
@@ -26,7 +26,8 @@ const APP_SHELL = [
   "./icon-512.png?v=20261016-5",
   "./apple-touch-icon.png?v=20261016-5",
   "./manifest.webmanifest?v=20261016-5",
-  "./pwa.js?v=20261018-1"
+  "./pwa.js?v=20261018-1",
+  "./feedback.js?v=20261020-1"
 ];
 
 self.addEventListener("install", (event) => {
