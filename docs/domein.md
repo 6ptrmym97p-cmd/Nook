@@ -51,7 +51,21 @@ curl -i https://ridewithnook.com/api/feedback \
   --data '{"kind":"bug","message":""}'
 ```
 
-Controleer daarna één echte inzending via het formulier en zoek die op in de KV-namespace. De bezoeker ziet pas een bevestiging wanneer de server `{ "ok": true }` terugstuurt na het opslaan. Berichten komen in Cloudflare KV terecht; ze worden niet automatisch gemaild.
+Controleer daarna één echte inzending via het formulier en zoek die op in de KV-namespace. De bezoeker ziet pas een bevestiging wanneer de server `{ "ok": true }` terugstuurt na het opslaan.
+
+### Feedback per e-mail ontvangen
+
+Het formulier kan na het opslaan een melding naar de beheerder mailen via [Resend](https://resend.com). Een bezoeker hoeft geen mailprogramma te openen en het eigen e-mailadres blijft optioneel. Stel onder **Workers & Pages → Nook → Settings → Variables and Secrets** voor Production in:
+
+- `RESEND_API_KEY`: een **secret** met een Resend API-sleutel die e-mail mag versturen.
+- `FEEDBACK_EMAIL_TO`: het e-mailadres van de beheerder. Dit adres staat alleen op de server, niet in de openbare broncode of de formulierreactie.
+- `FEEDBACK_EMAIL_FROM`: optioneel een afzender op een in Resend geverifieerd domein, bijvoorbeeld `Nook <feedback@jouw-domein.nl>`.
+
+Zonder eigen afzender gebruikt Nook `Nook feedback <onboarding@resend.dev>`. Daarmee mag Resend alleen naar het e-mailadres van het Resend-account sturen: maak het account dus met het gewenste ontvangstadres aan. Voor andere ontvangers moet eerst een eigen verzenddomein worden geverifieerd. Er is geen DNS-wijziging nodig voor de standaardafzender.
+
+Publiceer na het wijzigen van deze instellingen een nieuwe deployment. De melding bevat het bericht, de soort feedback en technische context. Als de bezoeker een e-mailadres invult, wordt dat het Reply-To-adres. Mails gebruiken gewone tekst en de ontvanger wordt uitsluitend door de serverinstellingen bepaald.
+
+De e-mail wordt op de achtergrond verstuurd nadat feedback veilig is opgeslagen. Bij een storing krijgt de bezoeker gewoon een bevestiging en blijft het bericht in KV staan. In elk nieuw feedbackrecord staat `notification.status`: `not_configured`, `pending`, `sent` of `failed`. `sent` betekent dat Resend het bericht heeft aangenomen; uiteindelijke bezorging kun je in het Resend-dashboard bekijken. Mislukte meldingen worden niet automatisch opnieuw verstuurd en zijn via KV te verwerken. Controleer na het activeren één echte inzending zowel in KV als in de inbox.
 
 ## Controle
 

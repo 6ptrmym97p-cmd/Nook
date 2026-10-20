@@ -32,6 +32,7 @@ test("stores valid feedback without the visitor IP", async () => {
   assert.equal(record.kind, "bug");
   assert.equal(record.mapView, "60.1,10.2,7");
   assert.equal(record.userAgent, "test-agent");
+  assert.equal(record.notification.status, "not_configured");
   assert.ok(!entry.value.includes("203.0.113.7"));
   assert.deepEqual(entry.metadata, { kind: "bug", preview: valid.message });
 });
@@ -67,4 +68,89 @@ test("limits each visitor to five messages per hour", async () => {
 test("reports a clear error until the KV binding exists", async () => {
   const response = await onRequestPost({ request: post(valid), env: {} });
   assert.equal(response.status, 503);
+});
+
+test("emails the configured owner after saving feedback, with optional reply-to and plain text", async (t) => {
+  const kv = fakeKv();
+  const tasks = [];
+  let outgoing;
+  t.mock.method(globalThis, "fetch", async (url, options) => {
+    assert.equal(saved(kv).length, 1, "Feedback must be saved before email is attempted");
+    assert.equal(url, "https://api.resend.com/emails");
+    assert.equal(options.headers.Authorization, "Bearer server-only-test-key");
+    assert.equal(options.headers["Idempotency-Key"], saved(kv)[0][0]);
+    outgoing = JSON.parse(options.body);
+    return Response.json({ id: "notification-123" });
+  });
+  const response = await onRequestPost({
+    request: post({ ...valid, email: "visitor@example.com", message: "A <b>missing</b> place" }),
+    env: { FEEDBACK: kv, RESEND_API_KEY: "server-only-test-key", FEEDBACK_EMAIL_TO: "owner@example.com" },
+    waitUntil(task) { tasks.push(task); },
+  });
+  assert.equal(response.status, 201);
+  assert.deepEqual(await response.json(), { ok: true });
+  await Promise.all(tasks);
+  assert.equal(tasks.length, 1);
+  assert.deepEqual(outgoing.to, ["owner@example.com"]);
+  assert.equal(outgoing.reply_to, "visitor@example.com");
+  assert.equal(outgoing.subject, "[Nook] Nieuwe feedback: Bug");
+  assert.ok(outgoing.text.includes("A <b>missing</b> place"));
+  assert.ok(outgoing.text.includes("60.1,10.2,7"));
+  assert.ok(!("html" in outgoing));
+  const record = JSON.parse(saved(kv)[0][1].value);
+  assert.equal(record.notification.status, "sent");
+  assert.equal(record.notification.id, "notification-123");
+});
+
+test("visitors without an email address can still submit feedback and trigger a notification", async (t) => {
+  const kv = fakeKv();
+  t.mock.method(globalThis, "fetch", async (url, options) => {
+    const outgoing = JSON.parse(options.body);
+    assert.ok(!("reply_to" in outgoing));
+    assert.ok(outgoing.text.includes("Niet opgegeven"));
+    assert.equal(outgoing.from, "Nook <feedback@example.com>");
+    return Response.json({ id: "notification-no-visitor-email" });
+  });
+  const response = await onRequestPost({ request: post(valid), env: {
+    FEEDBACK: kv, RESEND_API_KEY: "test", FEEDBACK_EMAIL_TO: "owner@example.com", FEEDBACK_EMAIL_FROM: "Nook <feedback@example.com>",
+  } });
+  assert.equal(response.status, 201);
+  assert.equal(JSON.parse(saved(kv)[0][1].value).notification.status, "sent");
+});
+
+test("failed or unconfirmed email delivery preserves accepted feedback and records the failure", async (t) => {
+  t.mock.method(console, "error", () => {});
+  for (const failure of ["provider", "network", "no-acknowledgement"]) {
+    const kv = fakeKv();
+    const tasks = [];
+    t.mock.method(globalThis, "fetch", async () => {
+      if (failure === "network") throw new Error("Network timeout");
+      if (failure === "provider") return Response.json({ error: "Unavailable" }, { status: 503 });
+      return Response.json({});
+    });
+    const response = await onRequestPost({ request: post(valid), env: {
+      FEEDBACK: kv, RESEND_API_KEY: "test", FEEDBACK_EMAIL_TO: "owner@example.com",
+    }, waitUntil(task) { tasks.push(task); } });
+    assert.equal(response.status, 201);
+    await Promise.all(tasks);
+    const record = JSON.parse(saved(kv)[0][1].value);
+    assert.equal(record.message, valid.message);
+    assert.equal(record.notification.status, "failed");
+  }
+});
+
+test("honeypot and rate-limited submissions never trigger notification email", async (t) => {
+  const kv = fakeKv();
+  let sent = 0;
+  t.mock.method(globalThis, "fetch", async () => {
+    sent++;
+    return Response.json({ id: "mail-" + sent });
+  });
+  const env = { FEEDBACK: kv, RESEND_API_KEY: "test", FEEDBACK_EMAIL_TO: "owner@example.com" };
+  assert.equal((await onRequestPost({ request: post({ ...valid, website: "spam" }), env })).status, 201);
+  assert.equal(sent, 0);
+  for (let index = 0; index < 5; index++) await onRequestPost({ request: post(valid), env });
+  assert.equal(sent, 5);
+  assert.equal((await onRequestPost({ request: post(valid), env })).status, 429);
+  assert.equal(sent, 5);
 });

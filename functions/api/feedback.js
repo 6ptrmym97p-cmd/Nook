@@ -25,7 +25,55 @@ async function sha256(value) {
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-export async function onRequestPost({ request, env }) {
+async function notifyByEmail(env, key, record, metadata) {
+  let notification;
+  try {
+    const labels = { tip: "Tip", klacht: "Klacht", bug: "Bug" };
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+        "Idempotency-Key": key,
+      },
+      signal: AbortSignal.timeout(10000),
+      body: JSON.stringify({
+        from: env.FEEDBACK_EMAIL_FROM || "Nook feedback <onboarding@resend.dev>",
+        to: [env.FEEDBACK_EMAIL_TO],
+        subject: `[Nook] Nieuwe feedback: ${labels[record.kind]}`,
+        ...(record.email ? { reply_to: record.email } : {}),
+        text: [
+          "Nieuwe feedback voor Nook",
+          `Type: ${labels[record.kind]}`,
+          `Ontvangen: ${record.createdAt}`,
+          "",
+          record.message,
+          "",
+          `E-mail bezoeker: ${record.email || "Niet opgegeven"}`,
+          `Pagina: ${record.page}`,
+          `Kaartpositie: ${record.mapView}`,
+          `Taal: ${record.language}`,
+          `Land: ${record.country}`,
+          `Appversie: ${record.appVersion}`,
+          `Scherm: ${record.viewport}`,
+          `Browser: ${record.userAgent}`,
+        ].join("\n"),
+      }),
+    });
+    if (!response.ok) throw new Error("Email service rejected the request.");
+    const result = await response.json();
+    if (typeof result?.id !== "string" || !result.id) throw new Error("Email service did not confirm receipt.");
+    notification = { status: "sent", sentAt: new Date().toISOString(), id: result.id };
+  } catch {
+    // The feedback is already saved. Never ask the visitor to submit it again.
+    notification = { status: "failed", attemptedAt: new Date().toISOString() };
+    console.error("Feedback email notification failed; the message remains in KV.");
+  }
+  await env.FEEDBACK.put(key, JSON.stringify({ ...record, notification }), { metadata });
+}
+
+export async function onRequestPost(handlerContext) {
+  const { request, env } = handlerContext;
   if (!env.FEEDBACK) return json({ error: "Feedback is nog niet ingesteld." }, 503);
 
   const origin = request.headers.get("Origin");
@@ -59,6 +107,7 @@ export async function onRequestPost({ request, env }) {
 
   const context = body.context && typeof body.context === "object" ? body.context : {};
   const createdAt = new Date().toISOString();
+  const emailConfigured = Boolean(env.RESEND_API_KEY && env.FEEDBACK_EMAIL_TO);
   const record = {
     createdAt,
     kind,
@@ -71,9 +120,17 @@ export async function onRequestPost({ request, env }) {
     appVersion: text(context.appVersion, 40),
     userAgent: text(request.headers.get("User-Agent"), 300),
     country: text(request.cf?.country, 4),
+    notification: { status: emailConfigured ? "pending" : "not_configured" },
   };
-  await env.FEEDBACK.put(`feedback:${createdAt}:${crypto.randomUUID().slice(0, 8)}`, JSON.stringify(record), {
-    metadata: { kind, preview: message.slice(0, 80) },
-  });
+  const key = `feedback:${createdAt}:${crypto.randomUUID().slice(0, 8)}`;
+  const metadata = { kind, preview: message.slice(0, 80) };
+  await env.FEEDBACK.put(key, JSON.stringify(record), { metadata });
+  if (emailConfigured) {
+    const notification = notifyByEmail(env, key, record, metadata).catch(() => {
+      console.error("Could not update the feedback email status in KV.");
+    });
+    if (handlerContext.waitUntil) handlerContext.waitUntil(notification);
+    else await notification;
+  }
   return json({ ok: true }, 201);
 }
