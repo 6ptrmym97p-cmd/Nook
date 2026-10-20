@@ -42,6 +42,17 @@ De knop **Feedback** stuurt meldingen naar de Pages Function `functions/api/feed
 
 Zolang de koppeling ontbreekt, krijgt een bezoeker de melding dat feedback nog niet is ingesteld. Meldingen lezen: open de namespace onder **KV**; sleutels `feedback:<tijdstip>:<id>` staan op datum, met soort en een voorvertoning als metadata. Het IP-adres wordt niet opgeslagen; alleen gehasht en één uur lang als limiet van vijf berichten per bezoeker per uur.
 
+Controleer de koppeling na de nieuwe deployment met onderstaand onvolledige bericht. Dit slaat niets op: **400** met `Schrijf iets meer in je bericht.` betekent dat de functie en opslagkoppeling beschikbaar zijn; **503** met `Feedback is nog niet ingesteld.` betekent dat `FEEDBACK` nog ontbreekt in de actieve productie-deployment. Een GET in de adresbalk is geen geldige controle: die kan de gewone website teruggeven.
+
+```sh
+curl -i https://ridewithnook.com/api/feedback \
+  -H 'Content-Type: application/json' \
+  -H 'Origin: https://ridewithnook.com' \
+  --data '{"kind":"bug","message":""}'
+```
+
+Controleer daarna één echte inzending via het formulier en zoek die op in de KV-namespace. De bezoeker ziet pas een bevestiging wanneer de server `{ "ok": true }` terugstuurt na het opslaan. Berichten komen in Cloudflare KV terecht; ze worden niet automatisch gemaild.
+
 ## Controle
 
 ```sh

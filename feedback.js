@@ -111,7 +111,8 @@ const feedbackServerMessages = {
         }),
       });
       const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(t(feedbackServerMessages[result.error] || "Could not send your message."));
+      // Static fallback pages can return 200 without accepting any feedback.
+      if (!response.ok || result?.ok !== true) throw new Error(t(feedbackServerMessages[result?.error] || "Could not send your message."));
       form.reset();
       status.textContent = t("Thank you! Your message has been received.");
       window.setTimeout(() => { if (dialog.open) close(); }, 1800);
