@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Vind fiets- en bikepackingroutes, download een GPX en filter slaapplekken op afstand tot je route." />
-    <title>Routes | Nook</title>
+    <meta name="description" content="Find cycling and bikepacking routes, download a GPX and filter sleeping places by distance to your route."  data-i18n-attrs="{&quot;content&quot;:&quot;Find cycling and bikepacking routes, download a GPX and filter sleeping places by distance to your route.&quot;}"/>
+    <title data-i18n-text="[&quot;Routes | Nook&quot;]">Routes | Nook</title>
     <meta name="theme-color" content="#123127" />
     <meta
       http-equiv="Content-Security-Policy"
@@ -12,72 +12,74 @@
     />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="manifest" href="manifest.webmanifest?v=20261016-5" />
+    <link rel="manifest" href="manifest.webmanifest?v=20261020-2" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261016-5" />
     <link rel="icon" href="favicon.ico?v=20261016-5" sizes="any" />
     <link rel="icon" href="favicon.svg?v=20261016-5" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20261020-1" />
+    <link rel="stylesheet" href="styles.css?v=20261020-2" />
+    <script src="i18n.js?v=20261020-2"></script>
   </head>
-  <body class="route-sources-page">
-    <a class="skip-link" href="#main-content">Naar inhoud</a>
+  <body data-feedback-script="feedback.js?v=20261020-2" class="route-sources-page">
+    <a class="skip-link" href="#main-content" data-i18n-text="[&quot;To content&quot;]">To content</a>
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Nook kaart">
+      <a class="brand" href="index.html" aria-label="Nook map" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Nook map&quot;}">
         <img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="38" height="38" aria-hidden="true" />
         <span>Nook</span>
       </a>
-      <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html" aria-current="page">Routes</a><a href="regels.html">Regels</a><a href="netwerken.html">Netwerken</a><a class="mobile-about" href="over.html">Over</a></nav>
-      <div class="header-actions"><button class="header-action" type="button" data-feedback-open>Feedback</button><a class="header-action" href="over.html">Over</a></div>
+      <nav aria-label="Main navigation" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Main navigation&quot;}"><a href="index.html" data-i18n-text="[&quot;Map&quot;]">Map</a><a href="routebronnen.html" aria-current="page" data-i18n-text="[&quot;Routes&quot;]">Routes</a><a href="regels.html" data-i18n-text="[&quot;Rules&quot;]">Rules</a><a href="netwerken.html" data-i18n-text="[&quot;Sources&quot;]">Sources</a><a class="mobile-about" href="over.html" data-i18n-text="[&quot;About&quot;]">About</a></nav>
+      <div class="header-actions"><button class="header-action" type="button" data-feedback-open data-i18n-text="[&quot;Feedback&quot;]">Feedback</button><label class="language-control"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><select id="language-select" aria-label="Language" title="Choose language" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Language&quot;,&quot;title&quot;:&quot;Choose language&quot;}" disabled><option value="en">English</option></select></label></div>
     </header>
 
     <main id="main-content" tabindex="-1" class="compact-main">
       <section class="compact-header">
         <div>
-          <p class="eyebrow">GPX-bronnen</p>
-          <h1>Routebronnen</h1>
+          <p class="eyebrow" data-i18n-text="[&quot;GPX Resources&quot;]">GPX Resources</p>
+          <h1 data-i18n-text="[&quot;Route sources&quot;]">Route sources</h1>
         </div>
-        <p>Open een bron, download of exporteer GPX, en importeer daarna op de kaart. Links openen extern; Nook bewaart je route alleen lokaal in de browser.</p>
+        <p data-i18n-text="[&quot;Open a source, download or export GPX, then import to the map. Links open externally; Nook only saves your route locally in the browser.&quot;]">Open a source, download or export GPX, then import to the map. Links open externally; Nook only saves your route locally in the browser.</p>
       </section>
 
       <div class="page-callout">
-        <div><strong>Heb je al een GPX-route?</strong><p>Zet je route op de kaart en vind slaapplekken onderweg. Je bestand blijft op dit apparaat.</p></div>
-        <a class="button" href="index.html?route=import">Importeer mijn route <span aria-hidden="true">↗</span></a>
+        <div><strong data-i18n-text="[&quot;Do you already have a GPX route?&quot;]">Do you already have a GPX route?</strong><p data-i18n-text="[&quot;Put your route on the map and find places to sleep along the way. Your file remains on this device.&quot;]">Put your route on the map and find places to sleep along the way. Your file remains on this device.</p></div>
+        <a class="button" href="index.html?route=import" data-i18n-text="[&quot;Import my route&quot;]">Import my route <span aria-hidden="true">↗</span></a>
       </div>
-      <section class="source-table-grid" aria-label="Routebronnen">
+      <section class="source-table-grid" aria-label="Route sources" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Route sources&quot;}">
         <article class="source-table-card">
-          <h2>Plannen en collecties</h2>
+          <h2 data-i18n-text="[&quot;Route planners and collections&quot;]">Route planners and collections</h2>
           <table role="table" class="source-table">
-            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Bron</th><th scope="col" role="columnheader">Dekking</th><th scope="col" role="columnheader">Gebruik</th><th scope="col" role="columnheader">GPX</th></tr></thead>
+            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader" data-i18n-text="[&quot;Source&quot;]">Source</th><th scope="col" role="columnheader" data-i18n-text="[&quot;Coverage&quot;]">Coverage</th><th scope="col" role="columnheader" data-i18n-text="[&quot;Use&quot;]">Use</th><th scope="col" role="columnheader">GPX</th></tr></thead>
             <tbody role="rowgroup">
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://en.eurovelo.com/" target="_blank" rel="noreferrer">EuroVelo</a></td><td role="cell" data-label="Dekking">Europa</td><td role="cell" data-label="Gebruik">Officieel netwerk</td><td role="cell" data-label="GPX">Direct</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://cycle.travel/map" target="_blank" rel="noreferrer">cycle.travel</a></td><td role="cell" data-label="Dekking">Europa</td><td role="cell" data-label="Gebruik">Planner</td><td role="cell" data-label="GPX">Direct</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://brouter.de/brouter-web/" target="_blank" rel="noreferrer">BRouter Web</a></td><td role="cell" data-label="Dekking">Europa</td><td role="cell" data-label="Gebruik">Planner</td><td role="cell" data-label="GPX">Direct</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://www.komoot.com/plan" target="_blank" rel="noreferrer">Komoot</a></td><td role="cell" data-label="Dekking">Europa</td><td role="cell" data-label="Gebruik">Planner/app</td><td role="cell" data-label="GPX">Account</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://bikepacking.com/bikepacking-routes/" target="_blank" rel="noreferrer">BIKEPACKING.com</a></td><td role="cell" data-label="Dekking">Wereldwijd</td><td role="cell" data-label="Gebruik">Collecties</td><td role="cell" data-label="GPX">Wisselt</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://www.nederlandfietsland.nl/lf-routes/" target="_blank" rel="noreferrer">Nederland Fietsland</a></td><td role="cell" data-label="Dekking">NL</td><td role="cell" data-label="Gebruik">LF-routes</td><td role="cell" data-label="GPX">Direct</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://en.francevelotourisme.com/cycle-route" target="_blank" rel="noreferrer">France Vélo Tourisme</a></td><td role="cell" data-label="Dekking">FR</td><td role="cell" data-label="Gebruik">Officiële routes</td><td role="cell" data-label="GPX">Per route</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://en.eurovelo.com/" target="_blank" rel="noreferrer">EuroVelo</a></td><td role="cell" data-label="Coverage" data-i18n-text="[&quot;Europe&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">Europe</td><td role="cell" data-label="Use" data-i18n-text="[&quot;Official network&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">Official network</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;Direct download&quot;]">Direct download</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://cycle.travel/map" target="_blank" rel="noreferrer">cycle.travel</a></td><td role="cell" data-label="Coverage" data-i18n-text="[&quot;Europe&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">Europe</td><td role="cell" data-label="Use" data-i18n-text="[&quot;Planner&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">Planner</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;Direct download&quot;]">Direct download</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://brouter.de/brouter-web/" target="_blank" rel="noreferrer">BRouter Web</a></td><td role="cell" data-label="Coverage" data-i18n-text="[&quot;Europe&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">Europe</td><td role="cell" data-label="Use" data-i18n-text="[&quot;Planner&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">Planner</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;Direct download&quot;]">Direct download</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.komoot.com/plan" target="_blank" rel="noreferrer">Komoot</a></td><td role="cell" data-label="Coverage" data-i18n-text="[&quot;Europe&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">Europe</td><td role="cell" data-label="Use" data-i18n-text="[&quot;Planner/app&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">Planner/app</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;Account&quot;]">Account</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://bikepacking.com/bikepacking-routes/" target="_blank" rel="noreferrer">BIKEPACKING.com</a></td><td role="cell" data-label="Coverage" data-i18n-text="[&quot;Worldwide&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">Worldwide</td><td role="cell" data-label="Use" data-i18n-text="[&quot;Collections&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">Collections</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;Varies&quot;]">Varies</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.nederlandfietsland.nl/lf-routes/" target="_blank" rel="noreferrer">Nederland Fietsland</a></td><td role="cell" data-label="Coverage" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">NL</td><td role="cell" data-label="Use" data-i18n-text="[&quot;LF routes&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">LF routes</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;Direct download&quot;]">Direct download</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://en.francevelotourisme.com/cycle-route" target="_blank" rel="noreferrer">France Vélo Tourisme</a></td><td role="cell" data-label="Coverage" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">FR</td><td role="cell" data-label="Use" data-i18n-text="[&quot;Official routes&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">Official routes</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;By route&quot;]">By route</td></tr>
             </tbody>
           </table>
         </article>
         <article class="source-table-card">
-          <h2>Landelijke bronnen</h2>
+          <h2 data-i18n-text="[&quot;National sources&quot;]">National sources</h2>
           <table role="table" class="source-table">
-            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Bron</th><th scope="col" role="columnheader">Dekking</th><th scope="col" role="columnheader">Gebruik</th><th scope="col" role="columnheader">GPX</th></tr></thead>
+            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader" data-i18n-text="[&quot;Source&quot;]">Source</th><th scope="col" role="columnheader" data-i18n-text="[&quot;Coverage&quot;]">Coverage</th><th scope="col" role="columnheader" data-i18n-text="[&quot;Use&quot;]">Use</th><th scope="col" role="columnheader">GPX</th></tr></thead>
             <tbody role="rowgroup">
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://www.visitflanders.com/en/discover-flanders/most-beautiful-cycle-routes" target="_blank" rel="noreferrer">Visit Flanders</a></td><td role="cell" data-label="Dekking">BE</td><td role="cell" data-label="Gebruik">Icoonroutes</td><td role="cell" data-label="GPX">Planner</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://www.radnetz-deutschland.de/en.html" target="_blank" rel="noreferrer">Radnetz Deutschland</a></td><td role="cell" data-label="Dekking">DE</td><td role="cell" data-label="Gebruik">D-routes</td><td role="cell" data-label="GPX">Per route</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://schweizmobil.ch/en/cycling-in-switzerland" target="_blank" rel="noreferrer">SchweizMobil</a></td><td role="cell" data-label="Dekking">CH</td><td role="cell" data-label="Gebruik">Officieel netwerk</td><td role="cell" data-label="GPX">Plus</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://www.bicitalia.org/" target="_blank" rel="noreferrer">Bicitalia</a></td><td role="cell" data-label="Dekking">IT</td><td role="cell" data-label="Gebruik">Nationaal netwerk</td><td role="cell" data-label="GPX">Corridor</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://kattegattleden.hoodin.com/en/item/ladda-ner-gpx-filer-9/ws8jxpvouxsf02inl57oyen686qv3lba" target="_blank" rel="noreferrer">Kattegattleden</a></td><td role="cell" data-label="Dekking">SE</td><td role="cell" data-label="Gebruik">Kustroute</td><td role="cell" data-label="GPX">Direct</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://www.visitluxembourg.com/experience-luxembourg/nature-outdoors/cycling" target="_blank" rel="noreferrer">Visit Luxembourg</a></td><td role="cell" data-label="Dekking">LU</td><td role="cell" data-label="Gebruik">Routecatalogus</td><td role="cell" data-label="GPX">Per route</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://en.eurovelo.com/" target="_blank" rel="noreferrer">Noord en Alpen</a></td><td role="cell" data-label="Dekking">NO/DK/AT</td><td role="cell" data-label="Gebruik">Start bij EuroVelo</td><td role="cell" data-label="GPX">Direct</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.visitflanders.com/en/discover-flanders/most-beautiful-cycle-routes" target="_blank" rel="noreferrer">Visit Flanders</a></td><td role="cell" data-label="Coverage" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">BE</td><td role="cell" data-label="Use" data-i18n-text="[&quot;Icon routes&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">Icon routes</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;Planner&quot;]">Planner</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.radnetz-deutschland.de/en.html" target="_blank" rel="noreferrer">Radnetz Deutschland</a></td><td role="cell" data-label="Coverage" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">DE</td><td role="cell" data-label="Use" data-i18n-text="[&quot;D routes&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">D routes</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;By route&quot;]">By route</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://schweizmobil.ch/en/cycling-in-switzerland" target="_blank" rel="noreferrer">SchweizMobil</a></td><td role="cell" data-label="Coverage" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">CH</td><td role="cell" data-label="Use" data-i18n-text="[&quot;Official network&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">Official network</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;Plus&quot;]">Plus</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.bicitalia.org/" target="_blank" rel="noreferrer">Bicitalia</a></td><td role="cell" data-label="Coverage" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">IT</td><td role="cell" data-label="Use" data-i18n-text="[&quot;National network&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">National network</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;Corridor&quot;]">Corridor</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://kattegattleden.hoodin.com/en/item/ladda-ner-gpx-filer-9/ws8jxpvouxsf02inl57oyen686qv3lba" target="_blank" rel="noreferrer">Kattegattleden</a></td><td role="cell" data-label="Coverage" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">SE</td><td role="cell" data-label="Use" data-i18n-text="[&quot;Coastal route&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">Coastal route</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;Direct download&quot;]">Direct download</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.visitluxembourg.com/experience-luxembourg/nature-outdoors/cycling" target="_blank" rel="noreferrer">Visit Luxembourg</a></td><td role="cell" data-label="Coverage" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">LU</td><td role="cell" data-label="Use" data-i18n-text="[&quot;Route catalogue&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">Route catalogue</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;By route&quot;]">By route</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://en.eurovelo.com/" target="_blank" rel="noreferrer" data-i18n-text="[&quot;Northern Europe and the Alps&quot;]">Northern Europe and the Alps</a></td><td role="cell" data-label="Coverage" data-i18n-attrs="{&quot;data-label&quot;:&quot;Coverage&quot;}">NO/DK/AT</td><td role="cell" data-label="Use" data-i18n-text="[&quot;Start at EuroVelo&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Use&quot;}">Start at EuroVelo</td><td role="cell" data-label="GPX" data-i18n-text="[&quot;Direct download&quot;]">Direct download</td></tr>
             </tbody>
           </table>
         </article>
       </section>
     </main>
-    <script src="pwa.js?v=20261018-1"></script>    <script src="feedback.js?v=20261020-1"></script>
+    <script src="pwa.js?v=20261018-1"></script>
+    <script src="bootstrap.js?v=20261020-2"></script>
   </body>
 </html>

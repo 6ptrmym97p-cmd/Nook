@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Regels | Nook</title>
+    <title data-i18n-text="[&quot;Rules | Nook&quot;]">Rules | Nook</title>
     <meta name="theme-color" content="#123127" />
     <meta
       http-equiv="Content-Security-Policy"
@@ -11,180 +11,182 @@
     />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="manifest" href="manifest.webmanifest?v=20261016-5" />
+    <link rel="manifest" href="manifest.webmanifest?v=20261020-2" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261016-5" />
     <link rel="icon" href="favicon.ico?v=20261016-5" sizes="any" />
     <link rel="icon" href="favicon.svg?v=20261016-5" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20261020-1" />
+    <link rel="stylesheet" href="styles.css?v=20261020-2" />
+    <script src="i18n.js?v=20261020-2"></script>
   </head>
-  <body class="compact-page-body">
-    <a class="skip-link" href="#main-content">Naar inhoud</a>
+  <body data-feedback-script="feedback.js?v=20261020-2" class="compact-page-body">
+    <a class="skip-link" href="#main-content" data-i18n-text="[&quot;To content&quot;]">To content</a>
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Nook kaart">
+      <a class="brand" href="index.html" aria-label="Nook map" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Nook map&quot;}">
         <img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="38" height="38" aria-hidden="true" />
         <span>Nook</span>
       </a>
-      <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html">Routes</a><a href="regels.html" aria-current="page">Regels</a><a href="netwerken.html">Netwerken</a><a class="mobile-about" href="over.html">Over</a></nav>
-      <div class="header-actions"><button class="header-action" type="button" data-feedback-open>Feedback</button><a class="header-action" href="over.html">Over</a></div>
+      <nav aria-label="Main navigation" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Main navigation&quot;}"><a href="index.html" data-i18n-text="[&quot;Map&quot;]">Map</a><a href="routebronnen.html" data-i18n-text="[&quot;Routes&quot;]">Routes</a><a href="regels.html" aria-current="page" data-i18n-text="[&quot;Rules&quot;]">Rules</a><a href="netwerken.html" data-i18n-text="[&quot;Sources&quot;]">Sources</a><a class="mobile-about" href="over.html" data-i18n-text="[&quot;About&quot;]">About</a></nav>
+      <div class="header-actions"><button class="header-action" type="button" data-feedback-open data-i18n-text="[&quot;Feedback&quot;]">Feedback</button><label class="language-control"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><select id="language-select" aria-label="Language" title="Choose language" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Language&quot;,&quot;title&quot;:&quot;Choose language&quot;}" disabled><option value="en">English</option></select></label></div>
     </header>
     <main id="main-content" tabindex="-1" class="compact-main">
       <section class="compact-header">
         <div>
-          <p class="eyebrow">Landenwijzer</p>
-          <h1>Waar mag je overnachten?</h1>
+          <p class="eyebrow" data-i18n-text="[&quot;Country guide&quot;]">Country guide</p>
+          <h1 data-i18n-text="[&quot;Where can you stay overnight?&quot;]">Where can you stay overnight?</h1>
         </div>
-        <p>Samenvatting voor fietsers met een kleine tent. Gebruik dit als startpunt; lokale borden, brandgevaar, terreinbeheer en toestemming blijven leidend.</p>
+        <p data-i18n-text="[&quot;Summary for cyclists with a small tent. Use this as a starting point; local signs, fire danger, site management and permission remain leading.&quot;]">Summary for cyclists with a small tent. Use this as a starting point; local signs, fire danger, site management and permission remain leading.</p>
       </section>
-      <section class="rules-layout" aria-label="Overnachtingsregels per land">
+      <section class="rules-layout" aria-label="Camping rules by country" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Camping rules by country&quot;}">
         <article class="rules-principles">
-          <h2>Altijd doen</h2>
+          <h2 data-i18n-text="[&quot;Always do&quot;]">Always do</h2>
           <ul>
-            <li>Check de officiële bron voor vertrek.</li>
-            <li>Vraag toestemming op privégrond.</li>
-            <li>Vermijd reservaten, akkers en huizen.</li>
-            <li>Geen vuur bij droogte of twijfel.</li>
+            <li data-i18n-text="[&quot;Check the official source before departure.&quot;]">Check the official source before departure.</li>
+            <li data-i18n-text="[&quot;Ask permission on private land.&quot;]">Ask permission on private land.</li>
+            <li data-i18n-text="[&quot;Avoid reserves, fields and houses.&quot;]">Avoid reserves, fields and houses.</li>
+            <li data-i18n-text="[&quot;No fire in times of drought or doubt.&quot;]">No fire in times of drought or doubt.</li>
           </ul>
         </article>
         <article class="source-table-card">
-          <h2>Landenmatrix</h2>
+          <h2 data-i18n-text="[&quot;Country matrix&quot;]">Country matrix</h2>
           <table role="table" class="source-table rules-table">
-            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Land</th><th scope="col" role="columnheader">Status</th><th scope="col" role="columnheader">Kernregel</th><th scope="col" role="columnheader">Bron</th></tr></thead>
+            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader" data-i18n-text="[&quot;Country&quot;]">Country</th><th scope="col" role="columnheader" data-i18n-text="[&quot;Status&quot;]">Status</th><th scope="col" role="columnheader" data-i18n-text="[&quot;Main rule&quot;]">Main rule</th><th scope="col" role="columnheader" data-i18n-text="[&quot;Source&quot;]">Source</th></tr></thead>
             <tbody role="rowgroup">
-              <tr role="row"><td role="cell" data-label="Land">NL</td><td role="cell" data-label="Status"><span class="status-chip status-strict">Streng</span></td><td role="cell" data-label="Kernregel">Gebruik toestemming, gastnetwerk of terrein.</td><td role="cell" data-label="Bron"><a href="https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2020/05/sluiten-paalkampeerterreinen" target="_blank" rel="noreferrer">Staatsbosbeheer</a></td></tr>
-              <tr role="row"><td role="cell" data-label="Land">BE</td><td role="cell" data-label="Status"><span class="status-chip status-mixed">Aangewezen</span></td><td role="cell" data-label="Kernregel">Bivakzone, terrein of toestemming.</td><td role="cell" data-label="Bron"><a href="https://natuurenbos.be/activiteiten/bivakzone" target="_blank" rel="noreferrer">Natuur en Bos</a></td></tr>
-              <tr role="row"><td role="cell" data-label="Land">LU</td><td role="cell" data-label="Status"><span class="status-chip status-strict">Streng</span></td><td role="cell" data-label="Kernregel">Geen vrij kampeerrecht; plan officieel.</td><td role="cell" data-label="Bron"><a href="https://www.visitluxembourg.com/plan-your-stay/stay/camping" target="_blank" rel="noreferrer">Visit Luxembourg</a></td></tr>
-              <tr role="row"><td role="cell" data-label="Land">DE</td><td role="cell" data-label="Status"><span class="status-chip status-mixed">Deelstaat</span></td><td role="cell" data-label="Kernregel">Toestemming of trekkingplek; check deelstaat.</td><td role="cell" data-label="Bron"><a href="https://www.gesetze-im-internet.de/bnatschg_2009/__59.html" target="_blank" rel="noreferrer">BNatSchG</a></td></tr>
-              <tr role="row"><td role="cell" data-label="Land">DK</td><td role="cell" data-label="Status"><span class="status-chip status-good">Aangewezen</span></td><td role="cell" data-label="Kernregel">Gebruik officiële vrije tentbossen/shelters.</td><td role="cell" data-label="Bron"><a href="https://eng.naturstyrelsen.dk/experience-nature/sleeping-outside-in-nature" target="_blank" rel="noreferrer">Naturstyrelsen</a></td></tr>
-              <tr role="row"><td role="cell" data-label="Land">SE</td><td role="cell" data-label="Status"><span class="status-chip status-good">Ruim</span></td><td role="cell" data-label="Kernregel">Allemansrätten, zorgvuldig en kort.</td><td role="cell" data-label="Bron"><a href="https://www.naturvardsverket.se/en/topics/the-right-of-public-access/activities-and-places/camping--tents/" target="_blank" rel="noreferrer">Naturvårdsverket</a></td></tr>
-              <tr role="row"><td role="cell" data-label="Land">NO</td><td role="cell" data-label="Status"><span class="status-chip status-good">Ruim</span></td><td role="cell" data-label="Kernregel">Utmark, 150 m afstand, meestal max 2 nachten.</td><td role="cell" data-label="Bron"><a href="https://www.environmentagency.no/areas-of-activity/right-to-roam/camping/" target="_blank" rel="noreferrer">Environment Agency</a></td></tr>
-              <tr role="row"><td role="cell" data-label="Land">FR</td><td role="cell" data-label="Status"><span class="status-chip status-mixed">Lokaal</span></td><td role="cell" data-label="Kernregel">Park, gemeente en toestemming bepalen.</td><td role="cell" data-label="Bron"><a href="https://www.parcsnationaux.fr/" target="_blank" rel="noreferrer">Parcs nationaux</a></td></tr>
-              <tr role="row"><td role="cell" data-label="Land">CH</td><td role="cell" data-label="Status"><span class="status-chip status-mixed">Lokaal</span></td><td role="cell" data-label="Kernregel">Vaak alleen zorgvuldig boven boomgrens.</td><td role="cell" data-label="Bron"><a href="https://www.sac-cas.ch/de/umwelt/bergsport-und-umwelt/campieren-und-biwakieren/" target="_blank" rel="noreferrer">SAC</a></td></tr>
-              <tr role="row"><td role="cell" data-label="Land">AT</td><td role="cell" data-label="Status"><span class="status-chip status-strict">Deelstaat</span></td><td role="cell" data-label="Kernregel">Bos alleen met toestemming; check deelstaat.</td><td role="cell" data-label="Bron"><a href="https://www.ris.bka.gv.at/NormDokument.wxe?Abfrage=Bundesnormen&amp;Gesetzesnummer=10010371&amp;Paragraf=33" target="_blank" rel="noreferrer">Forstgesetz</a></td></tr>
-              <tr role="row"><td role="cell" data-label="Land">IT</td><td role="cell" data-label="Status"><span class="status-chip status-mixed">Regionaal</span></td><td role="cell" data-label="Kernregel">Regio, gemeente en parkbeheer bepalen.</td><td role="cell" data-label="Bron"><a href="https://www.cai.it/" target="_blank" rel="noreferrer">CAI</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Country" data-i18n-attrs="{&quot;data-label&quot;:&quot;Country&quot;}">NL</td><td role="cell" data-label="Status" data-i18n-attrs="{&quot;data-label&quot;:&quot;Status&quot;}"><span class="status-chip status-strict" data-i18n-text="[&quot;Strict&quot;]">Strict</span></td><td role="cell" data-label="Main rule" data-i18n-text="[&quot;Get permission, stay with a host or use a designated site.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Main rule&quot;}">Get permission, stay with a host or use a designated site.</td><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2020/05/sluiten-paalkampeerterreinen" target="_blank" rel="noreferrer">Staatsbosbeheer</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Country" data-i18n-attrs="{&quot;data-label&quot;:&quot;Country&quot;}">BE</td><td role="cell" data-label="Status" data-i18n-attrs="{&quot;data-label&quot;:&quot;Status&quot;}"><span class="status-chip status-mixed" data-i18n-text="[&quot;Designated&quot;]">Designated</span></td><td role="cell" data-label="Main rule" data-i18n-text="[&quot;Bivouac zone, terrain or permission.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Main rule&quot;}">Bivouac zone, terrain or permission.</td><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://natuurenbos.be/activiteiten/bivakzone" target="_blank" rel="noreferrer">Natuur en Bos</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Country" data-i18n-attrs="{&quot;data-label&quot;:&quot;Country&quot;}">LU</td><td role="cell" data-label="Status" data-i18n-attrs="{&quot;data-label&quot;:&quot;Status&quot;}"><span class="status-chip status-strict" data-i18n-text="[&quot;Strict&quot;]">Strict</span></td><td role="cell" data-label="Main rule" data-i18n-text="[&quot;No general right to wild camp; use designated sites.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Main rule&quot;}">No general right to wild camp; use designated sites.</td><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.visitluxembourg.com/plan-your-stay/stay/camping" target="_blank" rel="noreferrer">Visit Luxembourg</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Country" data-i18n-attrs="{&quot;data-label&quot;:&quot;Country&quot;}">DE</td><td role="cell" data-label="Status" data-i18n-attrs="{&quot;data-label&quot;:&quot;Status&quot;}"><span class="status-chip status-mixed" data-i18n-text="[&quot;State&quot;]">State</span></td><td role="cell" data-label="Main rule" data-i18n-text="[&quot;Get permission or use a designated trekking site; check state rules.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Main rule&quot;}">Get permission or use a designated trekking site; check state rules.</td><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.gesetze-im-internet.de/bnatschg_2009/__59.html" target="_blank" rel="noreferrer">BNatSchG</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Country" data-i18n-attrs="{&quot;data-label&quot;:&quot;Country&quot;}">DK</td><td role="cell" data-label="Status" data-i18n-attrs="{&quot;data-label&quot;:&quot;Status&quot;}"><span class="status-chip status-good" data-i18n-text="[&quot;Designated&quot;]">Designated</span></td><td role="cell" data-label="Main rule" data-i18n-text="[&quot;Use official designated camping forests and shelters.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Main rule&quot;}">Use official designated camping forests and shelters.</td><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://eng.naturstyrelsen.dk/experience-nature/sleeping-outside-in-nature" target="_blank" rel="noreferrer">Naturstyrelsen</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Country" data-i18n-attrs="{&quot;data-label&quot;:&quot;Country&quot;}">SE</td><td role="cell" data-label="Status" data-i18n-attrs="{&quot;data-label&quot;:&quot;Status&quot;}"><span class="status-chip status-good" data-i18n-text="[&quot;Generally allowed&quot;]">Generally allowed</span></td><td role="cell" data-label="Main rule" data-i18n-text="[&quot;Right of public access; stay briefly and leave no trace.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Main rule&quot;}">Right of public access; stay briefly and leave no trace.</td><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.naturvardsverket.se/en/topics/the-right-of-public-access/activities-and-places/camping--tents/" target="_blank" rel="noreferrer">Naturvårdsverket</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Country" data-i18n-attrs="{&quot;data-label&quot;:&quot;Country&quot;}">NO</td><td role="cell" data-label="Status" data-i18n-attrs="{&quot;data-label&quot;:&quot;Status&quot;}"><span class="status-chip status-good" data-i18n-text="[&quot;Generally allowed&quot;]">Generally allowed</span></td><td role="cell" data-label="Main rule" data-i18n-text="[&quot;Utmark, 150 m away, usually max 2 nights.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Main rule&quot;}">Utmark, 150 m away, usually max 2 nights.</td><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.environmentagency.no/areas-of-activity/right-to-roam/camping/" target="_blank" rel="noreferrer">Environment Agency</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Country" data-i18n-attrs="{&quot;data-label&quot;:&quot;Country&quot;}">FR</td><td role="cell" data-label="Status" data-i18n-attrs="{&quot;data-label&quot;:&quot;Status&quot;}"><span class="status-chip status-mixed" data-i18n-text="[&quot;Local&quot;]">Local</span></td><td role="cell" data-label="Main rule" data-i18n-text="[&quot;Check park and municipal rules and get permission.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Main rule&quot;}">Check park and municipal rules and get permission.</td><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.parcsnationaux.fr/" target="_blank" rel="noreferrer">Parcs nationaux</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Country" data-i18n-attrs="{&quot;data-label&quot;:&quot;Country&quot;}">CH</td><td role="cell" data-label="Status" data-i18n-attrs="{&quot;data-label&quot;:&quot;Status&quot;}"><span class="status-chip status-mixed" data-i18n-text="[&quot;Local&quot;]">Local</span></td><td role="cell" data-label="Main rule" data-i18n-text="[&quot;Often only carefully above tree line.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Main rule&quot;}">Often only carefully above tree line.</td><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.sac-cas.ch/de/umwelt/bergsport-und-umwelt/campieren-und-biwakieren/" target="_blank" rel="noreferrer">SAC</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Country" data-i18n-attrs="{&quot;data-label&quot;:&quot;Country&quot;}">AT</td><td role="cell" data-label="Status" data-i18n-attrs="{&quot;data-label&quot;:&quot;Status&quot;}"><span class="status-chip status-strict" data-i18n-text="[&quot;State&quot;]">State</span></td><td role="cell" data-label="Main rule" data-i18n-text="[&quot;Forest only with permission; check state.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Main rule&quot;}">Forest only with permission; check state.</td><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.ris.bka.gv.at/NormDokument.wxe?Abfrage=Bundesnormen&amp;Gesetzesnummer=10010371&amp;Paragraf=33" target="_blank" rel="noreferrer">Forstgesetz</a></td></tr>
+              <tr role="row"><td role="cell" data-label="Country" data-i18n-attrs="{&quot;data-label&quot;:&quot;Country&quot;}">IT</td><td role="cell" data-label="Status" data-i18n-attrs="{&quot;data-label&quot;:&quot;Status&quot;}"><span class="status-chip status-mixed" data-i18n-text="[&quot;Regional&quot;]">Regional</span></td><td role="cell" data-label="Main rule" data-i18n-text="[&quot;Regional, municipal and park rules apply.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Main rule&quot;}">Regional, municipal and park rules apply.</td><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.cai.it/" target="_blank" rel="noreferrer">CAI</a></td></tr>
             </tbody>
           </table>
         </article>
       </section>
       <section class="region-guide-section" id="regiogids" aria-labelledby="region-guide-title">
-        <h2 id="region-guide-title">Achtergrond per regio</h2>
-        <p class="page-note">Deze gidsen geven algemene informatie over kamperen en overnachten. Het zijn geen specifieke slaapplekken; ze staan daarom niet tussen de locaties op de kaart.</p>
+        <h2 id="region-guide-title" data-i18n-text="[&quot;Background by region&quot;]">Background by region</h2>
+        <p class="page-note" data-i18n-text="[&quot;These guides provide general information about camping and staying overnight. They are not specific places to sleep; they are therefore not among the locations on the map.&quot;]">These guides provide general information about camping and staying overnight. They are not specific places to sleep; they are therefore not among the locations on the map.</p>
         <div class="region-guide-list">
           <details class="region-guide" id="regio-smaland">
-            <summary>Småland: meren en productiebos</summary>
+            <summary data-i18n-text="[&quot;Småland: lakes and production forest&quot;]">Småland: lakes and production forest</summary>
             <div class="region-guide-content">
-              <p class="region-guide-location">Regio Växjö · Zweden</p>
-              <p>Een kansrijke regio voor een discrete nacht volgens het allemansrätten. Zoek ongecultiveerde grond, ruim uit zicht van woningen en controleer lokale natuurreservaatregels.</p>
-              <dl class="region-guide-facts"><div><dt>Verblijf</dt><dd>1–2 nachten</dd></div><div><dt>Kosten</dt><dd>Gratis</dd></div><div><dt>Water</dt><dd>Zelf filteren of aanvullen</dd></div></dl>
-              <p><strong>Let op:</strong> Geen recht op vuur. Bij droogte kan een volledig vuurverbod gelden. Blijf weg van huizen, akkers en kwetsbare natuur.</p>
+              <p class="region-guide-location" data-i18n-text="[&quot;Växjö Region · Sweden&quot;]">Växjö Region · Sweden</p>
+              <p data-i18n-text="[&quot;A promising region for a discreet overnight stay under the right of public access. Find uncultivated land well away from homes and check local nature reserve rules.&quot;]">A promising region for a discreet overnight stay under the right of public access. Find uncultivated land well away from homes and check local nature reserve rules.</p>
+              <dl class="region-guide-facts"><div><dt data-i18n-text="[&quot;Stay&quot;]">Stay</dt><dd data-i18n-text="[&quot;1–2 nights&quot;]">1–2 nights</dd></div><div><dt data-i18n-text="[&quot;Cost&quot;]">Cost</dt><dd data-i18n-text="[&quot;Free&quot;]">Free</dd></div><div><dt data-i18n-text="[&quot;Water&quot;]">Water</dt><dd data-i18n-text="[&quot;Filter water or refill elsewhere&quot;]">Filter water or refill elsewhere</dd></div></dl>
+              <p data-i18n-text="[&quot;No right to fire. In the event of drought, a complete fire ban may apply. Stay away from houses, fields and vulnerable nature.&quot;]"><strong data-i18n-text="[&quot;Please check:&quot;]">Please check:</strong> No right to fire. In the event of drought, a complete fire ban may apply. Stay away from houses, fields and vulnerable nature.</p>
               <a class="info-link" href="https://www.naturvardsverket.se/en/topics/the-right-of-public-access/activities-and-places/camping--tents/" target="_blank" rel="noreferrer">Naturvårdsverket <span aria-hidden="true">↗</span></a>
             </div>
           </details>
           <details class="region-guide" id="regio-brandenburg">
-            <summary>Brandenburgse merenregio</summary>
+            <summary data-i18n-text="[&quot;Brandenburg Lake Region&quot;]">Brandenburg Lake Region</summary>
             <div class="region-guide-content">
-              <p class="region-guide-location">Ten noorden van Berlijn · Duitsland</p>
-              <p>Voor niet-gemotoriseerde reizigers bestaan in Brandenburg ruimere mogelijkheden dan in veel andere deelstaten, maar eigendom, bosrecht en beschermde gebieden blijven bepalend.</p>
-              <dl class="region-guide-facts"><div><dt>Verblijf</dt><dd>Doorgaans 1 nacht</dd></div><div><dt>Kosten</dt><dd>Gratis met geldige toestemming</dd></div><div><dt>Water</dt><dd>Niet gegarandeerd</dd></div></dl>
-              <p><strong>Let op:</strong> Beschouw een mooi bosperceel niet automatisch als toestemming. Kies liever een trekkingplaats of vraag de eigenaar.</p>
-              <a class="info-link" href="https://bravors.brandenburg.de/gesetze/bbgnatschag_2013" target="_blank" rel="noreferrer">Brandenburg regelgeving <span aria-hidden="true">↗</span></a>
+              <p class="region-guide-location" data-i18n-text="[&quot;North of Berlin · Germany&quot;]">North of Berlin · Germany</p>
+              <p data-i18n-text="[&quot;Brandenburg offers more options for non-motorized travelers than many other states, but ownership, forest rights and protected areas remain decisive.&quot;]">Brandenburg offers more options for non-motorized travelers than many other states, but ownership, forest rights and protected areas remain decisive.</p>
+              <dl class="region-guide-facts"><div><dt data-i18n-text="[&quot;Stay&quot;]">Stay</dt><dd data-i18n-text="[&quot;Usually 1 night&quot;]">Usually 1 night</dd></div><div><dt data-i18n-text="[&quot;Cost&quot;]">Cost</dt><dd data-i18n-text="[&quot;Free with valid permission&quot;]">Free with valid permission</dd></div><div><dt data-i18n-text="[&quot;Water&quot;]">Water</dt><dd data-i18n-text="[&quot;Not guaranteed&quot;]">Not guaranteed</dd></div></dl>
+              <p data-i18n-text="[&quot;Don't automatically consider a beautiful forest plot as permission. Better choose a trekking spot or ask the owner.&quot;]"><strong data-i18n-text="[&quot;Please check:&quot;]">Please check:</strong> Don't automatically consider a beautiful forest plot as permission. Better choose a trekking spot or ask the owner.</p>
+              <a class="info-link" href="https://bravors.brandenburg.de/gesetze/bbgnatschag_2013" target="_blank" rel="noreferrer" data-i18n-text="[&quot;Brandenburg regulations&quot;]">Brandenburg regulations <span aria-hidden="true">↗</span></a>
             </div>
           </details>
           <details class="region-guide" id="regio-utrecht">
-            <summary>Utrechtse Heuvelrug</summary>
+            <summary data-i18n-text="[&quot;Utrechtse Heuvelrug&quot;]">Utrechtse Heuvelrug</summary>
             <div class="region-guide-content">
-              <p class="region-guide-location">Provincie Utrecht · Nederland</p>
-              <p>Geen vrije kampeerregio. Wel een logische corridor om via een gastnetwerk, particuliere tuin of expliciete toestemming een betaalbare plek te regelen.</p>
-              <dl class="region-guide-facts"><div><dt>Verblijf</dt><dd>Op afspraak</dd></div><div><dt>Kosten</dt><dd>Platformafhankelijk</dd></div><div><dt>Water</dt><dd>Bij host</dd></div></dl>
-              <p><strong>Let op:</strong> Wildkamperen is hier geen legale standaardoptie. Gebruik een gastnetwerk of vraag vóór aankomst toestemming op privéterrein.</p>
+              <p class="region-guide-location" data-i18n-text="[&quot;Province of Utrecht · Netherlands&quot;]">Province of Utrecht · Netherlands</p>
+              <p data-i18n-text="[&quot;Wild camping is not generally permitted here. Host networks, private gardens and landowner permission can help you find an affordable stay along this corridor.&quot;]">Wild camping is not generally permitted here. Host networks, private gardens and landowner permission can help you find an affordable stay along this corridor.</p>
+              <dl class="region-guide-facts"><div><dt data-i18n-text="[&quot;Stay&quot;]">Stay</dt><dd data-i18n-text="[&quot;By appointment&quot;]">By appointment</dd></div><div><dt data-i18n-text="[&quot;Cost&quot;]">Cost</dt><dd data-i18n-text="[&quot;Depends on the platform&quot;]">Depends on the platform</dd></div><div><dt data-i18n-text="[&quot;Water&quot;]">Water</dt><dd data-i18n-text="[&quot;At host&quot;]">At host</dd></div></dl>
+              <p data-i18n-text="[&quot;Wild camping is not a legal standard option here. Use a guest network or request permission on private property before arriving.&quot;]"><strong data-i18n-text="[&quot;Please check:&quot;]">Please check:</strong> Wild camping is not a legal standard option here. Use a guest network or request permission on private property before arriving.</p>
               <a class="info-link" href="https://www.vriendenopdefiets.nl/" target="_blank" rel="noreferrer">Vrienden op de Fiets <span aria-hidden="true">↗</span></a>
             </div>
           </details>
           <details class="region-guide" id="regio-skane">
-            <summary>Skåneleden shelters</summary>
+            <summary data-i18n-text="[&quot;Skåneleden shelters&quot;]">Skåneleden shelters</summary>
             <div class="region-guide-content">
-              <p class="region-guide-location">Skåne · Zweden</p>
-              <p>Langs langeafstandsroutes staan shelters en eenvoudige rustplekken. Controleer per shelter of reserveren, vuur maken of tenten ernaast is toegestaan.</p>
-              <dl class="region-guide-facts"><div><dt>Verblijf</dt><dd>Meestal 1 nacht</dd></div><div><dt>Kosten</dt><dd>Vaak gratis</dd></div><div><dt>Water</dt><dd>Niet altijd aanwezig</dd></div></dl>
-              <p><strong>Let op:</strong> Een sheltermarkering zegt niets over beschikbaarheid. Neem altijd een tent mee als uitwijkmogelijkheid.</p>
-              <a class="info-link" href="https://www.skaneleden.se/en" target="_blank" rel="noreferrer">OpenStreetMap + lokale routebeheerder <span aria-hidden="true">↗</span></a>
+              <p class="region-guide-location" data-i18n-text="[&quot;Skåne · Sweden&quot;]">Skåne · Sweden</p>
+              <p data-i18n-text="[&quot;There are shelters and simple rest areas along long-distance routes. Check per shelter whether reservations, making a fire or tents next to it are allowed.&quot;]">There are shelters and simple rest areas along long-distance routes. Check per shelter whether reservations, making a fire or tents next to it are allowed.</p>
+              <dl class="region-guide-facts"><div><dt data-i18n-text="[&quot;Stay&quot;]">Stay</dt><dd data-i18n-text="[&quot;Usually 1 night&quot;]">Usually 1 night</dd></div><div><dt data-i18n-text="[&quot;Cost&quot;]">Cost</dt><dd data-i18n-text="[&quot;Often free&quot;]">Often free</dd></div><div><dt data-i18n-text="[&quot;Water&quot;]">Water</dt><dd data-i18n-text="[&quot;Not always present&quot;]">Not always present</dd></div></dl>
+              <p data-i18n-text="[&quot;A shelter marking says nothing about availability. Always take a tent with you as a fallback option.&quot;]"><strong data-i18n-text="[&quot;Please check:&quot;]">Please check:</strong> A shelter marking says nothing about availability. Always take a tent with you as a fallback option.</p>
+              <a class="info-link" href="https://www.skaneleden.se/en" target="_blank" rel="noreferrer" data-i18n-text="[&quot;OpenStreetMap + local route manager&quot;]">OpenStreetMap + local route manager <span aria-hidden="true">↗</span></a>
             </div>
           </details>
           <details class="region-guide" id="regio-hardangervidda">
-            <summary>Noorse utmark</summary>
+            <summary data-i18n-text="[&quot;Norwegian utmark&quot;]">Norwegian utmark</summary>
             <div class="region-guide-content">
-              <p class="region-guide-location">Hardangervidda-regio · Noorwegen</p>
-              <p>In Noorse utmark mag je doorgaans met een kleine tent overnachten. Deze regiogids beschrijft geen specifieke standplaats: controleer ter plaatse of de grond werkelijk onbebouwd en ongecultiveerd is.</p>
-              <dl class="region-guide-facts"><div><dt>Verblijf</dt><dd>Maximaal 2 nachten; langer in afgelegen berggebied</dd></div><div><dt>Kosten</dt><dd>Gratis</dd></div><div><dt>Water</dt><dd>Zelf beoordelen en behandelen</dd></div></dl>
-              <p><strong>Let op:</strong> Blijf minstens 150 meter van bewoonde huizen en hutten. Lokale regels gelden onder meer in drukbezochte gebieden; vuur in of bij bos is normaal verboden van 15 april tot 15 september. Een DNT- of andere berghut is niet automatisch gratis.</p>
+              <p class="region-guide-location" data-i18n-text="[&quot;Hardangervidda region · Norway&quot;]">Hardangervidda region · Norway</p>
+              <p data-i18n-text="[&quot;In Norwegian Utmark you can usually spend the night with a small tent. This regional guide does not describe a specific location: check locally whether the land is actually undeveloped and uncultivated.&quot;]">In Norwegian Utmark you can usually spend the night with a small tent. This regional guide does not describe a specific location: check locally whether the land is actually undeveloped and uncultivated.</p>
+              <dl class="region-guide-facts"><div><dt data-i18n-text="[&quot;Stay&quot;]">Stay</dt><dd data-i18n-text="[&quot;Maximum 2 nights; longer in remote mountain areas&quot;]">Maximum 2 nights; longer in remote mountain areas</dd></div><div><dt data-i18n-text="[&quot;Cost&quot;]">Cost</dt><dd data-i18n-text="[&quot;Free&quot;]">Free</dd></div><div><dt data-i18n-text="[&quot;Water&quot;]">Water</dt><dd data-i18n-text="[&quot;Check and treat the water yourself&quot;]">Check and treat the water yourself</dd></div></dl>
+              <p data-i18n-text="[&quot;Stay at least 150 meters from inhabited houses and cabins. Local rules apply, among other things, in busy areas; fire in or near forest is normally prohibited from April 15 to September 15. A DNT or other mountain hut is not automatically free.&quot;]"><strong data-i18n-text="[&quot;Please check:&quot;]">Please check:</strong> Stay at least 150 meters from inhabited houses and cabins. Local rules apply, among other things, in busy areas; fire in or near forest is normally prohibited from April 15 to September 15. A DNT or other mountain hut is not automatically free.</p>
               <a class="info-link" href="https://www.environmentagency.no/areas-of-activity/right-to-roam/camping/" target="_blank" rel="noreferrer">Norwegian Environment Agency <span aria-hidden="true">↗</span></a>
             </div>
           </details>
           <details class="region-guide" id="regio-belgium-bivouac">
-            <summary>Belgische bivakzones</summary>
+            <summary data-i18n-text="[&quot;Belgian bivouac zones&quot;]">Belgian bivouac zones</summary>
             <div class="region-guide-content">
-              <p class="region-guide-location">Ardennen en Vlaamse natuurgebieden · België</p>
-              <p>Vrij kamperen is geen algemene optie, maar België heeft eenvoudige bivakzones langs wandel- en fietsroutes. Gebruik de losse OSM-pins om aangewezen plekken te vinden en controleer daarna de beheerder.</p>
-              <dl class="region-guide-facts"><div><dt>Verblijf</dt><dd>ANB-zones vooraf gratis reserveren; elders volgens beheerder</dd></div><div><dt>Kosten</dt><dd>Vaak gratis</dd></div><div><dt>Water</dt><dd>Wisselend</dd></div></dl>
-              <p><strong>Let op:</strong> Dit is gebiedsinformatie, geen specifieke slaapplaats. Vlaanderen, Wallonië en lokale beheerders hanteren eigen voorwaarden; natuurreservaten zijn geen vrije kampeerterreinen.</p>
-              <a class="info-link" href="https://natuurenbos.be/activiteiten/bivakzone" target="_blank" rel="noreferrer">Agentschap voor Natuur en Bos <span aria-hidden="true">↗</span></a>
+              <p class="region-guide-location" data-i18n-text="[&quot;Ardennes and Flemish nature reserves · Belgium&quot;]">Ardennes and Flemish nature reserves · Belgium</p>
+              <p data-i18n-text="[&quot;Wild camping is not generally permitted, but Belgium has basic bivouac areas along walking and cycling routes. Find designated sites using the individual OpenStreetMap pins, then check with the land manager.&quot;]">Wild camping is not generally permitted, but Belgium has basic bivouac areas along walking and cycling routes. Find designated sites using the individual OpenStreetMap pins, then check with the land manager.</p>
+              <dl class="region-guide-facts"><div><dt data-i18n-text="[&quot;Stay&quot;]">Stay</dt><dd data-i18n-text="[&quot;Reserve ANB zones in advance for free; elsewhere according to manager&quot;]">Reserve ANB zones in advance for free; elsewhere according to manager</dd></div><div><dt data-i18n-text="[&quot;Cost&quot;]">Cost</dt><dd data-i18n-text="[&quot;Often free&quot;]">Often free</dd></div><div><dt data-i18n-text="[&quot;Water&quot;]">Water</dt><dd data-i18n-text="[&quot;Varies&quot;]">Varies</dd></div></dl>
+              <p data-i18n-text="[&quot;This is regional guidance, not a specific place to stay. Flanders, Wallonia and local land managers set their own conditions; nature reserves are not open camping grounds.&quot;]"><strong data-i18n-text="[&quot;Please check:&quot;]">Please check:</strong> This is regional guidance, not a specific place to stay. Flanders, Wallonia and local land managers set their own conditions; nature reserves are not open camping grounds.</p>
+              <a class="info-link" href="https://natuurenbos.be/activiteiten/bivakzone" target="_blank" rel="noreferrer" data-i18n-text="[&quot;Agency for Nature and Forest&quot;]">Agency for Nature and Forest <span aria-hidden="true">↗</span></a>
             </div>
           </details>
           <details class="region-guide" id="regio-france-bivouac">
-            <summary>Franse bivakregio&#x27;s</summary>
+            <summary data-i18n-text="[&quot;French bivouac regions&quot;]">French bivouac regions</summary>
             <div class="region-guide-content">
-              <p class="region-guide-location">Alpen, Pyreneeën en andere routegebieden · Frankrijk</p>
-              <p>Frankrijk kent geen universeel vrij-kampeerrecht. Een licht bivak kan lokaal zijn toegestaan, vooral op doorgaande routes, maar ieder nationaal park, natuurgebied en elke gemeente kan eigen zones en tijden bepalen.</p>
-              <dl class="region-guide-facts"><div><dt>Verblijf</dt><dd>Meestal alleen van avond tot ochtend waar toegestaan</dd></div><div><dt>Kosten</dt><dd>Gratis waar expliciet toegestaan</dd></div><div><dt>Water</dt><dd>Niet gegarandeerd</dd></div></dl>
-              <p><strong>Let op:</strong> Vraag toestemming op privégrond en controleer de parkpagina. Kusten, beschermde of geklasseerde locaties, wegen en lokaal verboden zones vallen af; in mediterrane gebieden gelden strenge vuurregels.</p>
+              <p class="region-guide-location" data-i18n-text="[&quot;Alps, Pyrenees and other route areas · France&quot;]">Alps, Pyrenees and other route areas · France</p>
+              <p data-i18n-text="[&quot;France has no general right to wild camp. A brief bivouac may be permitted locally, especially along long-distance routes, but each national park, nature reserve and municipality can set its own areas and times.&quot;]">France has no general right to wild camp. A brief bivouac may be permitted locally, especially along long-distance routes, but each national park, nature reserve and municipality can set its own areas and times.</p>
+              <dl class="region-guide-facts"><div><dt data-i18n-text="[&quot;Stay&quot;]">Stay</dt><dd data-i18n-text="[&quot;Usually only from evening to morning where permitted&quot;]">Usually only from evening to morning where permitted</dd></div><div><dt data-i18n-text="[&quot;Cost&quot;]">Cost</dt><dd data-i18n-text="[&quot;Free where explicitly permitted&quot;]">Free where explicitly permitted</dd></div><div><dt data-i18n-text="[&quot;Water&quot;]">Water</dt><dd data-i18n-text="[&quot;Not guaranteed&quot;]">Not guaranteed</dd></div></dl>
+              <p data-i18n-text="[&quot;Ask permission on private land and check the park page. Coasts, protected or classified locations, roads and locally prohibited zones are excluded; Strict fire regulations apply in Mediterranean areas.&quot;]"><strong data-i18n-text="[&quot;Please check:&quot;]">Please check:</strong> Ask permission on private land and check the park page. Coasts, protected or classified locations, roads and locally prohibited zones are excluded; Strict fire regulations apply in Mediterranean areas.</p>
               <a class="info-link" href="https://www.parcsnationaux.fr/fr" target="_blank" rel="noreferrer">Parcs nationaux de France <span aria-hidden="true">↗</span></a>
             </div>
           </details>
           <details class="region-guide" id="regio-luxembourg">
-            <summary>Luxemburg: toestemming of officiële plek</summary>
+            <summary data-i18n-text="[&quot;Luxembourg: permission or official place&quot;]">Luxembourg: permission or official place</summary>
             <div class="region-guide-content">
-              <p class="region-guide-location">Mullerthal en Oesling · Luxemburg</p>
-              <p>Luxemburg heeft geen allemansrecht. Plan op een officiële camping of een expliciet toegestane plek en beschouw bos, natuurgebied en routeberm niet als vrije overnachtingsgrond.</p>
-              <dl class="region-guide-facts"><div><dt>Verblijf</dt><dd>Op afspraak of volgens terreinregels</dd></div><div><dt>Kosten</dt><dd>Wisselend</dd></div><div><dt>Water</dt><dd>Bij officiële locatie</dd></div></dl>
-              <p><strong>Let op:</strong> Deze gids is alleen een waarschuwing en zoekstart. Gebruik OSM voor gemarkeerde plekken of vraag de eigenaar vooraf toestemming.</p>
+              <p class="region-guide-location" data-i18n-text="[&quot;Mullerthal and Oesling · Luxembourg&quot;]">Mullerthal and Oesling · Luxembourg</p>
+              <p data-i18n-text="[&quot;Luxembourg has no general right to wild camp. Use an official campsite or a place with explicit permission; forests, nature reserves and route verges are not open overnight sites.&quot;]">Luxembourg has no general right to wild camp. Use an official campsite or a place with explicit permission; forests, nature reserves and route verges are not open overnight sites.</p>
+              <dl class="region-guide-facts"><div><dt data-i18n-text="[&quot;Stay&quot;]">Stay</dt><dd data-i18n-text="[&quot;By appointment or according to site rules&quot;]">By appointment or according to site rules</dd></div><div><dt data-i18n-text="[&quot;Cost&quot;]">Cost</dt><dd data-i18n-text="[&quot;Varies&quot;]">Varies</dd></div><div><dt data-i18n-text="[&quot;Water&quot;]">Water</dt><dd data-i18n-text="[&quot;At official location&quot;]">At official location</dd></div></dl>
+              <p data-i18n-text="[&quot;This guide is just a warning and search start. Use OSM for marked areas or ask the owner for permission in advance.&quot;]"><strong data-i18n-text="[&quot;Please check:&quot;]">Please check:</strong> This guide is just a warning and search start. Use OSM for marked areas or ask the owner for permission in advance.</p>
               <a class="info-link" href="https://www.visitluxembourg.com/plan-your-stay/stay/camping" target="_blank" rel="noreferrer">Visit Luxembourg <span aria-hidden="true">↗</span></a>
             </div>
           </details>
           <details class="region-guide" id="regio-swiss-alps">
-            <summary>Zwitserse hoogalpiene bivakzone</summary>
+            <summary data-i18n-text="[&quot;Swiss high alpine bivouac zone&quot;]">Swiss high alpine bivouac zone</summary>
             <div class="region-guide-content">
-              <p class="region-guide-location">Boven de boomgrens · Zwitserland</p>
-              <p>Een enkele, zorgvuldige nacht boven de boomgrens is op veel plaatsen mogelijk, maar Zwitserland kent kantonale en gemeentelijke beperkingen en veel strikt beschermde gebieden.</p>
-              <dl class="region-guide-facts"><div><dt>Verblijf</dt><dd>Eén nacht, laat opzetten en vroeg vertrekken</dd></div><div><dt>Kosten</dt><dd>Gratis waar toegestaan</dd></div><div><dt>Water</dt><dd>Zelf beoordelen en behandelen</dd></div></dl>
-              <p><strong>Let op:</strong> Niet in natuurreservaten, wildrustgebieden of het Zwitsers Nationaal Park. Vermijd rivieroevers en uiterwaarden, blijf uit zicht van hutten en vraag toestemming bij alpenweiden of privégrond.</p>
+              <p class="region-guide-location" data-i18n-text="[&quot;Above the tree line · Switzerland&quot;]">Above the tree line · Switzerland</p>
+              <p data-i18n-text="[&quot;A single, careful night above treeline is possible in many places, but Switzerland has cantonal and municipal restrictions and many strictly protected areas.&quot;]">A single, careful night above treeline is possible in many places, but Switzerland has cantonal and municipal restrictions and many strictly protected areas.</p>
+              <dl class="region-guide-facts"><div><dt data-i18n-text="[&quot;Stay&quot;]">Stay</dt><dd data-i18n-text="[&quot;One night, set up late and leave early&quot;]">One night, set up late and leave early</dd></div><div><dt data-i18n-text="[&quot;Cost&quot;]">Cost</dt><dd data-i18n-text="[&quot;Free where allowed&quot;]">Free where allowed</dd></div><div><dt data-i18n-text="[&quot;Water&quot;]">Water</dt><dd data-i18n-text="[&quot;Check and treat the water yourself&quot;]">Check and treat the water yourself</dd></div></dl>
+              <p data-i18n-text="[&quot;Not in nature reserves, game rest areas or the Swiss National Park. Avoid riverbanks and floodplains, stay out of sight of huts and ask permission near alpine meadows or private land.&quot;]"><strong data-i18n-text="[&quot;Please check:&quot;]">Please check:</strong> Not in nature reserves, game rest areas or the Swiss National Park. Avoid riverbanks and floodplains, stay out of sight of huts and ask permission near alpine meadows or private land.</p>
               <a class="info-link" href="https://www.sac-cas.ch/de/umwelt/bergsport-und-umwelt/campieren-und-biwakieren/" target="_blank" rel="noreferrer">Swiss Alpine Club <span aria-hidden="true">↗</span></a>
             </div>
           </details>
           <details class="region-guide" id="regio-austria-alps">
-            <summary>Oostenrijk: bos is uitgesloten</summary>
+            <summary data-i18n-text="[&quot;Austria: forest is excluded&quot;]">Austria: forest is excluded</summary>
             <div class="region-guide-content">
-              <p class="region-guide-location">Alpenregio · Oostenrijk</p>
-              <p>Kamperen of &#x27;s nachts verblijven in Oostenrijks bos vereist toestemming van de eigenaar. Buiten het bos verschillen de regels per deelstaat en gemeente; hoogalpien nood- of kort bivak is geen landelijk vrijbriefje.</p>
-              <dl class="region-guide-facts"><div><dt>Verblijf</dt><dd>Alleen met toestemming of volgens lokale regeling</dd></div><div><dt>Kosten</dt><dd>Wisselend</dd></div><div><dt>Water</dt><dd>Niet gegarandeerd</dd></div></dl>
-              <p><strong>Let op:</strong> Zet niet zomaar een tent in bos, natuur- of landschapsbeschermingsgebied. Zoek een expliciete trekkingplek, hut of vraag de gemeente en grondeigenaar.</p>
-              <a class="info-link" href="https://www.ris.bka.gv.at/NormDokument.wxe?Abfrage=Bundesnormen&amp;Gesetzesnummer=10010371&amp;Paragraf=33" target="_blank" rel="noreferrer">Oostenrijks Forstgesetz §33 <span aria-hidden="true">↗</span></a>
+              <p class="region-guide-location" data-i18n-text="[&quot;Alpine region · Austria&quot;]">Alpine region · Austria</p>
+              <p data-i18n-text="[&quot;Camping or staying overnight in Austrian forest requires permission from the owner. Outside the forest, the rules differ per state and municipality; a high-alpine emergency or short bivouac is not a national free pass.&quot;]">Camping or staying overnight in Austrian forest requires permission from the owner. Outside the forest, the rules differ per state and municipality; a high-alpine emergency or short bivouac is not a national free pass.</p>
+              <dl class="region-guide-facts"><div><dt data-i18n-text="[&quot;Stay&quot;]">Stay</dt><dd data-i18n-text="[&quot;Only with permission or according to local regulations&quot;]">Only with permission or according to local regulations</dd></div><div><dt data-i18n-text="[&quot;Cost&quot;]">Cost</dt><dd data-i18n-text="[&quot;Varies&quot;]">Varies</dd></div><div><dt data-i18n-text="[&quot;Water&quot;]">Water</dt><dd data-i18n-text="[&quot;Not guaranteed&quot;]">Not guaranteed</dd></div></dl>
+              <p data-i18n-text="[&quot;Don't just pitch a tent in a forest, nature reserve or landscape protection area. Find an explicit trekking spot, hut or ask the municipality and landowner.&quot;]"><strong data-i18n-text="[&quot;Please check:&quot;]">Please check:</strong> Don't just pitch a tent in a forest, nature reserve or landscape protection area. Find an explicit trekking spot, hut or ask the municipality and landowner.</p>
+              <a class="info-link" href="https://www.ris.bka.gv.at/NormDokument.wxe?Abfrage=Bundesnormen&amp;Gesetzesnummer=10010371&amp;Paragraf=33" target="_blank" rel="noreferrer" data-i18n-text="[&quot;Austrian Forstgesetz §33&quot;]">Austrian Forstgesetz §33 <span aria-hidden="true">↗</span></a>
             </div>
           </details>
           <details class="region-guide" id="regio-italian-alps">
-            <summary>Italiaans bivacco</summary>
+            <summary data-i18n-text="[&quot;Italian bivacco&quot;]">Italian bivacco</summary>
             <div class="region-guide-content">
-              <p class="region-guide-location">Alpen en Apennijnen · Italië</p>
-              <p>Italië regelt kamperen vooral regionaal, provinciaal, gemeentelijk en per park. Een tijdelijk alpien bivak kan anders worden behandeld dan recreatief kamperen, maar is niet automatisch toegestaan.</p>
-              <dl class="region-guide-facts"><div><dt>Verblijf</dt><dd>Alleen volgens regionale of parkregels</dd></div><div><dt>Kosten</dt><dd>Gratis waar bivak expliciet is toegestaan</dd></div><div><dt>Water</dt><dd>Niet gegarandeerd</dd></div></dl>
-              <p><strong>Let op:</strong> Controleer de gemeente of parkbeheerder vóór aankomst. Gebruik onbemande bivacco-hutten alleen volgens hun eigen regels en neem in brandgevoelige gebieden geen enkel risico met vuur.</p>
+              <p class="region-guide-location" data-i18n-text="[&quot;Alps and Apennines · Italy&quot;]">Alps and Apennines · Italy</p>
+              <p data-i18n-text="[&quot;Italy mainly regulates camping regionally, provincially, municipally and per park. A temporary alpine bivouac may be treated differently from recreational camping, but is not automatically permitted.&quot;]">Italy mainly regulates camping regionally, provincially, municipally and per park. A temporary alpine bivouac may be treated differently from recreational camping, but is not automatically permitted.</p>
+              <dl class="region-guide-facts"><div><dt data-i18n-text="[&quot;Stay&quot;]">Stay</dt><dd data-i18n-text="[&quot;Only according to regional or park rules&quot;]">Only according to regional or park rules</dd></div><div><dt data-i18n-text="[&quot;Cost&quot;]">Cost</dt><dd data-i18n-text="[&quot;Free where bivouac is explicitly permitted&quot;]">Free where bivouac is explicitly permitted</dd></div><div><dt data-i18n-text="[&quot;Water&quot;]">Water</dt><dd data-i18n-text="[&quot;Not guaranteed&quot;]">Not guaranteed</dd></div></dl>
+              <p data-i18n-text="[&quot;Check with the municipality or park manager before arrival. Only use unmanned bivacco huts according to their own rules and do not take any risks with fire in fire-prone areas.&quot;]"><strong data-i18n-text="[&quot;Please check:&quot;]">Please check:</strong> Check with the municipality or park manager before arrival. Only use unmanned bivacco huts according to their own rules and do not take any risks with fire in fire-prone areas.</p>
               <a class="info-link" href="https://www.cai.it/" target="_blank" rel="noreferrer">Club Alpino Italiano <span aria-hidden="true">↗</span></a>
             </div>
           </details>
         </div>
       </section>
     </main>
-    <script src="pwa.js?v=20261018-1"></script>    <script src="feedback.js?v=20261020-1"></script>
+    <script src="pwa.js?v=20261018-1"></script>
+    <script src="bootstrap.js?v=20261020-2"></script>
   </body>
 </html>

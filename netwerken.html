@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Netwerken | Nook</title>
+    <title data-i18n-text="[&quot;Sources | Nook&quot;]">Sources | Nook</title>
     <meta name="theme-color" content="#123127" />
     <meta
       http-equiv="Content-Security-Policy"
@@ -11,58 +11,60 @@
     />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="manifest" href="manifest.webmanifest?v=20261016-5" />
+    <link rel="manifest" href="manifest.webmanifest?v=20261020-2" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261016-5" />
     <link rel="icon" href="favicon.ico?v=20261016-5" sizes="any" />
     <link rel="icon" href="favicon.svg?v=20261016-5" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20261020-1" />
+    <link rel="stylesheet" href="styles.css?v=20261020-2" />
+    <script src="i18n.js?v=20261020-2"></script>
   </head>
-  <body class="compact-page-body networks-page-body">
-    <a class="skip-link" href="#main-content">Naar inhoud</a>
+  <body data-feedback-script="feedback.js?v=20261020-2" class="compact-page-body networks-page-body">
+    <a class="skip-link" href="#main-content" data-i18n-text="[&quot;To content&quot;]">To content</a>
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Nook kaart"><img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="38" height="38" aria-hidden="true" /><span>Nook</span></a>
-      <nav aria-label="Hoofdnavigatie"><a href="index.html">Kaart</a><a href="routebronnen.html">Routes</a><a href="regels.html">Regels</a><a href="netwerken.html" aria-current="page">Netwerken</a><a class="mobile-about" href="over.html">Over</a></nav>
-      <div class="header-actions"><button class="header-action" type="button" data-feedback-open>Feedback</button><a class="header-action" href="over.html">Over</a></div>
+      <a class="brand" href="index.html" aria-label="Nook map" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Nook map&quot;}"><img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="38" height="38" aria-hidden="true" /><span>Nook</span></a>
+      <nav aria-label="Main navigation" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Main navigation&quot;}"><a href="index.html" data-i18n-text="[&quot;Map&quot;]">Map</a><a href="routebronnen.html" data-i18n-text="[&quot;Routes&quot;]">Routes</a><a href="regels.html" data-i18n-text="[&quot;Rules&quot;]">Rules</a><a href="netwerken.html" aria-current="page" data-i18n-text="[&quot;Sources&quot;]">Sources</a><a class="mobile-about" href="over.html" data-i18n-text="[&quot;About&quot;]">About</a></nav>
+      <div class="header-actions"><button class="header-action" type="button" data-feedback-open data-i18n-text="[&quot;Feedback&quot;]">Feedback</button><label class="language-control"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><select id="language-select" aria-label="Language" title="Choose language" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Language&quot;,&quot;title&quot;:&quot;Choose language&quot;}" disabled><option value="en">English</option></select></label></div>
     </header>
     <main id="main-content" tabindex="-1" class="compact-main">
       <section class="compact-header">
         <div>
-          <p class="eyebrow">Netwerken</p>
-          <h1>Plekken en aanbieders</h1>
+          <p class="eyebrow" data-i18n-text="[&quot;Sources&quot;]">Sources</p>
+          <h1 data-i18n-text="[&quot;Places and providers&quot;]">Places and providers</h1>
         </div>
-        <p>Vind een plek op de kaart en regel je overnachting bij de aanbieder. Campings, CampWild en Welcome To My Garden van 18 oktober 2026, wereldwijd; controleer beschikbaarheid en kosten.</p>
+        <p data-i18n-text="[&quot;Find a spot on the map and arrange your overnight stay with the provider. Campsites, CampWild and Welcome To My Garden from October 18, 2026, worldwide; check availability and costs.&quot;]">Find a spot on the map and arrange your overnight stay with the provider. Campsites, CampWild and Welcome To My Garden from October 18, 2026, worldwide; check availability and costs.</p>
       </section>
-      <section class="source-table-grid" aria-label="Plekken en handige links">
+      <section class="source-table-grid" aria-label="Places and useful links" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Places and useful links&quot;}">
         <article class="source-table-card">
-          <h2>Plekken op de kaart</h2>
+          <h2 data-i18n-text="[&quot;Places on the map&quot;]">Places on the map</h2>
           <table role="table" class="source-table">
-            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Bron</th><th scope="col" role="columnheader">Aantal plekken</th><th scope="col" role="columnheader">Wat vind je er?</th></tr></thead>
+            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader" data-i18n-text="[&quot;Source&quot;]">Source</th><th scope="col" role="columnheader" data-i18n-text="[&quot;Places&quot;]">Places</th><th scope="col" role="columnheader" data-i18n-text="[&quot;What you’ll find&quot;]">What you’ll find</th></tr></thead>
             <tbody role="rowgroup">
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://udinaturen.dk/kort" target="_blank" rel="noreferrer">Ud i Naturen</a></td><td role="cell" data-label="Plekken">2.480</td><td role="cell" data-label="Uitleg">Overnachtingshutten en kampeerplekken in Denemarken.</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://opencampingmap.org/" target="_blank" rel="noreferrer">OpenStreetMap</a></td><td role="cell" data-label="Plekken">199.621</td><td role="cell" data-label="Uitleg">Campings en camperterreinen.</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://map.campwild.org/" target="_blank" rel="noreferrer">CampWild</a></td><td role="cell" data-label="Plekken">6.095</td><td role="cell" data-label="Uitleg">Hutten, schuilplekken en eenvoudige kampeerplekken.</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://welcometomygarden.org/nl/explore" target="_blank" rel="noreferrer">Welcome To My Garden</a></td><td role="cell" data-label="Plekken">6.772</td><td role="cell" data-label="Uitleg">Kamperen in gasttuinen. Spreek vooraf af via de website.</td></tr>
-              <tr role="row"><td role="cell" data-label="Bron"><a href="https://www.vriendenopdefiets.nl/zoek-een-logeeradres" target="_blank" rel="noreferrer">Vrienden op de Fiets</a></td><td role="cell" data-label="Plekken">5.341</td><td role="cell" data-label="Uitleg">Logeeradressen voor fietsers en wandelaars. Adres en contact via de aanbieder.</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://udinaturen.dk/kort" target="_blank" rel="noreferrer">Ud i Naturen</a></td><td role="cell" data-label="Places" data-i18n-attrs="{&quot;data-label&quot;:&quot;Places&quot;}" data-i18n-number="2480">2,480</td><td role="cell" data-label="Explanation" data-i18n-text="[&quot;Overnight huts and camping spots in Denmark.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Explanation&quot;}">Overnight huts and camping spots in Denmark.</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://opencampingmap.org/" target="_blank" rel="noreferrer">OpenStreetMap</a></td><td role="cell" data-label="Places" data-i18n-attrs="{&quot;data-label&quot;:&quot;Places&quot;}" data-i18n-number="199621">199,621</td><td role="cell" data-label="Explanation" data-i18n-text="[&quot;Campsites and camper sites.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Explanation&quot;}">Campsites and camper sites.</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://map.campwild.org/" target="_blank" rel="noreferrer">CampWild</a></td><td role="cell" data-label="Places" data-i18n-attrs="{&quot;data-label&quot;:&quot;Places&quot;}" data-i18n-number="6095">6,095</td><td role="cell" data-label="Explanation" data-i18n-text="[&quot;Cabins, shelters and simple camping spots.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Explanation&quot;}">Cabins, shelters and simple camping spots.</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://welcometomygarden.org/nl/explore" target="_blank" rel="noreferrer">Welcome To My Garden</a></td><td role="cell" data-label="Places" data-i18n-attrs="{&quot;data-label&quot;:&quot;Places&quot;}" data-i18n-number="6772">6,772</td><td role="cell" data-label="Explanation" data-i18n-text="[&quot;Camp in a host’s garden. Arrange your stay through the website first.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Explanation&quot;}">Camp in a host’s garden. Arrange your stay through the website first.</td></tr>
+              <tr role="row"><td role="cell" data-label="Source" data-i18n-attrs="{&quot;data-label&quot;:&quot;Source&quot;}"><a href="https://www.vriendenopdefiets.nl/zoek-een-logeeradres" target="_blank" rel="noreferrer">Vrienden op de Fiets</a></td><td role="cell" data-label="Places" data-i18n-attrs="{&quot;data-label&quot;:&quot;Places&quot;}" data-i18n-number="5341">5,341</td><td role="cell" data-label="Explanation" data-i18n-text="[&quot;Accommodation addresses for cyclists and walkers. Address and contact via the provider.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Explanation&quot;}">Accommodation addresses for cyclists and walkers. Address and contact via the provider.</td></tr>
             </tbody>
           </table>
         </article>
         <article class="source-table-card">
-          <h2>Ook handig</h2>
+          <h2 data-i18n-text="[&quot;Useful links&quot;]">Useful links</h2>
           <table role="table" class="source-table">
-            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Bekijk</th><th scope="col" role="columnheader">Wat kun je doen?</th></tr></thead>
+            <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader" data-i18n-text="[&quot;View&quot;]">View</th><th scope="col" role="columnheader" data-i18n-text="[&quot;What can you do?&quot;]">What can you do?</th></tr></thead>
             <tbody role="rowgroup">
-              <tr role="row"><td role="cell" data-label="Bekijk"><a href="https://play.google.com/store/apps/details?id=org.warmshowers.app" target="_blank" rel="noreferrer">Warmshowers</a></td><td role="cell" data-label="Uitleg">Vind gastadressen voor fietsers in de Warmshowers-app.</td></tr>
-              <tr role="row"><td role="cell" data-label="Bekijk"><a href="index.html?route=import">Eigen route toevoegen</a></td><td role="cell" data-label="Uitleg">Zet je GPX-route op de kaart. Je route blijft op dit apparaat.</td></tr>
-              <tr role="row"><td role="cell" data-label="Bekijk"><a href="regels.html">Regels per land</a></td><td role="cell" data-label="Uitleg">Lees waar je mag overnachten. Controleer ook de regels ter plaatse.</td></tr>
-              <tr role="row"><td role="cell" data-label="Bekijk"><a href="over.html">Over Nook</a></td><td role="cell" data-label="Uitleg">Lees hoe Nook werkt en met je gegevens omgaat.</td></tr>
+              <tr role="row"><td role="cell" data-label="View" data-i18n-attrs="{&quot;data-label&quot;:&quot;View&quot;}"><a href="https://play.google.com/store/apps/details?id=org.warmshowers.app" target="_blank" rel="noreferrer">Warmshowers</a></td><td role="cell" data-label="Explanation" data-i18n-text="[&quot;Find guest addresses for cyclists in the Warmshowers app.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Explanation&quot;}">Find guest addresses for cyclists in the Warmshowers app.</td></tr>
+              <tr role="row"><td role="cell" data-label="View" data-i18n-attrs="{&quot;data-label&quot;:&quot;View&quot;}"><a href="index.html?route=import" data-i18n-text="[&quot;Add your own route&quot;]">Add your own route</a></td><td role="cell" data-label="Explanation" data-i18n-text="[&quot;Put your GPX route on the map. Your route remains on this device.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Explanation&quot;}">Put your GPX route on the map. Your route remains on this device.</td></tr>
+              <tr role="row"><td role="cell" data-label="View" data-i18n-attrs="{&quot;data-label&quot;:&quot;View&quot;}"><a href="regels.html" data-i18n-text="[&quot;Rules per country&quot;]">Rules per country</a></td><td role="cell" data-label="Explanation" data-i18n-text="[&quot;Read where you can stay overnight. Also check the rules on site.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Explanation&quot;}">Read where you can stay overnight. Also check the rules on site.</td></tr>
+              <tr role="row"><td role="cell" data-label="View" data-i18n-attrs="{&quot;data-label&quot;:&quot;View&quot;}"><a href="over.html" data-i18n-text="[&quot;About Nook&quot;]">About Nook</a></td><td role="cell" data-label="Explanation" data-i18n-text="[&quot;Read how Nook works and handles your data.&quot;]" data-i18n-attrs="{&quot;data-label&quot;:&quot;Explanation&quot;}">Read how Nook works and handles your data.</td></tr>
             </tbody>
           </table>
         </article>
       </section>
     </main>
-    <script src="pwa.js?v=20261018-1"></script>    <script src="feedback.js?v=20261020-1"></script>
+    <script src="pwa.js?v=20261018-1"></script>
+    <script src="bootstrap.js?v=20261020-2"></script>
   </body>
 </html>

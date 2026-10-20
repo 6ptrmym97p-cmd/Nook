@@ -45,7 +45,7 @@ for (const feature of JSON.parse(fs.readFileSync(geojsonPath, "utf8")).features)
   polygonsByCode.get(code).push(...polygonsOf(feature.geometry));
 }
 
-const names = new Intl.DisplayNames(["nl"], { type: "region" });
+const names = new Intl.DisplayNames(["en"], { type: "region" });
 const round = (value, digits) => Number(value.toFixed(digits));
 const entries = [];
 for (const [code, polygons] of polygonsByCode) {

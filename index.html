@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta
       name="description"
-      content="Kaart voor bikepackers en tourfietsers: vind slaapplekken, importeer GPX-routes en filter op afstand, land en type."
-    />
-    <title>Nook | Sleep spots for people on the move</title>
+      content="Map for bikepackers and touring cyclists: find places to sleep, import GPX routes and filter by distance, country and type."
+     data-i18n-attrs="{&quot;content&quot;:&quot;Map for bikepackers and touring cyclists: find places to sleep, import GPX routes and filter by distance, country and type.&quot;}"/>
+    <title data-i18n-text="[&quot;Nook | Sleep spots for people on the move&quot;]">Nook | Sleep spots for people on the move</title>
     <meta name="theme-color" content="#123127" />
     <meta
       http-equiv="Content-Security-Policy"
@@ -15,7 +15,7 @@
     />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="manifest" href="manifest.webmanifest?v=20261016-5" />
+    <link rel="manifest" href="manifest.webmanifest?v=20261020-2" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20261016-5" />
     <link rel="icon" href="favicon.ico?v=20261016-5" sizes="any" />
     <link rel="icon" href="favicon.svg?v=20261016-5" type="image/svg+xml" />
@@ -43,80 +43,81 @@
       integrity="sha256-YSWCMtmNZNwqex4CEw1nQhvFub2lmU7vcCKP+XVwwXA="
       crossorigin=""
     />
-    <link rel="stylesheet" href="styles.css?v=20261020-1" />
+    <link rel="stylesheet" href="styles.css?v=20261020-2" />
+    <script src="i18n.js?v=20261020-2"></script>
   </head>
-  <body class="map-app">
-    <a class="skip-link" href="#main-content">Naar inhoud</a>
+  <body data-feedback-script="feedback.js?v=20261020-2" data-app-script="app.js?v=20261020-2" class="map-app">
+    <a class="skip-link" href="#main-content" data-i18n-text="[&quot;To content&quot;]">To content</a>
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Nook kaart">
+      <a class="brand" href="index.html" aria-label="Nook map" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Nook map&quot;}">
         <img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="38" height="38" aria-hidden="true" />
         <span>Nook</span>
       </a>
-      <nav aria-label="Hoofdnavigatie">
-        <a href="index.html" aria-current="page">Kaart</a>
-        <a href="routebronnen.html">Routes</a>
-        <a href="regels.html">Regels</a>
-        <a href="netwerken.html">Netwerken</a>
-      <a class="mobile-about" href="over.html">Over</a></nav>
-      <div class="header-actions"><button class="header-action" type="button" data-feedback-open>Feedback</button><a class="header-action" href="over.html">Over</a></div>
+      <nav aria-label="Main navigation" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Main navigation&quot;}">
+        <a href="index.html" aria-current="page" data-i18n-text="[&quot;Map&quot;]">Map</a>
+        <a href="routebronnen.html" data-i18n-text="[&quot;Routes&quot;]">Routes</a>
+        <a href="regels.html" data-i18n-text="[&quot;Rules&quot;]">Rules</a>
+        <a href="netwerken.html" data-i18n-text="[&quot;Sources&quot;]">Sources</a>
+      <a class="mobile-about" href="over.html" data-i18n-text="[&quot;About&quot;]">About</a></nav>
+      <div class="header-actions"><button class="header-action" type="button" data-feedback-open data-i18n-text="[&quot;Feedback&quot;]">Feedback</button><label class="language-control"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><select id="language-select" aria-label="Language" title="Choose language" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Language&quot;,&quot;title&quot;:&quot;Choose language&quot;}" disabled><option value="en">English</option></select></label></div>
     </header>
 
     <main id="main-content" tabindex="-1" class="map-main">
       <section class="map-section" id="kaart">
-        <h1 class="visually-hidden">Nook: sleep spots for people on the move</h1>
+        <h1 class="visually-hidden" data-i18n-text="[&quot;Nook: sleep spots for people on the move&quot;]">Nook: sleep spots for people on the move</h1>
 
         <div class="map-shell">
           <div class="map-frame">
-            <div id="map" aria-label="Kaart met slaapplekken"></div>
-            <div class="map-data-hint" id="map-data-hint" role="status" hidden>
-              <span id="map-data-copy"></span>
-              <button id="map-data-action" type="button" hidden>Opnieuw proberen</button>
+            <div id="map" aria-label="Map of places to stay" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Map of places to stay&quot;}"></div>
+            <div class="map-data-hint" id="map-data-hint" role="status">
+              <span id="map-data-copy" data-i18n-text="[&quot;Loading places…&quot;]">Loading places…</span>
+              <button id="map-data-action" type="button" hidden data-i18n-text="[&quot;Try again&quot;]">Try again</button>
             </div>
           </div>
 
-          <div class="map-actions" aria-label="Kaartacties">
-            <button class="map-overlay-button filter-toggle" id="toggle-filters" type="button" aria-controls="map-sidebar" aria-expanded="false">
+          <div class="map-actions" aria-label="Map actions" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Map actions&quot;}">
+            <button class="map-overlay-button filter-toggle" id="toggle-filters" type="button" aria-controls="map-sidebar" aria-expanded="false" data-i18n-text="[&quot;Filters&quot;]">
               <span aria-hidden="true">☷</span> Filters <small id="filter-count" hidden></small>
             </button>
-            <button class="map-overlay-button route-toggle" id="open-my-route" type="button" aria-controls="map-sidebar">
-              <span aria-hidden="true">↝</span> Mijn route
+            <button class="map-overlay-button route-toggle" id="open-my-route" type="button" aria-controls="map-sidebar" data-i18n-text="[&quot;My route&quot;]">
+              <span aria-hidden="true">↝</span> My route
             </button>
           </div>
-          <div class="map-decision-actions" aria-label="Onderweg kiezen">
-            <button class="map-location-button" id="locate-me" type="button" aria-label="Ga naar mijn huidige positie" title="Mijn positie">
+          <div class="map-decision-actions" aria-label="Find a place on your trip" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Find a place on your trip&quot;}">
+            <button class="map-location-button" id="locate-me" type="button" aria-label="Go to my current location" title="My location" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Go to my current location&quot;,&quot;title&quot;:&quot;My location&quot;}">
               <span aria-hidden="true">◎</span>
             </button>
             <button class="tonight-button" id="show-candidates" type="button">
               <span aria-hidden="true">⌖</span>
-              <strong>Plek voor vannacht</strong>
+              <strong data-i18n-text="[&quot;A place for tonight&quot;]">A place for tonight</strong>
             </button>
           </div>
           <p class="location-status" id="location-status" aria-live="polite" hidden></p>
           <dialog class="map-sidebar" id="map-sidebar" aria-labelledby="filters-title" aria-hidden="true">
             <div class="overlay-panel-heading">
               <div>
-                <span>Kaartinstellingen</span>
-                <strong id="filters-title">Wat wil je zien?</strong>
+                <span data-i18n-text="[&quot;Map settings&quot;]">Map settings</span>
+                <strong id="filters-title" data-i18n-text="[&quot;What do you want to see?&quot;]">What do you want to see?</strong>
               </div>
-              <button class="overlay-close" id="close-filters" type="button" aria-label="Filters sluiten">×</button>
+              <button class="overlay-close" id="close-filters" type="button" aria-label="Close filters" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Close filters&quot;}">×</button>
             </div>
             <div class="filter-content">
             <fieldset class="filter-block sleep-filter" id="sleep-filter">
-              <legend>Slaapvorm</legend>
-              <label class="check-row">
+              <legend data-i18n-text="[&quot;Type of stay&quot;]">Type of stay</legend>
+              <label class="check-row" data-i18n-text="[&quot;Designated free site&quot;]">
                 <input type="checkbox" value="designated" checked />
                 <span class="legend-dot dot-designated"></span>
-                Aangewezen gratis plek
+                Designated free site
               </label>
-              <label class="check-row">
+              <label class="check-row" data-i18n-text="[&quot;Hut or shelter&quot;]">
                 <input type="checkbox" value="hut" checked />
                 <span class="legend-dot dot-hut"></span>
-                Hut of shelter
+                Hut or shelter
               </label>
-              <label class="check-row">
+              <label class="check-row" data-i18n-text="[&quot;Host network&quot;]">
                 <input type="checkbox" value="host" checked />
                 <span class="legend-dot dot-host"></span>
-                Gastnetwerk
+                Host network
               </label>
               <label class="check-row check-row-nested">
                 <input type="checkbox" data-network="wtmg" checked />
@@ -128,91 +129,91 @@
                 <span class="legend-ring ring-vodf"></span>
                 Vrienden op de Fiets
               </label>
-              <label class="check-row">
+              <label class="check-row" data-i18n-text="[&quot;Campsites&quot;]">
                 <input id="camping-layer-active" type="checkbox" value="camping" checked />
                 <span class="legend-dot dot-camping"></span>
-                Campings <small>OSM</small>
+                Campsites <small>OSM</small>
               </label>
-              <p class="microcopy">Getallen tonen hoeveel locaties bij elkaar liggen. Zoom in voor losse plekken.</p>
-              <p class="microcopy"><a href="regels.html#regiogids">Regels voor vrij kamperen en toestemming →</a></p>
-              <p class="microcopy" id="camping-status" aria-live="polite">
-                Campings staan aan als gewone OSM-bronpins.
+              <p class="microcopy" data-i18n-text="[&quot;Numbers show how many places are grouped together. Zoom in to see individual places.&quot;]">Numbers show how many places are grouped together. Zoom in to see individual places.</p>
+              <p class="microcopy"><a href="regels.html#regiogids" data-i18n-text="[&quot;Rules for free camping and permission →&quot;]">Rules for free camping and permission →</a></p>
+              <p class="microcopy" id="camping-status" aria-live="polite" data-i18n-text="[&quot;OpenStreetMap campsites are included on the map.&quot;]">
+                OpenStreetMap campsites are included on the map.
               </p>
             </fieldset>
 
             <fieldset class="filter-block country-filter" id="country-filter">
-              <legend>Landen</legend>
-              <p class="microcopy country-note" id="country-selection-summary">Dynamisch rond het kaartbeeld.</p>
-              <div class="country-filter-actions" aria-label="Snelle landselectie">
-                <button type="button" id="set-auto-countries">Kaartgebied</button>
-                <button type="button" id="toggle-country-list" aria-controls="country-toggle-grid" aria-expanded="false">Kies landen</button>
-                <button type="button" id="clear-countries">Geen</button>
+              <legend data-i18n-text="[&quot;Countries&quot;]">Countries</legend>
+              <p class="microcopy country-note" id="country-selection-summary" data-i18n-text="[&quot;Based on the current map area.&quot;]">Based on the current map area.</p>
+              <div class="country-filter-actions" aria-label="Quick country selection" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Quick country selection&quot;}">
+                <button type="button" id="set-auto-countries" data-i18n-text="[&quot;Map area&quot;]">Map area</button>
+                <button type="button" id="toggle-country-list" aria-controls="country-toggle-grid" aria-expanded="false" data-i18n-text="[&quot;Choose countries&quot;]">Choose countries</button>
+                <button type="button" id="clear-countries" data-i18n-text="[&quot;None&quot;]">None</button>
               </div>
               <div class="country-toggle-grid" id="country-toggle-grid" hidden></div>
             </fieldset>
 
             <fieldset class="filter-block route-filter" id="route-import">
-              <legend>Mijn route</legend>
-              <button class="button button-quiet gpx-button" id="choose-gpx" type="button">
-                Kies GPX uit Bestanden
+              <legend data-i18n-text="[&quot;My route&quot;]">My route</legend>
+              <button class="button button-quiet gpx-button" id="choose-gpx" type="button" data-i18n-text="[&quot;Choose GPX from Files&quot;]">
+                Choose GPX from Files
               </button>
               <input id="gpx-file" class="visually-hidden" type="file" aria-labelledby="choose-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml" />
-              <a class="route-source-link" href="routebronnen.html">Nog geen GPX? Vind een route <span>→</span></a>
+              <a class="route-source-link" href="routebronnen.html" data-i18n-text="[&quot;Need a GPX? Find a route&quot;]">Need a GPX? Find a route <span>→</span></a>
               <p class="route-feedback" id="route-feedback" role="status" hidden></p>
               <div class="route-library" id="route-library" hidden>
                 <div class="route-library-heading">
-                  <span>Bewaarde GPX-routes</span>
-                  <small id="route-library-count">0 routes</small>
+                  <span data-i18n-text="[&quot;Saved GPX routes&quot;]">Saved GPX routes</span>
+                  <small id="route-library-count" data-i18n-text="[&quot;0 routes&quot;]">0 routes</small>
                 </div>
                 <div class="route-list" id="route-list"></div>
               </div>
               <div class="route-undo" id="route-undo" hidden>
                 <span id="route-undo-message" role="status"></span>
-                <button id="undo-route-removal" type="button">Herstellen</button>
+                <button id="undo-route-removal" type="button" data-i18n-text="[&quot;Restore&quot;]">Restore</button>
               </div>
               <div class="route-distance-control">
-                <label for="route-distance">Maximale afstand van route</label>
+                <label for="route-distance" data-i18n-text="[&quot;Maximum distance from route&quot;]">Maximum distance from route</label>
                 <output id="route-distance-output" for="route-distance">10 km</output>
               </div>
               <input id="route-distance" class="route-distance" type="range" min="1" max="50" step="1" value="10" disabled />
-              <div class="route-presets" aria-label="Snelle afstandskeuze">
+              <div class="route-presets" aria-label="Distance presets" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Distance presets&quot;}">
                 <button type="button" data-route-distance="3" disabled>3 km</button>
                 <button type="button" data-route-distance="8" disabled>8 km</button>
                 <button type="button" data-route-distance="15" disabled>15 km</button>
                 <button type="button" data-route-distance="25" disabled>25 km</button>
               </div>
-              <label class="check-row route-active-row">
+              <label class="check-row route-active-row" data-i18n-text="[&quot;Only places along the route&quot;]">
                 <input id="route-filter-active" type="checkbox" checked disabled />
-                Alleen plekken langs de route
+                Only places along the route
               </label>
-              <button class="route-clear" id="clear-route" type="button" disabled>Alle GPX-routes wissen</button>
-            <p class="microcopy" id="route-status" aria-live="polite">
-                GPX uit Komoot, EuroVelo of cycle.travel.
+              <button class="route-clear" id="clear-route" type="button" disabled data-i18n-text="[&quot;Clear all GPX routes&quot;]">Clear all GPX routes</button>
+            <p class="microcopy" id="route-status" aria-live="polite" data-i18n-text="[&quot;GPX from Komoot, EuroVelo or cycle.travel.&quot;]">
+                GPX from Komoot, EuroVelo or cycle.travel.
               </p>
             </fieldset>
             </div>
             <div class="filter-footer">
-              <button class="button button-primary" id="show-filtered-map" type="button">Toon kaart</button>
-              <button class="filter-reset" id="reset-filters" type="button">Reset filters</button>
+              <button class="button button-primary" id="show-filtered-map" type="button" data-i18n-text="[&quot;Show map&quot;]">Show map</button>
+              <button class="filter-reset" id="reset-filters" type="button" data-i18n-text="[&quot;Reset filters&quot;]">Reset filters</button>
             </div>
           </dialog>
 
-          <aside class="place-panel" id="place-panel" aria-label="Plekdetails" tabindex="-1" aria-live="polite" aria-hidden="true" inert></aside>
-          <aside class="candidate-panel" id="candidate-panel" aria-label="Plekken voor vannacht" tabindex="-1" aria-hidden="true" inert>
+          <aside class="place-panel" id="place-panel" aria-label="Place details" tabindex="-1" aria-live="polite" aria-hidden="true" inert data-i18n-attrs="{&quot;aria-label&quot;:&quot;Place details&quot;}"></aside>
+          <aside class="candidate-panel" id="candidate-panel" aria-label="Places for tonight" tabindex="-1" aria-hidden="true" inert data-i18n-attrs="{&quot;aria-label&quot;:&quot;Places for tonight&quot;}">
             <div class="candidate-heading">
-              <div><span>Onderweg kiezen</span><strong>Plekken voor vannacht</strong></div>
-              <button class="candidate-close" id="close-candidates" type="button" aria-label="Kandidaten sluiten">×</button>
+              <div><span data-i18n-text="[&quot;Find a place on your trip&quot;]">Find a place on your trip</span><strong data-i18n-text="[&quot;Places for tonight&quot;]">Places for tonight</strong></div>
+              <button class="candidate-close" id="close-candidates" type="button" aria-label="Close suggestions" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Close suggestions&quot;}">×</button>
             </div>
-            <p class="candidate-intro" id="candidate-intro">Gebruik je positie om geschikte plekken in de buurt of verderop langs je route te rangschikken.</p>
+            <p class="candidate-intro" id="candidate-intro" data-i18n-text="[&quot;Use your location to rank suitable places nearby or further along your route.&quot;]">Use your location to rank suitable places nearby or further along your route.</p>
             <div class="candidate-location-tools">
-              <button class="candidate-location-button" id="candidate-use-location" type="button">
+              <button class="candidate-location-button" id="candidate-use-location" type="button" data-i18n-text="[&quot;Use current location&quot;]">
                 <span aria-hidden="true">◎</span>
-                Gebruik huidige locatie
+                Use current location
               </button>
-              <span id="candidate-location-note">Zonder GPS gebruikt Nook het midden van de kaart.</span>
+              <span id="candidate-location-note" data-i18n-text="[&quot;Without GPS, Nook uses the center of the map.&quot;]">Without GPS, Nook uses the center of the map.</span>
             </div>
-            <div class="candidate-horizon" aria-label="Hoe ver wil je nog fietsen?">
-              <span>Nog fietsen</span>
+            <div class="candidate-horizon" aria-label="How far do you want to cycle?" data-i18n-attrs="{&quot;aria-label&quot;:&quot;How far do you want to cycle?&quot;}">
+              <span data-i18n-text="[&quot;Distance left to ride&quot;]">Distance left to ride</span>
               <button type="button" data-horizon="15" aria-pressed="false">15 km</button>
               <button type="button" data-horizon="35" aria-pressed="true" class="is-active">35 km</button>
               <button type="button" data-horizon="70" aria-pressed="false">70 km</button>
@@ -235,7 +236,7 @@
     ></script>
     <script src="public-data.js?v=20261018-1"></script>
     <script src="map-canvas.js?v=20261016-4"></script>
-    <script src="app.js?v=20261018-6"></script>
-    <script src="pwa.js?v=20261018-1"></script>    <script src="feedback.js?v=20261020-1"></script>
+    <script src="pwa.js?v=20261018-1"></script>
+    <script src="bootstrap.js?v=20261020-2"></script>
   </body>
 </html>

@@ -155,7 +155,7 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
       navigator.geolocation.getCurrentPosition = (...args) => { window.locationRequestCount++; return request(...args); };
     });
     await locationPage.goto(url(), { waitUntil: "load" });
-    await locationPage.waitForFunction(() => !mapDataLoading);
+    await locationPage.waitForFunction(() => typeof mapDataLoading !== "undefined" && !mapDataLoading);
     assert.equal(await locationPage.evaluate(() => window.locationRequestCount), 0, "Previously granted permission must not trigger automatic GPS");
     assert.equal(await locationPage.evaluate(() => userLocation), null);
     await locationPage.locator("#locate-me").click();
@@ -163,7 +163,7 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
     assert.equal(await locationPage.evaluate(() => window.locationRequestCount), 1);
     assert.equal(await locationPage.evaluate(() => userLocation.lat), 52.1);
     await locationPage.reload({ waitUntil: "load" });
-    await locationPage.waitForFunction(() => !mapDataLoading);
+    await locationPage.waitForFunction(() => typeof mapDataLoading !== "undefined" && !mapDataLoading);
     assert.equal(await locationPage.evaluate(() => window.locationRequestCount), 0);
     await locationPage.locator("#show-candidates").click();
     assert.equal(await locationPage.evaluate(() => window.locationRequestCount), 0, "Candidate browsing uses the map until GPS is requested");
@@ -177,6 +177,7 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
     const quotaContext = await browser.newContext();
     const quotaPage = await quotaContext.newPage();
     await quotaPage.goto(url(), { waitUntil: "domcontentloaded" });
+    await quotaPage.waitForFunction(() => typeof savedRoutes !== "undefined");
     await quotaPage.evaluate(() => {
       localStorage.setItem(LEGACY_ROUTE_KEY, JSON.stringify({ name: "Existing route", lines: [[{ lat: 52, lng: 5 }, { lat: 52.1, lng: 5.1 }]], waypoints: [] }));
     });
@@ -188,6 +189,7 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
       };
     });
     await quotaPage.reload({ waitUntil: "load" });
+    await quotaPage.waitForFunction(() => typeof savedRoutes !== "undefined");
     assert.equal(await quotaPage.evaluate(() => savedRoutes[0]?.name), "Existing route");
     assert.ok(await quotaPage.evaluate(() => localStorage.getItem(LEGACY_ROUTE_KEY)));
     console.log("PASS: failed GPX migration preserves legacy route data");

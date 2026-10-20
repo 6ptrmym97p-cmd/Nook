@@ -2,7 +2,7 @@
   "name": "Nook",
   "short_name": "Nook",
   "description": "Sleep spots for people on the move.",
-  "lang": "nl",
+  "lang": "en",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

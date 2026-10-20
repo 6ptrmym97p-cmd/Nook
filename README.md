@@ -1,6 +1,6 @@
 # Nook
 
-Nook is een Nederlandstalige kaart voor bikepackers en tourfietsers, wereldwijd. De app helpt bij het vinden van slaapplekken langs een route. De vaste bronlagen bevatten OpenStreetMap-campings, CampWild-shelters en Welcome To My Garden-tuinen in 233 landen en gebieden, plus Vrienden op de Fiets en officiële Deense plekken; eigen GPX-data blijft lokaal in de browser.
+Nook is een meertalige kaart voor bikepackers en tourfietsers, wereldwijd. Engels is de standaard; de taalkeuze biedt twintig veelgesproken talen plus Nederlands. De app helpt bij het vinden van slaapplekken langs een route. De vaste bronlagen bevatten OpenStreetMap-campings, CampWild-shelters en Welcome To My Garden-tuinen in 233 landen en gebieden, plus Vrienden op de Fiets en officiële Deense plekken; eigen GPX-data blijft lokaal in de browser.
 
 ## Starten
 
@@ -9,6 +9,8 @@ python3 -m http.server 8000
 ```
 
 Open daarna `http://localhost:8000`.
+
+De taalkeuze staat op iedere pagina en wordt onthouden. Vertalingen worden lokaal geserveerd; alleen de gekozen taal wordt geladen. Zie [de taalinstructies](docs/languages.md) voor de 21 talen, vertaalbestanden en controles.
 
 Op een HTTPS-host kan Nook via de browser aan het beginscherm worden toegevoegd. De PWA bewaart de website, regels en routebronnen voor offline herladen. De compacte kaartindex, bekeken plekdetails en kaarttegels worden lokaal gecachet nadat ze eenmaal geladen zijn; nieuwe bronpagina's en nog niet bekeken kaartgebieden vereisen internet.
 
