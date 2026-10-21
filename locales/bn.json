@@ -597,5 +597,6 @@
   "{0}/{1} active": "{0}/{1} সক্রিয়",
   "{0}Ranked from {1}, {2}. Only your active filters count.": "{0}{1}, {2} থেকে র‌্যাঙ্ক করা হয়েছে। শুধুমাত্র আপনার সক্রিয় ফিল্টার গণনা.",
   "A place for tonight": "আজ রাতে থাকার জায়গা",
-  "Opening hours": "খোলার সময়"
+  "Opening hours": "খোলার সময়",
+  "One night only": "শুধু এক রাত"
 }

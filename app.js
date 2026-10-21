@@ -174,6 +174,7 @@ const countries = [
 ];
 
 const sources = [
+  { icon: "T", name: "1NITE TENT", description: t("Camp in a host’s garden. Arrange your stay through the website first."), meta: t("One night only"), url: "https://1nitetent.com/#map" },
   { icon: "W", name: "Warmshowers", description: t("Worldwide host network with a map in its mobile app. Nook does not currently have a stable public export for including these locations."), meta: t("Map visible in official app"), url: "https://play.google.com/store/apps/details?id=org.warmshowers.app" },
   { icon: "V", name: "Vrienden op de Fiets", description: t("The public map feed provides individual map positions and generic features without address fields. Nook groups nearby places across national borders and shows individual source pins when zooming in."), meta: t("5,341 pins · 38 European countries · July 7, 2026"), url: "https://www.vriendenopdefiets.nl/zoek-een-logeeradres" },
   { icon: "G", name: "Welcome To My Garden", description: t("The public explore map provides individual garden positions, basic facilities and, where available, a garden photo. These are spatially clustered on the map and shown separately when zooming in further."), meta: t("5,921 pins · 4,321 photos · July 7, 2026"), url: "https://welcometomygarden.org/nl/explore" },
@@ -624,6 +625,7 @@ function candidateProviderLabel(provider) {
     imported: t("GPX waypoint"),
     vodf: "Vrienden op de Fiets",
     wtmg: "Welcome To My Garden",
+    nitetent: "1NITE TENT",
     camping: t("OpenStreetMap campsite"),
   }[provider] || t("Source location");
 }
@@ -1366,7 +1368,7 @@ function requestMapSources(filters) {
       updateCandidatePanel();
       return;
     }
-    mapWorker = new Worker("map-worker.js?v=20261018-2");
+    mapWorker = new Worker("map-worker.js?v=20261021-1");
     mapWorker.onmessage = ({ data }) => {
       if (data.type === "ready") {
         mapManifest = data.manifest;
@@ -1459,7 +1461,7 @@ async function resolveMapPlace(point) {
   const item = (await request)[point.offset];
   if (!item) throw new Error(t("This place is missing in the source data"));
   if (point.kind === "camping") return campingPlace(item).place;
-  return { vodf: vodfPlace, wtmg: wtmgPlace, campwild: campwildPlace, denmark: denmarkPlace }[point.kind](item);
+  return { vodf: vodfPlace, wtmg: wtmgPlace, nitetent: nitetentPlace, campwild: campwildPlace, denmark: denmarkPlace }[point.kind](item);
 }
 
 function applyMapSources(data) {
@@ -1470,13 +1472,13 @@ function applyMapSources(data) {
     desired.add(key);
     if (mapMarkers.has(key)) continue;
     const place = cluster ? null : mapPointPlace(feature);
-    const host = feature.kind === "vodf" || feature.kind === "wtmg";
+    const host = feature.type === "host";
     const colors = { wild: "#668c50", designated: "#dc7740", hut: "#4d7e8d", host: "#7c6894", ask: "#aa965c", camping: "#7b5b35" };
     const marker = L.nookPin([feature.lat, feature.lng], {
       renderer: pinRenderer,
       radius: cluster ? clusterVisual(feature.count).size / 2 : 16,
-      fillColor: cluster ? "#123127" : host ? (feature.kind === "vodf" ? "#3978b0" : "#cb5e8b") : colors[feature.type],
-      pinLabel: cluster ? compactCount(feature.count) : host ? (feature.kind === "vodf" ? "V" : "G") : sleepTypes[feature.type]?.icon || "?",
+      fillColor: cluster ? "#123127" : host ? ({ vodf: "#3978b0", wtmg: "#cb5e8b", nitetent: "#7c6894" }[feature.kind] || colors.host) : colors[feature.type],
+      pinLabel: cluster ? compactCount(feature.count) : host ? ({ vodf: "V", wtmg: "G", nitetent: "T" }[feature.kind] || "♥") : sleepTypes[feature.type]?.icon || "?",
       title: cluster ? t("{0} places · zoom in", feature.count.toLocaleString(NookI18n.locale)) : place.name,
     }).on("click", () => {
       if (!cluster) { renderPlace(place); return; }
@@ -1498,7 +1500,7 @@ function applyMapSources(data) {
     mapMarkers.delete(key);
   }
   updatePinAccessibility();
-  visiblePlaceCounts.hospitality = data.counts.vodf + data.counts.wtmg;
+  visiblePlaceCounts.hospitality = data.counts.vodf + data.counts.wtmg + (data.counts.nitetent || 0);
   visiblePlaceCounts.camping = data.counts.camping;
   visiblePlaceCounts.campwild = data.counts.campwild;
   visiblePlaceCounts.denmark = data.counts.denmark;
@@ -1668,6 +1670,25 @@ function wtmgPlace(pin) {
     cost: t("Overnight stay free; check membership terms"),
     water: pin.drinkingWater ? t("Drinking water reported") : pin.water ? t("Water reported, drinkability unknown") : t("Not listed"),
     extraFacts: extras,
+    caution: t("Open the official map and contact the host there. A map pin does not confirm an overnight stay."),
+  };
+}
+
+function nitetentPlace(pin) {
+  return {
+    name: "1NITE TENT",
+    lat: pin.lat, lng: pin.lng,
+    location: t("{0} · public map position", countryNames[pin.country]),
+    type: "host", confidence: 2,
+    sourceLabel: "1NITE TENT",
+    sourceUrl: publicData.nitetent?.source || "https://1nitetent.com/#map",
+    sourceAction: t("Open the official host map"),
+    decision: t("Only after request and confirmation"),
+    description: t("Camp in a host’s garden. Arrange your stay through the website first."),
+    stay: t("One night only"),
+    cost: t("Free"),
+    water: t("Not listed"),
+    extraFacts: [[t("Coordinate"), `${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)}`]],
     caution: t("Open the official map and contact the host there. A map pin does not confirm an overnight stay."),
   };
 }

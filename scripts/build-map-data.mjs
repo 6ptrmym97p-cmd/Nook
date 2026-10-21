@@ -11,24 +11,26 @@ const DETAIL_BATCH_SIZE = 128;
 // Keep only coordinates and filter fields in the initial map download. Full
 // descriptions, photos and facilities live in small, lazily requested batches.
 export function buildMapData(dataDir) {
-  const snapshots = fs.readdirSync(dataDir).filter((file) => /^(vodf|wtmg|camping|campwild|denmark)-[A-Z]{2}\.json$/.test(file)).sort();
+  const snapshots = fs.readdirSync(dataDir).filter((file) => /^(vodf|wtmg|nitetent|camping|campwild|denmark)-[A-Z]{2}\.json$/.test(file)).sort();
   const sources = new Map();
   const append = (kind, country, items) => {
     const key = `${kind}-${country}`;
     if (!sources.has(key)) sources.set(key, { kind, country, items: [] });
     sources.get(key).items.push(...items);
   };
-  if (snapshots.length) {
-    for (const file of snapshots) {
-      const [kind, country] = file.replace(".json", "").split("-");
-      const payload = JSON.parse(fs.readFileSync(path.join(dataDir, file), "utf8"));
-      append(kind, country, payload.pins || payload.places || []);
-    }
-  } else {
-    const previous = JSON.parse(fs.readFileSync(path.join(dataDir, "map-index.json"), "utf8"));
+  // A refresh of one provider must retain the already published providers.
+  const replacedKinds = new Set(snapshots.map((file) => file.split("-")[0]));
+  const indexPath = path.join(dataDir, "map-index.json");
+  if (fs.existsSync(indexPath)) {
+    const previous = JSON.parse(fs.readFileSync(indexPath, "utf8"));
     for (const chunk of previous.chunks) {
-      append(chunk.kind, chunk.country, JSON.parse(fs.readFileSync(path.join(dataDir, chunk.file), "utf8")));
+      if (!replacedKinds.has(chunk.kind)) append(chunk.kind, chunk.country, JSON.parse(fs.readFileSync(path.join(dataDir, chunk.file), "utf8")));
     }
+  }
+  for (const file of snapshots) {
+    const [kind, country] = file.replace(".json", "").split("-");
+    const payload = JSON.parse(fs.readFileSync(path.join(dataDir, file), "utf8"));
+    append(kind, country, payload.pins || payload.places || []);
   }
   const count = [...sources.values()].reduce((sum, source) => sum + source.items.length, 0);
   const buffer = Buffer.alloc(count * RECORD_BYTES);
@@ -50,7 +52,7 @@ export function buildMapData(dataDir) {
       hash.update(json);
       fs.writeFileSync(path.join(dataDir, file), json);
       items.forEach((item, offset) => {
-        const type = source.kind === "vodf" || source.kind === "wtmg" ? "host" : source.kind === "camping" ? "camping" : item.type;
+        const type = ["vodf", "wtmg", "nitetent"].includes(source.kind) ? "host" : source.kind === "camping" ? "camping" : item.type;
         if (!Number.isFinite(item.lat) || !Number.isFinite(item.lng) || !POINT_TYPES.includes(type)) throw new Error(`Invalid map point in ${key}`);
         const position = point++ * RECORD_BYTES;
         buffer.writeInt32LE(Math.round(item.lng * 1e6), position);
@@ -70,7 +72,7 @@ export function buildMapData(dataDir) {
   for (const file of snapshots) fs.unlinkSync(path.join(dataDir, file));
   const retained = new Set(chunks.map((chunk) => path.basename(chunk.file)));
   for (const file of fs.readdirSync(detailDir)) {
-    if (!retained.has(file) && /^(vodf|wtmg|camping|campwild|denmark)-[A-Z]{2}-\d+\.json$/.test(file)) fs.unlinkSync(path.join(detailDir, file));
+    if (!retained.has(file) && /^(vodf|wtmg|nitetent|camping|campwild|denmark)-[A-Z]{2}-\d+\.json$/.test(file)) fs.unlinkSync(path.join(detailDir, file));
   }
   return manifest;
 }

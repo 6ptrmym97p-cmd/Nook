@@ -62,7 +62,7 @@ test("vendored map styles and scripts match the HTML integrity checks", () => {
   assert.equal(checked, 5);
 });
 
-function fixture(t) {
+function fixture(t, extraSnapshots = {}) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "nook-map-test-"));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
   const camping = Array.from({ length: 260 }, (_, i) => ({ lat: 51 + i / 1000, lng: 5.9, country: "NL", name: `Camping ${i} — café`, description: "Details blijven behouden" }));
@@ -71,6 +71,7 @@ function fixture(t) {
     "camping-DE": { places: [{ lat: 51.1, lng: 6.1, country: "DE", name: "Over de grens" }] },
     "vodf-NL": { pins: [{ lat: 51.1, lng: 5.9, country: "NL", singleBeds: 2 }] },
     "campwild-DE": { places: [{ lat: 51.1, lng: 6.1, country: "DE", type: "hut", name: "Shelter" }] },
+    ...extraSnapshots,
   };
   for (const [name, data] of Object.entries(snapshots)) fs.writeFileSync(path.join(dir, name + ".json"), JSON.stringify(data));
   const manifest = buildMapData(dir);
@@ -103,8 +104,8 @@ test("compact index preserves every point, country, type and complete detail rec
   assert.deepEqual(repeated, manifest, "Rebuilding from generated detail batches must be deterministic");
 });
 
-async function worker(t, cacheFailure = null) {
-  const { dir } = fixture(t);
+async function worker(t, cacheFailure = null, extraSnapshots = {}) {
+  const { dir } = fixture(t, extraSnapshots);
   const messages = [];
   const context = vm.createContext({
     console, DataView, Set, Map,
@@ -150,6 +151,33 @@ test("worker uses downloaded points when browser storage is unavailable or full"
     const result = await w.query();
     assert.equal(result.points.length, 263, `${failure}: downloaded places remain available`);
   }
+});
+
+test("refreshing 1NITE TENT preserves other providers and removes stale source countries", (t) => {
+  const { dir, manifest } = fixture(t);
+  const original = new Map(manifest.chunks.map((chunk) => [chunk.file, fs.readFileSync(path.join(dir, chunk.file), "utf8")]));
+  fs.writeFileSync(path.join(dir, "nitetent-DE.json"), JSON.stringify({ pins: [{ lat: 51.2, lng: 6.2, country: "DE", type: "host" }] }));
+  fs.writeFileSync(path.join(dir, "nitetent-NL.json"), JSON.stringify({ pins: [{ lat: 52, lng: 5, country: "NL", type: "host" }] }));
+  assert.equal(buildMapData(dir).count, 265);
+  fs.writeFileSync(path.join(dir, "nitetent-DE.json"), JSON.stringify({ pins: [{ lat: 51.3, lng: 6.3, country: "DE", type: "host" }] }));
+  const refreshed = buildMapData(dir);
+  assert.equal(refreshed.count, 264);
+  assert.ok(!refreshed.chunks.some((chunk) => chunk.kind === "nitetent" && chunk.country === "NL"));
+  assert.ok(!fs.existsSync(path.join(dir, "map-details/nitetent-NL-000.json")));
+  for (const [file, bytes] of original) assert.equal(fs.readFileSync(path.join(dir, file), "utf8"), bytes);
+  assert.deepEqual(buildMapData(dir), refreshed);
+});
+
+test("1NITE TENT is a host network included in clusters, candidates and source filtering", async (t) => {
+  const w = await worker(t, null, { "nitetent-DE": { pins: [{ lat: 51.15, lng: 6.15, country: "DE", type: "host" }] } });
+  const selected = await w.query({ filters: { ...w.filters, networks: ["nitetent"], types: ["host"] } });
+  assert.equal(selected.counts.nitetent, 1);
+  assert.equal(selected.points.length, 1);
+  assert.equal(selected.points[0].kind, "nitetent");
+  assert.equal(selected.points[0].type, "host");
+  const hidden = await w.query({ filters: { ...w.filters, networks: [], types: ["host"] } });
+  assert.equal(hidden.counts.nitetent, 0);
+  assert.equal(hidden.features.length, 0);
 });
 
 test("worker clusters spatially across borders and queries only the viewport", async (t) => {
