@@ -214,7 +214,7 @@ new DirectZoomControl({ position: "topright" }).addTo(map);
 const baseMap = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   updateWhenIdle: false,
   updateWhenZooming: false,
-  updateInterval: 150,
+  updateInterval: 250,
   keepBuffer: 3,
   maxZoom: 19,
   referrerPolicy: "strict-origin-when-cross-origin",

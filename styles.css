@@ -3162,6 +3162,11 @@ body.compact-page-body {
 }
 
 .map-app .site-header { background: #faf8f1; }
+/* Separate composited map surfaces let Chromium move existing pixels instead
+   of repainting the pin layer when newly loaded tiles change underneath it. */
+.map-app .leaflet-map-pane,
+.map-app .leaflet-tile-pane,
+.map-app .leaflet-sourcePins-pane { will-change: transform; }
 .map-app .map-overlay-button,
 .map-app .map-location-button,
 .map-app .tonight-button { background: #123127; }

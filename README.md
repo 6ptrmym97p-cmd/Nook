@@ -90,7 +90,7 @@ Bij een datavernieuwing: verhoog ook de asset-/dataversie in `app.js`, `map-work
 De kaartbibliotheken staan met hun licenties in `vendor/`; er is geen pakketinstallatie of externe JavaScript-CDN nodig. De Leaflet-stylesheet is gecontroleerd tegen het officiële npm-pakket; de HTML behoudt integriteitscontrole.
 
 
-Bij schuiven en knijpzoomen transformeert Leaflet één canvaslaag met de bronpins; er is geen afzonderlijk bewegend HTML-element per pin. Resultaten worden pas na het gebaar ververst. Een buffer rondom het kaartbeeld voorkomt herberekenen bij kleine verschuivingen. Toetsenbord- en schermlezerbediening blijft beschikbaar via bijbehorende knoppen die hun canvaspin markeren bij focus.
+Bij schuiven en knijpzoomen transformeert Leaflet één canvaslaag met de bronpins; er is geen afzonderlijk bewegend HTML-element per pin. Op grote schermen begrenst Nook de Retina-bitmap tot ongeveer zes miljoen pixels, met behoud van ten minste de CSS-pixelresolutie; kleine schermen houden hun oorspronkelijke scherpte. Tekenen en hitdetectie gebruiken dezelfde geografische projectie. Chromium kan de kaarttegels en pins als afzonderlijke oppervlakken verplaatsen. Tegelupdates tijdens het slepen zijn begrensd tot circa vier per seconde om extra layout- en tekenwerk te beperken. Resultaten worden pas na het gebaar ververst. Een buffer rondom het kaartbeeld voorkomt herberekenen bij kleine verschuivingen. Toetsenbord- en schermlezerbediening blijft beschikbaar via bijbehorende knoppen die hun canvaspin markeren bij focus.
 
 Clusterklikken gaan direct naar het volgende kaartgebied. Browserzoom blijft beschikbaar voor tekst en panelen; de kaart verwerkt eigen knijpgebaren. Er zijn geen globale touch-handlers die snelle tikken op knoppen annuleren. Kaarttegels laden tijdens het schuiven en alleen voor het uiteindelijke zoomniveau. Permanente kaartknoppen en plekpanelen gebruiken geen achtergrondblur tijdens kaartbewegingen.
 
@@ -102,6 +102,7 @@ Een extra browsercontrole is beschikbaar met een geïnstalleerde Playwright/Chro
 
 ```bash
 node scripts/test-map-browser.cjs
+node scripts/test-desktop-map-browser.cjs
 node scripts/test-app-browser.cjs
 ```
 

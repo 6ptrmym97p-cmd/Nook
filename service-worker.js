@@ -1,4 +1,4 @@
-const SHELL_CACHE = "nook-shell-20261021-1";
+const SHELL_CACHE = "nook-shell-20261021-2";
 const RUNTIME_CACHE = "nook-runtime-20261021-1";
 const TILE_CACHE = "nook-tiles-v1";
 const MAX_TILES = 256;
@@ -11,9 +11,9 @@ const APP_SHELL = [
   "./over.html",
   "./i18n.js?v=20261021-1",
   "./bootstrap.js?v=20261020-2",
-  "./styles.css?v=20261021-1",
-  "./app.js?v=20261021-1",
-  "./map-canvas.js?v=20261016-4",
+  "./styles.css?v=20261021-2",
+  "./app.js?v=20261021-2",
+  "./map-canvas.js?v=20261021-2",
   "./map-worker.js?v=20261021-1",
   "./vendor/supercluster-8.0.1.min.js",
   "./vendor/leaflet-1.9.4/leaflet.js",
