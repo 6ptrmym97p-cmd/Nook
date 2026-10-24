@@ -7,10 +7,10 @@ let points;
 let tree;
 let filterKey;
 let route = null;
-const providers = ["vodf", "wtmg", "nitetent", "camping", "campwild", "denmark"];
+const providers = ["vodf", "wtmg", "nitetent", "refuges", "camping", "campwild", "denmark"];
 
 const ready = (async () => {
-  const response = await cachedData("data/map-index.json?v=20261021-1");
+  const response = await cachedData("data/map-index.json?v=20261024-1");
   if (!response.ok) throw new Error(`Kaartindex: HTTP ${response.status}`);
   manifest = await response.json();
   const compressed = manifest.gzip && typeof DecompressionStream !== "undefined";
@@ -46,7 +46,7 @@ async function cachedData(url) {
   if (!("caches" in self)) return fetch(url);
   let cache;
   try {
-    cache = await caches.open("nook-runtime-20261021-1");
+    cache = await caches.open("nook-runtime-20261024-1");
     const cached = await cache.match(url);
     if (cached) return cached;
   } catch { /* Private browsing or unavailable storage: use the network. */ }

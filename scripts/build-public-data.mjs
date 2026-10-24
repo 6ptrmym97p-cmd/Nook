@@ -574,6 +574,7 @@ function filterCampwildOfficialDuplicates(sourcePlaces, officialPlaces) {
 const vodfPins = buildVodfPins();
 const wtmgPins = buildWtmgPins();
 const nitetentPins = publishedItems("nitetent");
+const refugePlaces = publishedItems("refuges");
 const denmarkPlaces = buildDenmarkPlaces();
 const campingPlaces = buildCampingPlaces();
 const campwildRawPlaces = buildCampwildPlaces();
@@ -585,6 +586,7 @@ const overviewCountries = Object.fromEntries(countryCodes.map((country) => [
     vodf: vodfPins.filter((pin) => pin.country === country).length,
     wtmg: wtmgPins.filter((pin) => pin.country === country).length,
     nitetent: nitetentPins.filter((pin) => pin.country === country).length,
+    refuges: refugePlaces.filter((place) => place.country === country).length,
     camping: campingPlaces.filter((place) => place.country === country).length,
     campwild: campwildPlaces.filter((place) => place.country === country).length,
     campwildHut: campwildPlaces.filter((place) => place.country === country && place.type === "hut").length,
@@ -684,6 +686,7 @@ const shellData = {
   generatedAt: output.generatedAt,
   overview: output.overview,
   nitetent: { source: "https://1nitetent.com/#map", totalVisible: nitetentPins.length, pins: [] },
+  refuges: { source: "https://www.refuges.info/", totalVisible: refugePlaces.length, attribution: "Refuges.info contributors", license: "https://creativecommons.org/licenses/by-sa/2.0/", changes: "Unguarded huts with reported beds and no reported restriction; coordinates rounded, existing huts within 50 m omitted.", places: [] },
   vodf: {
     source: output.vodf.source,
     totalVisible: output.vodf.totalVisible,

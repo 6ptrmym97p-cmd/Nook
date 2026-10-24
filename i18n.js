@@ -162,6 +162,8 @@
         return option;
       }));
       select.value = code;
+      const codeLabel = document.querySelector(".language-code");
+      if (codeLabel) codeLabel.textContent = code.toUpperCase();
       select.disabled = false;
       select.addEventListener("change", () => changeLanguage(select.value, select));
     }

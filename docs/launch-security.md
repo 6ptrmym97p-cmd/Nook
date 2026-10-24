@@ -6,11 +6,31 @@ Gebruik dit als checklist voordat je Nook naar vrienden stuurt of publiek deelt.
 
 - Security headers staan in `_headers` voor Cloudflare Pages en Netlify.
 - Alle HTML-pagina's hebben een CSP meta-tag als vangnet voor simpele statische hosting.
-- Leaflet en Leaflet.markercluster gebruiken Subresource Integrity op de CDN-assets.
+- De lokaal gehoste Leaflet- en markercluster-assets hebben Subresource Integrity.
 - Bezoekers sturen geen live Overpass- of andere externe API-zoekopdrachten vanuit Nook. OpenStreetMap-campings staan als statische snapshot in `data/`.
 - Er staan geen API keys, tokens of secrets in de client.
 - GPX-imports blijven lokaal in de browser.
-- De site gebruikt geen cookies, accounts, formulieren of eigen backend.
+- De site heeft geen bezoekersaccounts. Het feedbackformulier gebruikt een Pages Function met private KV-opslag en optionele server-side e-mailmeldingen. GPX-bestanden blijven lokaal.
+
+## Uitgevoerde versterkingen
+
+- `script-src` staat uitsluitend Nooks eigen scripts toe. De ongebruikte externe JavaScript-CDN is verwijderd uit de edge-headers en de CSP van alle HTML-pagina's.
+- De feedbackfunctie accepteert alleen POST met JSON, controleert de herkomst en wijst ongeldige JSON-objecten af. De limiet van 8.000 UTF-8-bytes wordt tijdens het streamen afgedwongen, voordat het complete bericht kan worden gebufferd. Niet-POST-methodes geven JSON met status 405.
+- API-reacties hebben `no-store`, `nosniff`, een beperkende CSP, dezelfde-origin resource policy en geen referrergegevens. Er is geen endpoint voor het openbaar uitlezen van feedback.
+- Honeypot en de bestaande limiet van vijf berichten per IP per uur blijven actief. KV biedt geen sterke atomaire wereldwijde rate limiting; dit is geen vervanging voor een Cloudflare-regel tegen grote aantallen aanvragen.
+- In Cloudflare Pages is `fail_open` voor zowel Production als Preview op `false` gezet. Bij problemen met het toepassen van de functionconfiguratie valt het verzoek niet ongemerkt terug naar statische afhandeling. De bestaande KV- en mailbindings zijn behouden.
+
+## Aanvullend in het domein/account
+
+Het beschikbare token heeft Pages-toegang maar kan de domeinzone niet uitlezen of wijzigen. Zone-WAF, minimale TLS-versie en bot-/rate-limitinstellingen zijn daarom niet als gecontroleerd of ingeschakeld aangemerkt.
+
+Zinvolle vervolgstappen in het eigen Cloudflare-dashboard:
+
+- Activeer de beschikbare beheerde WAF-regels en laat de automatische DDoS-bescherming actief.
+- Beperk overmatig POST-verkeer specifiek op `/api/feedback`, met een drempel passend bij het Cloudflare-plan. Gebruik een tijdelijke blokkade/rate-limitreactie; een browserchallenge midden in een JSON-fetch werkt niet als gewoon feedbackantwoord. Pas deze regel niet toe op alle kaartdata of kaarttegels.
+- Beveilig zowel Cloudflare als GitHub met sterke MFA/passkeys. Compromittering van die accounts blijft een relevant risico voor een statische website.
+
+Nook heeft geen PHP-installatie, SQL-server of accountwachtwoorden om te patchen. Publieke kaartbestanden zijn bedoeld om gelezen te worden; ruime toegang tot die openbare assets is geen toegang tot de private feedbackopslag.
 
 ## Waar staat de data?
 
@@ -18,8 +38,8 @@ Bij launch is dit het model:
 
 - Bij jou gehost: `public-data.js`, `data/*.json`, HTML, CSS, JS, PWA-iconen en favicon.
 - Extern geladen als asset: kaarttegels van OpenStreetMap en fonts van Google Fonts (Leaflet, markercluster en Supercluster worden met hun licenties lokaal geserveerd; Leaflet/markercluster behouden SRI), en bronfoto's die al door de bron als publieke afbeelding worden gepubliceerd.
-- Alleen als link: platformpagina's zoals Vrienden op de Fiets, Welcome To My Garden, Ud i Naturen, CampWild en routebronnen.
-- Niet aanwezig: API keys, login, database, betaalgegevens, privé-hostprofielen, ruwe GPX-bestanden van bezoekers.
+- Alleen als link: bronpagina's voor contact, reservering, actuele omstandigheden en eventuele licenties.
+- Alleen server-side: private feedback-KV en de mailsecret. Niet in de browser: API-secrets, betaalgegevens, privé-hostprofielen of GPX-bestanden van andere bezoekers.
 
 Eenmalig downloaden en als snapshot hosten is voor deze launch het handigst: het is sneller, beter te cachen, makkelijker te rate-limiten en voorkomt dat bezoekers jouw site als API-proxy of scraper gebruiken. Controleer bij elke bron wel of de publieke data en attributie passen bij jouw gebruik.
 

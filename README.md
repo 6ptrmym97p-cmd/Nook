@@ -72,11 +72,15 @@ node --test scripts/test-1nitetent.mjs scripts/test-map-data.mjs
 
 Gebruik het hierboven genoemde landenbestand. Met `--input /pad/naar/campgrounds.geojson` kun je een al gedownloade openbare feed verwerken. De import bewaart alle andere providers en vervangt alleen de 1NITE TENT-laag. Dubbele posities, ongeldige coördinaten en punten zonder betrouwbare landkoppeling worden overgeslagen; het script rapporteert de aantallen. De momentopname van 21 oktober 2026 bevat 2.655 unieke plaatsen in 38 landen uit 2.675 bronrecords. Na het vernieuwen gelden dezelfde gezamenlijke cache-/dataversiestappen als voor de andere kaartbronnen.
 
+## Refuges.info en aanvullende bronnen
+
+De kaart bevat 1.280 aanvullende onbewaakte hutten met opgegeven slaapplaatsen uit Refuges.info, na controle op sluitingsmeldingen, landkoppeling en overlap. De brondata en afgeleide records hebben CC BY-SA 2.0-attributie. Bivakzone.be en Statskog staan als aanvullende bronlinks in het overzicht. Zie [de bronnenbeoordeling](docs/source-review.md) voor selectie, licentie, beperkingen en vernieuwingsinstructies.
+
 ## Kaartprestaties en controles
 
 De kaart gebruikt OpenStreetMap-kaarttegels en Supercluster 8.0.1 (de ruimtelijke clusteringbibliotheek van Mapbox). Landen zijn een optioneel filter; de kaart opent en clustert op echte locaties, ook over de grens. `map-worker.js` bouwt en filtert de index buiten de hoofdthread en stuurt alleen zichtbare clusters/pins terug. Er worden geen duizenden Leaflet-markers meer gemaakt voordat er geclusterd wordt.
 
-Alle 222.964 kaartposities worden meteen bij het openen geladen, ongeacht land of zoomniveau. Inzoomen gebruikt diezelfde reeds geladen index; de aantallen zijn clusters van bestaande plekken. De eerste kaartdownload bestaat uit `data/map-index.json` en `data/map-points.bin.gz` (circa 2 MB gecomprimeerd voor 222.964 punten). Browsers zonder `DecompressionStream` gebruiken dezelfde punten via `data/map-points.bin` (circa 3,6 MB). Volledige beschrijvingen, bronlinks en voorzieningen worden pas opgehaald bij een plekdetail of kandidatenlijst, in batches van maximaal 128 plekken. De oorspronkelijke landbestanden zijn daarmee vervangen, zonder verlies van bronrecords.
+Alle 224.244 kaartposities worden meteen bij het openen geladen, ongeacht land of zoomniveau. Inzoomen gebruikt diezelfde reeds geladen index; de aantallen zijn clusters van bestaande plekken. De eerste kaartdownload bestaat uit `data/map-index.json` en `data/map-points.bin.gz` (circa 2 MB gecomprimeerd voor 224.244 punten). Browsers zonder `DecompressionStream` gebruiken dezelfde punten via `data/map-points.bin` (circa 3,6 MB). Volledige beschrijvingen, bronlinks en voorzieningen worden pas opgehaald bij een plekdetail of kandidatenlijst, in batches van maximaal 128 plekken. De oorspronkelijke landbestanden zijn daarmee vervangen, zonder verlies van bronrecords.
 
 Na het vernieuwen van de openbare data maakt `scripts/build-public-data.mjs` automatisch de kaartindex en detailbestanden. De bestaande index/batches kun je zonder externe brondata opnieuw opbouwen met:
 

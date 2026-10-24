@@ -1,6 +1,6 @@
 # Cloudflare Pages en eigen domein
 
-Nook gebruikt `ridewithnook.com`. De website draait volledig statisch op Cloudflare Pages; een lokale computer of backend is niet nodig. GitHub is de bron voor publicatie.
+Nook gebruikt `ridewithnook.com`. De kaart en informatiepagina's draaien statisch op Cloudflare Pages; feedback gebruikt een Pages Function. Er is geen eigen server of lokale computer nodig. GitHub is de bron voor publicatie.
 
 ## Buildinstellingen
 
@@ -10,7 +10,7 @@ Nook gebruikt `ridewithnook.com`. De website draait volledig statisch op Cloudfl
 - Build command: `node scripts/build-pages.mjs`
 - Build output directory: `dist`
 - Root directory: leeg (repository root)
-- Environment variables / secrets: niet nodig
+- Environment variables / secrets: niet nodig voor de statische build; feedback gebruikt de bindings en eventuele mailsecret hieronder.
 
 De build kopieert de bestaande HTML, CSS, JavaScript, iconen, manifest, `_headers`, `data/` en `vendor/` ongewijzigd naar `dist/`. Documentatie, ontwikkelscripts, Git-metadata en het oude GitHub Pages-bestand `CNAME` worden niet gepubliceerd. Er zijn geen npm-dependencies en er worden tijdens de build geen externe databronnen opgehaald.
 
@@ -42,7 +42,7 @@ De knop **Feedback** stuurt meldingen naar de Pages Function `functions/api/feed
 
 Zolang de koppeling ontbreekt, krijgt een bezoeker de melding dat feedback nog niet is ingesteld. Meldingen lezen: open de namespace onder **KV**; sleutels `feedback:<tijdstip>:<id>` staan op datum, met soort en een voorvertoning als metadata. Het IP-adres wordt niet opgeslagen; alleen gehasht en één uur lang als limiet van vijf berichten per bezoeker per uur.
 
-Controleer de koppeling na de nieuwe deployment met onderstaand onvolledige bericht. Dit slaat niets op: **400** met `Schrijf iets meer in je bericht.` betekent dat de functie en opslagkoppeling beschikbaar zijn; **503** met `Feedback is nog niet ingesteld.` betekent dat `FEEDBACK` nog ontbreekt in de actieve productie-deployment. Een GET in de adresbalk is geen geldige controle: die kan de gewone website teruggeven.
+Controleer de koppeling na de nieuwe deployment met onderstaand onvolledige bericht. Dit slaat niets op: **400** met `Schrijf iets meer in je bericht.` betekent dat de functie en opslagkoppeling beschikbaar zijn; **503** met `Feedback is nog niet ingesteld.` betekent dat `FEEDBACK` nog ontbreekt in de actieve productie-deployment. Een GET geeft **405 Method not allowed**, met `Allow: POST` en een JSON-foutmelding.
 
 ```sh
 curl -i https://ridewithnook.com/api/feedback \

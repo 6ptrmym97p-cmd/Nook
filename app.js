@@ -174,6 +174,7 @@ const countries = [
 ];
 
 const sources = [
+  { icon: "R", name: "Refuges.info", description: t("Shelter or hut; check source and local rules"), meta: "CC BY-SA 2.0", url: "https://www.refuges.info/" },
   { icon: "T", name: "1NITE TENT", description: t("Camp in a host’s garden. Arrange your stay through the website first."), meta: t("One night only"), url: "https://1nitetent.com/#map" },
   { icon: "W", name: "Warmshowers", description: t("Worldwide host network with a map in its mobile app. Nook does not currently have a stable public export for including these locations."), meta: t("Map visible in official app"), url: "https://play.google.com/store/apps/details?id=org.warmshowers.app" },
   { icon: "V", name: "Vrienden op de Fiets", description: t("The public map feed provides individual map positions and generic features without address fields. Nook groups nearby places across national borders and shows individual source pins when zooming in."), meta: t("5,341 pins · 38 European countries · July 7, 2026"), url: "https://www.vriendenopdefiets.nl/zoek-een-logeeradres" },
@@ -279,7 +280,7 @@ function sourceClusterLayer(className) {
 }
 
 const importedLayer = sourceClusterLayer("cluster-imported");
-const visiblePlaceCounts = { hospitality: 0, denmark: 0, campwild: 0, camping: 0, imported: 0 };
+const visiblePlaceCounts = { hospitality: 0, denmark: 0, campwild: 0, refuges: 0, camping: 0, imported: 0 };
 const ROUTE_LIBRARY_KEY = "nook-saved-routes-v1";
 const LEGACY_ROUTE_KEY = "nook-saved-route-v1";
 let importedWaypoints = [];
@@ -599,6 +600,7 @@ function renderPlace(place) {
       </div>
     ` : ""}
     <a class="button button-primary place-link" href="${escapeHtml(place.sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(place.sourceAction || t("Open the source"))} ↗</a>
+    ${place.licenseUrl ? `<p class="place-attribution"><a href="${escapeHtml(place.licenseUrl)}" target="_blank" rel="noreferrer">${escapeHtml(place.attribution)} · ${escapeHtml(place.licenseLabel)}</a></p>` : ""}
     ${place.caution ? `<div class="place-caution"><strong>${th("Before you go:")}</strong> ${escapeHtml(place.caution)}</div>` : ""}
   `;
   panel.classList.add("is-open");
@@ -621,6 +623,7 @@ function candidateProviderLabel(provider) {
   return {
     denmark: "Ud i Naturen",
     campwild: "CampWild",
+    refuges: "Refuges.info",
     osm: "OpenStreetMap",
     imported: t("GPX waypoint"),
     vodf: "Vrienden op de Fiets",
@@ -1368,7 +1371,7 @@ function requestMapSources(filters) {
       updateCandidatePanel();
       return;
     }
-    mapWorker = new Worker("map-worker.js?v=20261021-1");
+    mapWorker = new Worker("map-worker.js?v=20261024-1");
     mapWorker.onmessage = ({ data }) => {
       if (data.type === "ready") {
         mapManifest = data.manifest;
@@ -1461,7 +1464,7 @@ async function resolveMapPlace(point) {
   const item = (await request)[point.offset];
   if (!item) throw new Error(t("This place is missing in the source data"));
   if (point.kind === "camping") return campingPlace(item).place;
-  return { vodf: vodfPlace, wtmg: wtmgPlace, nitetent: nitetentPlace, campwild: campwildPlace, denmark: denmarkPlace }[point.kind](item);
+  return { vodf: vodfPlace, wtmg: wtmgPlace, nitetent: nitetentPlace, refuges: refugePlace, campwild: campwildPlace, denmark: denmarkPlace }[point.kind](item);
 }
 
 function applyMapSources(data) {
@@ -1503,6 +1506,7 @@ function applyMapSources(data) {
   visiblePlaceCounts.hospitality = data.counts.vodf + data.counts.wtmg + (data.counts.nitetent || 0);
   visiblePlaceCounts.camping = data.counts.camping;
   visiblePlaceCounts.campwild = data.counts.campwild;
+  visiblePlaceCounts.refuges = data.counts.refuges || 0;
   visiblePlaceCounts.denmark = data.counts.denmark;
   currentCandidates = [];
   renderImportedWaypoints();
@@ -1690,6 +1694,24 @@ function nitetentPlace(pin) {
     water: t("Not listed"),
     extraFacts: [[t("Coordinate"), `${pin.lat.toFixed(5)}, ${pin.lng.toFixed(5)}`]],
     caution: t("Open the official map and contact the host there. A map pin does not confirm an overnight stay."),
+  };
+}
+
+function refugePlace(item) {
+  return {
+    name: item.name, lat: item.lat, lng: item.lng,
+    location: countryNames[item.country] || item.country,
+    type: "hut", confidence: 2,
+    sourceLabel: "Refuges.info",
+    sourceUrl: item.sourceUrl,
+    sourceAction: t("Open the source"),
+    decision: t("Source listed; check locally"),
+    description: t("Shelter or hut; check source and local rules"),
+    stay: t("Check with source"), cost: t("Not listed"), water: t("Not listed"),
+    extraFacts: [[t("Capacity"), item.capacity], [t("Coordinate"), `${item.lat.toFixed(5)}, ${item.lng.toFixed(5)}`], [t("Source"), "Refuges.info contributors · CC BY-SA 2.0"]],
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/2.0/",
+    attribution: "Refuges.info contributors", licenseLabel: "CC BY-SA 2.0",
+    caution: t("Check the official source before departure."),
   };
 }
 

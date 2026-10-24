@@ -1,6 +1,6 @@
 # Interface languages
 
-Nook opens in English unless the visitor has chosen another supported language. The selector is available in the header on every page. A choice is saved in `nook-language-v1` and included in internal links as `?lang=…`, so it also works when browser storage is unavailable.
+Nook opens in English unless the visitor has chosen another supported language. A compact native selector is available in the header on every page: a globe on mobile and a globe with the current language code on desktop. The menu retains full language names, accessible labeling and a visible keyboard focus ring. A choice is saved in `nook-language-v1` and included in internal links as `?lang=…`, so it also works when browser storage is unavailable.
 
 The 21 supported languages are English (`en`), Dutch (`nl`), Arabic (`ar`), Bengali (`bn`), German (`de`), Spanish (`es`), French (`fr`), Hausa (`ha`), Hindi (`hi`), Indonesian (`id`), Japanese (`ja`), Marathi (`mr`), Portuguese (`pt`), Russian (`ru`), Swahili (`sw`), Tamil (`ta`), Telugu (`te`), Turkish (`tr`), Urdu (`ur`), Vietnamese (`vi`) and Simplified Chinese (`zh`). Arabic and Urdu use a right-to-left layout; the geographic map retains its normal orientation.
 

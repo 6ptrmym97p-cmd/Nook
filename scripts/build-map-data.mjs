@@ -11,7 +11,7 @@ const DETAIL_BATCH_SIZE = 128;
 // Keep only coordinates and filter fields in the initial map download. Full
 // descriptions, photos and facilities live in small, lazily requested batches.
 export function buildMapData(dataDir) {
-  const snapshots = fs.readdirSync(dataDir).filter((file) => /^(vodf|wtmg|nitetent|camping|campwild|denmark)-[A-Z]{2}\.json$/.test(file)).sort();
+  const snapshots = fs.readdirSync(dataDir).filter((file) => /^(vodf|wtmg|nitetent|refuges|camping|campwild|denmark)-[A-Z]{2}\.json$/.test(file)).sort();
   const sources = new Map();
   const append = (kind, country, items) => {
     const key = `${kind}-${country}`;
@@ -72,7 +72,7 @@ export function buildMapData(dataDir) {
   for (const file of snapshots) fs.unlinkSync(path.join(dataDir, file));
   const retained = new Set(chunks.map((chunk) => path.basename(chunk.file)));
   for (const file of fs.readdirSync(detailDir)) {
-    if (!retained.has(file) && /^(vodf|wtmg|nitetent|camping|campwild|denmark)-[A-Z]{2}-\d+\.json$/.test(file)) fs.unlinkSync(path.join(detailDir, file));
+    if (!retained.has(file) && /^(vodf|wtmg|nitetent|refuges|camping|campwild|denmark)-[A-Z]{2}-\d+\.json$/.test(file)) fs.unlinkSync(path.join(detailDir, file));
   }
   return manifest;
 }

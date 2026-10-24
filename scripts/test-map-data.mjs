@@ -180,6 +180,17 @@ test("1NITE TENT is a host network included in clusters, candidates and source f
   assert.equal(hidden.features.length, 0);
 });
 
+test("Refuges.info huts participate in geographic queries and sleep-type filters", async (t) => {
+  const w = await worker(t, null, { "refuges-FR": { places: [{ lat: 45.5, lng: 6.5, country: "FR", type: "hut", capacity: 4, name: "Cabane" }] } });
+  const huts = await w.query({ filters: { ...w.filters, countries: ["FR"], types: ["hut"] } });
+  assert.equal(huts.counts.refuges, 1);
+  assert.equal(huts.points.length, 1);
+  assert.equal(huts.points[0].kind, "refuges");
+  const hosts = await w.query({ filters: { ...w.filters, countries: ["FR"], types: ["host"] } });
+  assert.equal(hosts.counts.refuges, 0);
+  assert.equal(hosts.points.length, 0);
+});
+
 test("worker clusters spatially across borders and queries only the viewport", async (t) => {
   const w = await worker(t);
   const result = await w.query();

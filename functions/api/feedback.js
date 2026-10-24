@@ -5,13 +5,17 @@ const MAX_MESSAGE = 2000;
 const RATE_LIMIT = 5;
 const RATE_WINDOW_SECONDS = 3600;
 
-function json(body, status = 200) {
+function json(body, status = 200, headers = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       "Cache-Control": "no-store",
       "X-Content-Type-Options": "nosniff",
+      "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'; base-uri 'none'",
+      "Cross-Origin-Resource-Policy": "same-origin",
+      "Referrer-Policy": "no-referrer",
+      ...headers,
     },
   });
 }
@@ -72,22 +76,46 @@ async function notifyByEmail(env, key, record, metadata) {
   await env.FEEDBACK.put(key, JSON.stringify({ ...record, notification }), { metadata });
 }
 
-export async function onRequestPost(handlerContext) {
+export async function onRequest(handlerContext) {
   const { request, env } = handlerContext;
+  if (request.method !== "POST") return json({ error: "Method not allowed." }, 405, { Allow: "POST" });
   if (!env.FEEDBACK) return json({ error: "Feedback is nog niet ingesteld." }, 503);
 
   const origin = request.headers.get("Origin");
   if (origin && origin !== new URL(request.url).origin) return json({ error: "Ongeldige herkomst." }, 403);
-  if (!(request.headers.get("Content-Type") || "").includes("application/json")) return json({ error: "Verkeerd formaat." }, 415);
+  if ((request.headers.get("Content-Type") || "").split(";")[0].trim().toLowerCase() !== "application/json") return json({ error: "Verkeerd formaat." }, 415);
 
-  const raw = await request.text();
-  if (raw.length > MAX_BODY_BYTES) return json({ error: "Bericht is te lang." }, 413);
+  if (Number(request.headers.get("Content-Length")) > MAX_BODY_BYTES) return json({ error: "Bericht is te lang." }, 413);
+  // Bound memory before parsing, including chunked bodies without Content-Length.
+  const reader = request.body?.getReader();
+  const chunks = [];
+  let bytes = 0;
+  if (reader) {
+    try {
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        bytes += value.byteLength;
+        if (bytes > MAX_BODY_BYTES) {
+          await reader.cancel().catch(() => {});
+          return json({ error: "Bericht is te lang." }, 413);
+        }
+        chunks.push(value);
+      }
+    } catch {
+      return json({ error: "Verkeerd formaat." }, 400);
+    } finally { reader.releaseLock(); }
+  }
   let body;
   try {
-    body = JSON.parse(raw);
+    const buffer = new Uint8Array(bytes);
+    let offset = 0;
+    for (const chunk of chunks) { buffer.set(chunk, offset); offset += chunk.byteLength; }
+    body = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(buffer));
   } catch {
     return json({ error: "Verkeerd formaat." }, 400);
   }
+  if (!body || typeof body !== "object" || Array.isArray(body)) return json({ error: "Verkeerd formaat." }, 400);
   // Honeypot: bots fill every field; pretend success so they do not retry.
   if (text(body.website, 200)) return json({ ok: true }, 201);
 
