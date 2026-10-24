@@ -3558,3 +3558,20 @@ button.header-action { font: inherit; font-size: 13px; font-weight: 700; }
   .language-control { width: 44px; min-height: 44px; padding: 0; }
   .language-code { display: none; }
 }
+
+/* Keep phone gestures in the content vertical. Leaflet handles its own map
+   gestures, so pinching the map still zooms locations rather than the page. */
+@media (max-width: 1024px) and (pointer: coarse) {
+  html {
+    touch-action: pan-y;
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+  }
+  body { overflow-x: clip; }
+  .place-panel, .candidate-panel, .map-sidebar, .feedback-dialog {
+    overflow-x: hidden;
+    overflow-wrap: anywhere;
+    touch-action: pan-y;
+  }
+  input, select, textarea { font-size: 16px; }
+}
