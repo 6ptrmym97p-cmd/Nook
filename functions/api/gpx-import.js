@@ -13,7 +13,17 @@ export async function onRequest({ request, env }) {
   if (request.method !== 'POST') return reply(405);
   if (request.headers.get('Origin') !== new URL(request.url).origin) return reply(403);
   // The client sends an empty POST. Reject all supplied data without reading it.
-  if (request.body !== null) return reply(400);
+  // Cloudflare may represent an empty POST as an empty stream rather than null.
+  if (request.body !== null) {
+    const reader = request.body.getReader();
+    try {
+      const { done } = await reader.read();
+      if (!done) {
+        await reader.cancel().catch(() => {});
+        return reply(400);
+      }
+    } catch { return reply(400); }
+  }
   if (request.headers.get('DNT') === '1' || request.headers.get('Sec-GPC') === '1') return reply(204);
   if (!env.USAGE) return reply(503);
   const day = new Date().toISOString().slice(0, 10);

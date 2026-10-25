@@ -31,3 +31,11 @@ test('privacy signals skip storage; missing storage and errors fail quietly', as
   assert.equal((await onRequest({ request: request(), env: {} })).status, 503);
   assert.equal((await onRequest({ request: request(), env: { USAGE: { put: async () => { throw Error(); } } } })).status, 503);
 });
+
+test('Cloudflare-style empty request streams count without requiring a null body', async () => {
+  let count = 0;
+  const env = { USAGE: { put: async () => count++ } };
+  const body = new ReadableStream({ start(controller) { controller.close(); } });
+  assert.equal((await onRequest({ request: request({ body, duplex: 'half' }), env })).status, 204);
+  assert.equal(count, 1);
+});
