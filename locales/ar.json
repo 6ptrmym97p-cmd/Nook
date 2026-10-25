@@ -598,5 +598,6 @@
   "{0}Ranked from {1}, {2}. Only your active filters count.": "{0} تم تصنيفه من {1} و{2}. يتم احتساب عوامل التصفية النشطة فقط.",
   "A place for tonight": "مكان للمبيت الليلة",
   "Opening hours": "ساعات العمل",
-  "One night only": "ليلة واحدة فقط"
+  "One night only": "ليلة واحدة فقط",
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "نحصي عمليات استيراد GPX الناجحة دون ملفات تعريف ارتباط أو بيانات المسار. نحتفظ بهذه الإحصاءات لمدة 90 يومًا."
 }

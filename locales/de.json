@@ -598,5 +598,6 @@
   "{0}Ranked from {1}, {2}. Only your active filters count.": "{0}Rangfolge von {1}, {2}. Es zählen nur Ihre aktiven Filter.",
   "A place for tonight": "Schlafplatz für heute Nacht",
   "Opening hours": "Öffnungszeiten",
-  "One night only": "Nur eine Nacht"
+  "One night only": "Nur eine Nacht",
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "Wir zählen erfolgreiche GPX-Importe ohne Cookies oder Routendaten. Diese Zählungen werden 90 Tage gespeichert."
 }

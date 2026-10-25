@@ -598,5 +598,6 @@
   "{0}Ranked from {1}, {2}. Only your active filters count.": "{0} {1}, {2} இலிருந்து தரப்படுத்தப்பட்டது. உங்கள் செயலில் உள்ள வடிப்பான்கள் மட்டுமே கணக்கிடப்படும்.",
   "A place for tonight": "இன்றிரவு தங்க இடம்",
   "Opening hours": "திறந்திருக்கும் நேரம்",
-  "One night only": "ஒரு இரவு மட்டும்"
+  "One night only": "ஒரு இரவு மட்டும்",
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "குக்கீகள் அல்லது வழித்தடத் தரவு இல்லாமல் வெற்றிகரமான GPX இறக்குமதிகளை எண்ணுகிறோம். இந்த எண்ணிக்கைகள் 90 நாட்கள் சேமிக்கப்படும்."
 }

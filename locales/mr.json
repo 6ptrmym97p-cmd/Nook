@@ -598,5 +598,6 @@
   "{0}Ranked from {1}, {2}. Only your active filters count.": "{0} {1}, {2} वरून क्रमवारीत. फक्त तुमचे सक्रिय फिल्टर मोजले जातात.",
   "A place for tonight": "आज रात्री मुक्कामाची जागा",
   "Opening hours": "उघडण्याची वेळ",
-  "One night only": "फक्त एक रात्र"
+  "One night only": "फक्त एक रात्र",
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "कुकीज किंवा मार्गाचा डेटा न वापरता यशस्वी GPX आयात मोजतो. या नोंदी ९० दिवस ठेवल्या जातात."
 }

@@ -598,5 +598,6 @@
   "{0}Ranked from {1}, {2}. Only your active filters count.": "{0}Рейтинг с {1}, {2}. Учитываются только ваши активные фильтры.",
   "A place for tonight": "Ночлег на сегодня",
   "Opening hours": "Часы работы",
-  "One night only": "Только на одну ночь"
+  "One night only": "Только на одну ночь",
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "Мы считаем успешные импорты GPX без файлов cookie и данных маршрутов. Эти записи хранятся 90 дней."
 }

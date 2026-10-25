@@ -94,7 +94,7 @@ const settled = async (page) => {
     assert.equal(await flowPage.locator(".route-list-item img").count(), 0);
     assert.equal(await flowPage.evaluate(() => Boolean(window.unexpectedMarkup)), false);
     await flowPage.evaluate(() => navigator.serviceWorker.ready);
-    await flowPage.waitForFunction(async () => navigator.serviceWorker.controller && Boolean(await caches.match(new URL("locales/fr.json?v=20261021-1", document.baseURI))));
+    await flowPage.waitForFunction(async () => navigator.serviceWorker.controller && Boolean(await caches.match(new URL("locales/fr.json", document.baseURI), { ignoreSearch: true })));
     await flow.setOffline(true);
     await flowPage.reload({ waitUntil: "load" });
     await settled(flowPage);

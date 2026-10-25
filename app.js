@@ -2211,6 +2211,17 @@ function showRouteFeedback(message, error = false) {
   feedback.classList.toggle("is-error", error);
 }
 
+function countGpxImport() {
+  if (navigator.onLine === false || navigator.doNotTrack === "1" || navigator.globalPrivacyControl === true) return;
+  try {
+    // No request body, cookies, route data, referrer or persistent identifier.
+    void fetch(new URL("api/gpx-import", document.baseURI), {
+      method: "POST", credentials: "omit", referrerPolicy: "no-referrer",
+      cache: "no-store", keepalive: true,
+    }).catch(() => {});
+  } catch { /* Counting must never prevent a local import. */ }
+}
+
 function importGpx(file) {
   if (file.size > 20 * 1024 * 1024) {
     showRouteFeedback(t("This file is larger than 20 MB. Export a shorter or simplified GPX route and try again."), true);
@@ -2275,6 +2286,7 @@ function importGpx(file) {
       refreshMapPlaces();
       const detail = rawLines.length ? t("{0} km", Math.round(record.lengthKm).toLocaleString(NookI18n.locale)) : t("{0} waypoints", waypoints.length);
       showRouteFeedback(t("Added {0} ({1}). {2}", name, detail, saved ? t("Saved on this device.") : t("Temporarily visible: Failed to save to this device.")), !saved);
+      countGpxImport();
     } catch (error) {
       console.warn(t("GPX could not be imported."), error);
       showRouteFeedback(t("This GPX could not be processed. Try a new export; your previous routes are preserved."), true);

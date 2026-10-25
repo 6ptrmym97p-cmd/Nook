@@ -598,5 +598,6 @@
   "{0}Ranked from {1}, {2}. Only your active filters count.": "{0}Mai daraja daga {1}, {2}. Matatar ku masu aiki ne kawai ke ƙidayar.",
   "A place for tonight": "Wurin kwana yau da dare",
   "Opening hours": "Lokutan buɗewa",
-  "One night only": "Dare ɗaya kawai"
+  "One night only": "Dare ɗaya kawai",
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "Muna ƙirga shigo da GPX da ya yi nasara ba tare da cookies ko bayanan hanya ba. Ana ajiye wannan ƙidaya na kwanaki 90."
 }

@@ -118,3 +118,7 @@ Gewone links naar bronwebsites hoeven niet in de CSP.
 5. Controleer de response headers op de publieke URL.
 6. Controleer dat `/data/*` alleen statische JSON-bestanden serveert en geen secrets bevat.
 7. Deel pas daarna de link.
+
+## GPX-gebruikstellingen
+
+Sinds 25 oktober 2026 telt productie geslaagde lokale GPX-imports via een lege POST naar `/api/gpx-import`. Alleen de UTC-dag en een willekeurige eventsleutel worden 90 dagen bewaard in de afzonderlijke `nook-usage` KV-namespace. Er worden geen routegegevens of bezoeker-ID’s opgeslagen. Zie [werking, beperkingen en eigenaarsoverzicht](usage-metrics.md). Dit is geen teller van unieke of gegarandeerd menselijke bezoekers.

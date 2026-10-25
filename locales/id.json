@@ -598,5 +598,6 @@
   "{0}Ranked from {1}, {2}. Only your active filters count.": "{0}Peringkat dari {1}, {2}. Hanya filter aktif Anda yang dihitung.",
   "A place for tonight": "Tempat menginap malam ini",
   "Opening hours": "Jam buka",
-  "One night only": "Hanya satu malam"
+  "One night only": "Hanya satu malam",
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "Kami menghitung impor GPX yang berhasil tanpa cookie atau data rute. Hitungan ini disimpan selama 90 hari."
 }
