@@ -599,5 +599,6 @@
   "A place for tonight": "مكان للمبيت الليلة",
   "Opening hours": "ساعات العمل",
   "One night only": "ليلة واحدة فقط",
-  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "نحصي عمليات استيراد GPX الناجحة دون ملفات تعريف ارتباط أو بيانات المسار. نحتفظ بهذه الإحصاءات لمدة 90 يومًا."
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "نحصي عمليات استيراد GPX الناجحة دون ملفات تعريف ارتباط أو بيانات المسار. نحتفظ بهذه الإحصاءات لمدة 90 يومًا.",
+  "Page not found": "الصفحة غير موجودة"
 }

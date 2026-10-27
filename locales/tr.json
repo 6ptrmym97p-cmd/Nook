@@ -599,5 +599,6 @@
   "A place for tonight": "Bu gece konaklama",
   "Opening hours": "Açılış saatleri",
   "One night only": "Yalnızca bir gece",
-  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "Başarılı GPX içe aktarımlarını çerez veya rota verisi kullanmadan sayıyoruz. Bu sayımlar 90 gün saklanır."
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "Başarılı GPX içe aktarımlarını çerez veya rota verisi kullanmadan sayıyoruz. Bu sayımlar 90 gün saklanır.",
+  "Page not found": "Sayfa bulunamadı"
 }

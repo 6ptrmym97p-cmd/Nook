@@ -22,7 +22,7 @@ Gebruik dit als checklist voordat je Nook naar vrienden stuurt of publiek deelt.
 
 ## Aanvullend in het domein/account
 
-Het beschikbare token heeft Pages-toegang maar kan de domeinzone niet uitlezen of wijzigen. Zone-WAF, minimale TLS-versie en bot-/rate-limitinstellingen zijn daarom niet als gecontroleerd of ingeschakeld aangemerkt.
+Het beschikbare token heeft Pages-toegang en kan sinds 27 oktober 2026 de domeinzone en analytics uitlezen. Het krijgt nog HTTP 403 bij zone-instellingen, rulesets/WAF, Bot Management en rate-limitregels. Die beveiligingsinstellingen zijn dus nog niet beoordeeld of aangepast. Zone-WAF, minimale TLS-versie en bot-/rate-limitinstellingen zijn daarom niet als gecontroleerd of ingeschakeld aangemerkt.
 
 Zinvolle vervolgstappen in het eigen Cloudflare-dashboard:
 
@@ -122,3 +122,10 @@ Gewone links naar bronwebsites hoeven niet in de CSP.
 ## GPX-gebruikstellingen
 
 Sinds 25 oktober 2026 telt productie geslaagde lokale GPX-imports via een lege POST naar `/api/gpx-import`. Alleen de UTC-dag en een willekeurige eventsleutel worden 90 dagen bewaard in de afzonderlijke `nook-usage` KV-namespace. Er worden geen routegegevens of bezoeker-ID’s opgeslagen. Zie [werking, beperkingen en eigenaarsoverzicht](usage-metrics.md). Dit is geen teller van unieke of gegarandeerd menselijke bezoekers.
+
+## Controle op 27 oktober 2026
+
+- Een eigen `404.html` schakelt de automatische Cloudflare Pages SPA-terugval uit. Onbekende paden zoals `/.env`, `/.git/config` en `/wp-login.php` horen daardoor 404 te geven; bestaande HTML-, asset- en functionroutes blijven beschikbaar. De 404-pagina gebruikt een vaste rootbase en reflecteert het opgevraagde pad niet. Dit voorkomt misleidende succesantwoorden, maar is geen WAF of toegangscontrole.
+- Pages production en preview moeten `fail_open: false` behouden; feedback- en gebruiksbindings worden niet gewijzigd.
+- Voor de beoordeling en noodzakelijke wijzigingen aan domeinbeveiliging ontbreken nog **Zone → Zone Settings → Edit** en **Zone → Zone WAF → Edit**, beperkt tot ridewithnook.com. De huidige zone-/analyticsleesrechten blijven nodig.
+- Zodra die rechten beschikbaar zijn: eerst bestaande instellingen en WAF-regels lezen, daarna alleen ontbrekende passende instellingen aanpassen (HTTPS-redirect, Full strict naar de geverifieerde Pages-origin, minimaal TLS 1.2, TLS 1.3 en passende scan-/API-rate-limitregels binnen het gratis abonnement). Geen algemene browserchallenge op kaartassets of JSON-fetches en geen blinde blokkade van landen, gedeelde IP-adressen of alle bots.

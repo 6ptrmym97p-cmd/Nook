@@ -599,5 +599,6 @@
   "A place for tonight": "Ночлег на сегодня",
   "Opening hours": "Часы работы",
   "One night only": "Только на одну ночь",
-  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "Мы считаем успешные импорты GPX без файлов cookie и данных маршрутов. Эти записи хранятся 90 дней."
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "Мы считаем успешные импорты GPX без файлов cookie и данных маршрутов. Эти записи хранятся 90 дней.",
+  "Page not found": "Страница не найдена"
 }

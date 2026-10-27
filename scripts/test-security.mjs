@@ -12,7 +12,7 @@ test("script execution is restricted to Nook assets in both edge and HTML polici
   assert.deepEqual(directives(policy)["script-src"], ["'self'"]);
   assert.deepEqual(directives(policy)["frame-ancestors"], ["'none'"]);
   assert.match(headers, /X-Content-Type-Options: nosniff/);
-  for (const name of ["index", "netwerken", "regels", "over", "routebronnen"]) {
+  for (const name of ["index", "netwerken", "regels", "over", "routebronnen", "404"]) {
     const html = fs.readFileSync(root + name + ".html", "utf8");
     const meta = html.match(/<meta[^>]+http-equiv="Content-Security-Policy"[^>]+content="([^"]+)"/);
     assert.ok(meta, name + " lacks its fallback CSP");

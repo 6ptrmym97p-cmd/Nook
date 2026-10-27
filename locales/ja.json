@@ -599,5 +599,6 @@
   "A place for tonight": "今夜の宿泊場所",
   "Opening hours": "営業時間",
   "One night only": "一泊のみ",
-  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "Cookieやルートデータを使わずに、成功したGPXの読み込み回数を集計します。集計記録は90日間保存します。"
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "Cookieやルートデータを使わずに、成功したGPXの読み込み回数を集計します。集計記録は90日間保存します。",
+  "Page not found": "ページが見つかりません"
 }

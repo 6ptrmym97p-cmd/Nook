@@ -599,5 +599,6 @@
   "A place for tonight": "寻找今晚的住宿",
   "Opening hours": "营业时间",
   "One night only": "仅限一晚",
-  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "我们统计成功导入 GPX 的次数，不使用 Cookie 或路线数据。统计记录保留 90 天。"
+  "We count successful GPX imports without cookies or route data. These counts are kept for 90 days.": "我们统计成功导入 GPX 的次数，不使用 Cookie 或路线数据。统计记录保留 90 天。",
+  "Page not found": "找不到页面"
 }
