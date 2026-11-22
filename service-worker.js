@@ -1,4 +1,4 @@
-const SHELL_CACHE = "nook-shell-20261027-1";
+const SHELL_CACHE = "nook-shell-20261122-1";
 const RUNTIME_CACHE = "nook-runtime-20261024-1";
 const TILE_CACHE = "nook-tiles-v1";
 const MAX_TILES = 256;
@@ -9,10 +9,14 @@ const APP_SHELL = [
   "./regels.html",
   "./netwerken.html",
   "./over.html",
-  "./i18n.js?v=20261027-1",
-  "./bootstrap.js?v=20261020-2",
-  "./styles.css?v=20261024-2",
-  "./app.js?v=20261025-1",
+  "./i18n.js?v=20261122-1",
+  "./site.js?v=20261122-1",
+  "./bootstrap.js?v=20261122-1",
+  "./styles.css?v=20261122-1",
+  "./app.js?v=20261122-1",
+  "./countries.js?v=20261122-1",
+  "./country-rules.js?v=20261122-1",
+  "./rules.js?v=20261122-1",
   "./map-canvas.js?v=20261021-2",
   "./map-worker.js?v=20261024-1",
   "./vendor/supercluster-8.0.1.min.js",
@@ -29,7 +33,7 @@ const APP_SHELL = [
   "./apple-touch-icon.png?v=20261016-5",
   "./manifest.webmanifest?v=20261020-2",
   "./pwa.js?v=20261018-1",
-  "./feedback.js?v=20261020-3"
+  "./feedback.js?v=20261122-1"
 ];
 
 self.addEventListener("install", (event) => {

@@ -102,7 +102,7 @@ test("all 21 languages cover the entire interface with intact interpolation fiel
       for (const key of Object.values(JSON.parse(decode(value))).filter(Boolean)) assert.ok(Object.hasOwn(english, key), file + ": " + key);
     }
   }
-  for (const file of ["app.js", "feedback.js", "i18n.js", "bootstrap.js"]) {
+  for (const file of ["app.js", "feedback.js", "i18n.js", "bootstrap.js", "rules.js", "site.js"]) {
     const code = fs.readFileSync(path.join(root, file), "utf8");
     for (const [, value] of code.matchAll(/\b(?:t|th|text)\("((?:[^"\\]|\\.)*)"/g)) {
       const key = JSON.parse('"' + value + '"');

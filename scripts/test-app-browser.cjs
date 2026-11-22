@@ -29,7 +29,8 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
     assert.equal(await page.evaluate(() => currentCandidates.some((candidate) => candidate.place.approximate || candidate.provider === "curated")), false, "Only location records, not regional guidance, may become overnight candidates");
     await page.keyboard.press("Escape");
     console.log("PASS: region guides do not appear as map locations, cluster counts or overnight candidates");
-    await page.locator("#open-my-route").click();
+    await page.goto(url("index.html?route=import"), { waitUntil: "load" });
+    await settled();
     assert.ok(await page.locator("#map-sidebar").evaluate((element) => element.open));
     assert.equal(await page.evaluate(() => document.activeElement.id), "choose-gpx");
     assert.equal(await page.locator("#route-library").isVisible(), false, "An empty saved-route library stays hidden");
@@ -38,18 +39,17 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
     await page.keyboard.press("Shift+Tab");
     assert.ok(await page.evaluate(() => document.querySelector("#map-sidebar").contains(document.activeElement)), "Focus stays inside the modal");
     await page.keyboard.press("Escape");
-    assert.equal(await page.evaluate(() => document.activeElement.id), "open-my-route");
+    assert.equal(await page.locator("#map-sidebar").evaluate((element) => element.open), false);
+    assert.equal(await page.locator("#country-filter").count(), 0, "The map no longer has a country filter");
     console.log("PASS: direct route action, fitting filter sheet and keyboard focus");
 
     await page.locator("#toggle-filters").click();
-    await page.locator("#clear-countries").click();
-    await page.locator("#toggle-country-list").click();
-    await page.locator('[data-country="NL"]').check();
     await page.locator("#choose-gpx").scrollIntoViewIfNeeded();
     const [chooser] = await Promise.all([page.waitForEvent("filechooser"), page.locator("#choose-gpx").click()]);
     await chooser.setFiles(file("track.gpx", track));
     await page.waitForFunction(() => savedRoutes.length === 1);
-    assert.deepEqual(await page.evaluate(() => [...selectedCountryCodes()]), ["NL"]);
+    assert.equal(await page.locator("#route-distance-group").isVisible(), true, "Distance choice appears once a track is active");
+    assert.match(await page.locator("#route-summary").innerText(), /Testfietstocht/);
     const saved = await page.evaluate(() => localStorage.getItem(ROUTE_LIBRARY_KEY));
     const badFiles = ["<gpx><", '<gpx><wpt lat="NaN" lon="x"/></gpx>', '<gpx><wpt lon="5"/></gpx>', '<gpx><wpt lat="999" lon="5"/></gpx>', '<xml><wpt lat="52" lon="5"/></xml>'];
     for (const [index, contents] of badFiles.entries()) {
@@ -58,24 +58,32 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
       assert.equal(await page.evaluate(() => localStorage.getItem(ROUTE_LIBRARY_KEY)), saved);
       assert.equal(await page.evaluate(() => savedRoutes.length), 1);
     }
-    await page.locator("#route-filter-active").uncheck();
+    await page.locator('[data-route-distance="all"]').click();
+    assert.equal(await page.evaluate(() => routeFilterEnabled()), false);
     await page.reload({ waitUntil: "load" });
     await settled();
-    assert.equal(await page.locator("#route-filter-active").isChecked(), false);
-    assert.deepEqual(await page.evaluate(() => [...selectedCountryCodes()]), ["NL"]);
-    console.log("PASS: GPX import, invalid-file recovery and preserved country/route settings");
+    assert.equal(await page.evaluate(() => routeFilterActive), false);
+    assert.equal(await page.evaluate(() => selectedCountryCodes().size === ALL_COUNTRY_CODES.length), true);
+    console.log("PASS: GPX import, invalid-file recovery and preserved route settings");
 
-    await page.locator("#open-my-route").click();
+    await page.locator("#toggle-filters").click();
     await page.locator("[data-route-remove]").click();
     assert.equal(await page.evaluate(() => savedRoutes.length), 0);
     await page.locator("#undo-route-removal").click();
     assert.equal(await page.evaluate(() => savedRoutes.length), 1);
+    await page.locator("#gpx-file").setInputFiles(file("second.gpx", track.replace("Testfietstocht", "Tweede tocht")));
+    await page.waitForFunction(() => savedRoutes.length === 2);
+    const savedTwo = await page.evaluate(() => localStorage.getItem(ROUTE_LIBRARY_KEY));
     await page.locator("#clear-route").click();
     await page.locator("#undo-route-removal").click();
-    assert.equal(await page.evaluate(() => localStorage.getItem(ROUTE_LIBRARY_KEY)), saved);
+    assert.equal(await page.evaluate(() => localStorage.getItem(ROUTE_LIBRARY_KEY)), savedTwo);
+    await page.locator('[data-route-remove]').last().click();
+    assert.equal(await page.evaluate(() => savedRoutes.length), 1);
     await page.locator("#reset-filters").click();
     assert.equal(await page.evaluate(() => savedRoutes.length), 1);
-    assert.equal(await page.locator("#filter-count").isVisible(), false);
+    assert.equal(await page.locator("#filter-count").innerText(), "1", "Reset restores the default: all types, 10 km along the active route");
+    assert.equal(await page.evaluate(() => routeDistanceKm), 10);
+    await page.locator('[data-route-distance="all"]').click();
     await page.keyboard.press("Escape");
     console.log("PASS: undo single/all route deletion; resetting filters retains routes");
 
@@ -114,21 +122,33 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
       await page.setViewportSize({ width, height });
       for (const path of ["regels.html", "routebronnen.html", "netwerken.html", "over.html"]) {
         await page.goto(url(path), { waitUntil: "load" });
+        if (path === "netwerken.html") {
+          await page.waitForURL(/over\.html#bronnen$/);
+          continue;
+        }
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${path}: horizontal overflow at ${width}`);
-        assert.ok(await page.locator('.mobile-about:visible, .header-action:visible').count() >= 1);
-        if (path !== "over.html") {
-          const last = page.locator(".source-table tbody tr").last();
+        assert.ok(await page.locator('#menu-toggle:visible, .site-nav:visible').count() >= 1, `${path}: navigation is reachable`);
+        {
+          const last = page.locator(".page section, .page .callout").last();
           await last.scrollIntoViewIfNeeded();
           const bounds = await last.boundingBox();
-          assert.ok(bounds.y < height && bounds.y + bounds.height > 58, `${path}: last row is reachable`);
-          assert.ok(await page.locator(".source-table td").first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize) >= 14));
-          if (path === "regels.html") {
-            assert.equal(await page.locator('.rules-table td:last-child a:visible').count(), 11);
-            assert.equal(await page.locator("#regiogids .region-guide").count(), 11);
-            await page.locator("#regio-brandenburg summary").click();
-            assert.ok(await page.locator("#regio-brandenburg").evaluate((element) => element.open));
-            assert.match(await page.locator("#regio-brandenburg a").getAttribute("href"), /^https:\/\/bravors\.brandenburg\.de\//);
-          }
+          assert.ok(bounds.y < height && bounds.y + bounds.height > 52, `${path}: last section is reachable`);
+          assert.ok(await page.locator(".page p").first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize) >= 13));
+        }
+        if (path === "regels.html") {
+          await page.goto(url("regels.html?country=DE"), { waitUntil: "load" });
+          await page.waitForSelector("#country-rule h2");
+          assert.equal(await page.locator("#country-rule h2").innerText(), "Germany");
+          assert.equal(await page.locator("#country-rule .source-link").count(), 1);
+          await page.locator("#regio-brandenburg .disclosure-toggle").waitFor();
+          assert.match(await page.locator("#regio-brandenburg .source-link").getAttribute("href"), /^https:\/\/bravors\.brandenburg\.de\//);
+          await page.fill("#rules-country", "swe");
+          await page.locator("#rules-results button").first().click();
+          assert.equal(await page.locator("#country-rule h2").innerText(), "Sweden");
+          await page.goto(url("regels.html?country=AX"), { waitUntil: "load" });
+          await page.waitForSelector("#country-rule [data-country=FI]");
+          await page.locator("#country-rule [data-country=FI]").click();
+          assert.equal(await page.locator("#country-rule h2").innerText(), "Finland");
         }
       }
     }
