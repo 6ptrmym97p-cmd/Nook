@@ -7,6 +7,8 @@
   const card = document.querySelector("#country-rule");
   const guideSection = document.querySelector("#country-guides");
   if (!input || !card) return;
+  // Country guide pages (/wild-camping/norway) name their country; the rules page itself has none.
+  const preset = (card.dataset.country || "").toUpperCase();
 
   const STATUS = {
     access: ["Right of access", "status-good"],
@@ -73,6 +75,7 @@
 
   function setUrl(code) {
     const url = new URL(location.href);
+    if (code && code === preset && !url.searchParams.has("country")) return;
     if (code) url.searchParams.set("country", code);
     else url.searchParams.delete("country");
     try { history.replaceState(history.state, "", url); } catch { /* The page still works without history access. */ }
@@ -219,7 +222,7 @@
       if (!event.target.closest(".rules-search")) closeResults();
     });
 
-    const requested = new URL(location.href).searchParams.get("country")?.toUpperCase();
+    const requested = (new URL(location.href).searchParams.get("country") || preset)?.toUpperCase();
     if (requested && byCode.has(requested)) {
       render(requested);
     } else {

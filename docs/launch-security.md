@@ -22,12 +22,11 @@ Gebruik dit als checklist voordat je Nook naar vrienden stuurt of publiek deelt.
 
 ## Aanvullend in het domein/account
 
-Het beschikbare token heeft Pages-toegang en kan sinds 27 oktober 2026 de domeinzone en analytics uitlezen. Het krijgt nog HTTP 403 bij zone-instellingen, rulesets/WAF, Bot Management en rate-limitregels. Die beveiligingsinstellingen zijn dus nog niet beoordeeld of aangepast. Zone-WAF, minimale TLS-versie en bot-/rate-limitinstellingen zijn daarom niet als gecontroleerd of ingeschakeld aangemerkt.
+Op 22 november 2026 zijn de zone-instellingen, WAF-rulesets, Bot Management en rate limiting gelezen en waar nodig aangepast; zie [Controle op 22 november 2026](#controle-op-22-november-2026). De beheerde WAF-regels (Cloudflare Managed Free Ruleset), de automatische DDoS-bescherming (L7) en Bot Fight Mode zijn actief.
 
-Zinvolle vervolgstappen in het eigen Cloudflare-dashboard:
+Blijvende aandachtspunten:
 
-- Activeer de beschikbare beheerde WAF-regels en laat de automatische DDoS-bescherming actief.
-- Beperk overmatig POST-verkeer specifiek op `/api/feedback`, met een drempel passend bij het Cloudflare-plan. Gebruik een tijdelijke blokkade/rate-limitreactie; een browserchallenge midden in een JSON-fetch werkt niet als gewoon feedbackantwoord. Pas deze regel niet toe op alle kaartdata of kaarttegels.
+- De rate-limitregel op `/api/feedback` gebruikt een tijdelijke blokkade, geen browserchallenge: een challenge midden in een JSON-fetch werkt niet als gewoon feedbackantwoord. Pas zo'n regel niet toe op alle kaartdata of kaarttegels.
 - Beveilig zowel Cloudflare als GitHub met sterke MFA/passkeys. Compromittering van die accounts blijft een relevant risico voor een statische website.
 
 Nook heeft geen PHP-installatie, SQL-server of accountwachtwoorden om te patchen. Publieke kaartbestanden zijn bedoeld om gelezen te worden; ruime toegang tot die openbare assets is geen toegang tot de private feedbackopslag.
@@ -129,3 +128,23 @@ Sinds 25 oktober 2026 telt productie geslaagde lokale GPX-imports via een lege P
 - Pages production en preview moeten `fail_open: false` behouden; feedback- en gebruiksbindings worden niet gewijzigd.
 - Voor de beoordeling en noodzakelijke wijzigingen aan domeinbeveiliging ontbreken nog **Zone → Zone Settings → Edit** en **Zone → Zone WAF → Edit**, beperkt tot ridewithnook.com. De huidige zone-/analyticsleesrechten blijven nodig.
 - Zodra die rechten beschikbaar zijn: eerst bestaande instellingen en WAF-regels lezen, daarna alleen ontbrekende passende instellingen aanpassen (HTTPS-redirect, Full strict naar de geverifieerde Pages-origin, minimaal TLS 1.2, TLS 1.3 en passende scan-/API-rate-limitregels binnen het gratis abonnement). Geen algemene browserchallenge op kaartassets of JSON-fetches en geen blinde blokkade van landen, gedeelde IP-adressen of alle bots.
+
+## Controle op 22 november 2026
+
+Verkeer van 23 oktober t/m 22 november 2026 bekeken via Cloudflare-analytics en security events:
+
+- Geen gerichte aanval of DDoS. Wel de gebruikelijke geautomatiseerde scanners (WordPress-, `.env`-, `.git`- en back-uppaden). Die krijgen 404; de beheerde WAF-regels blokkeerden daarnaast circa 190 verzoeken. Bezoekers kregen geen 5xx-fouten.
+- Vóór de 404-fix van 27 oktober kregen zulke paden `200` met de gewone startpagina (SPA-terugval). Er staan geen `.env`-, credential- of back-upbestanden in de repository, dus er is niets uitgelekt. Na 27 oktober kreeg geen enkel van deze paden nog `200`.
+- PUT-verzoeken van scanners krijgen `204` van Pages, maar kunnen de gepubliceerde bestanden niet wijzigen; dat kan alleen via een deploy.
+- De 504-regels in de analytics zijn interne Early Hints-verzoeken van Pages (user-agent `… early hints`), geen bezoekersfouten.
+
+Uitgangssituatie en aanpassingen:
+
+| Instelling | Was | Nu |
+|---|---|---|
+| Always Use HTTPS | uit | aan |
+| Minimale TLS-versie | 1.0 | 1.2 (TLS 1.3 stond al aan) |
+| SSL-modus | Full | Full (strict) |
+| Rate limiting `/api/feedback` | geen regel | blokkeren bij meer dan 5 verzoeken per 10 s per IP (per datacenter), 10 s blokkade |
+
+Ongewijzigd en in orde: Cloudflare Managed Free Ruleset, DDoS L7, Bot Fight Mode, Security Level medium, geen IP-toegangsregels. HSTS komt uit `_headers` (de zone-HSTS-instelling staat uit). Na de wijzigingen gaven `/`, `www`, `/over`, `app.js`, `data/map-index.json` en `service-worker.js` `200`, `/.env` `404` en `GET /api/feedback` `405`.

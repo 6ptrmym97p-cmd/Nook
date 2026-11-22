@@ -18,7 +18,7 @@ Op een HTTPS-host kan Nook via de browser aan het beginscherm worden toegevoegd.
 
 Het eigen domein is `ridewithnook.com`. De buildinstellingen en domeinkoppeling voor Cloudflare Pages staan in [de domeininstructies](docs/domein.md).
 
-Lees vóór een publieke demo of LinkedIn-post `docs/launch-security.md`. De repository bevat security headers in `_headers`, een CSP-vangnet in de HTML en statische databestanden in plaats van bezoeker-gestuurde API-verzoeken. Voor echte hostbescherming blijven CDN- of edge-rate-limits nodig.
+Lees vóór een publieke demo of LinkedIn-post `docs/launch-security.md`. Hoe zoekmachines, AI-assistenten en linkvoorvertoningen Nook vinden staat in [vindbaarheid](docs/vindbaarheid.md). De repository bevat security headers in `_headers`, een CSP-vangnet in de HTML en statische databestanden in plaats van bezoeker-gestuurde API-verzoeken. Voor echte hostbescherming blijven CDN- of edge-rate-limits nodig.
 
 ## Datakeuzes
 
