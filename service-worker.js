@@ -1,4 +1,4 @@
-const SHELL_CACHE = "nook-shell-20261123-2";
+const SHELL_CACHE = "nook-shell-20261123-3";
 const RUNTIME_CACHE = "nook-runtime-20261024-1";
 const TILE_CACHE = "nook-tiles-v1";
 const MAX_TILES = 256;
@@ -12,7 +12,7 @@ const APP_SHELL = [
   "./i18n.js?v=20261123-2",
   "./site.js?v=20261122-1",
   "./bootstrap.js?v=20261122-1",
-  "./styles.css?v=20261123-1",
+  "./styles.css?v=20261123-3",
   "./app.js?v=20261123-2",
   "./countries.js?v=20261122-1",
   "./country-rules.js?v=20261123-2",
@@ -26,12 +26,12 @@ const APP_SHELL = [
   "./vendor/leaflet.markercluster-1.5.3/MarkerCluster.css",
   "./vendor/leaflet.markercluster-1.5.3/MarkerCluster.Default.css",
   "./public-data.js?v=20261024-1",
-  "./favicon.ico?v=20261016-5",
-  "./favicon.svg?v=20261016-5",
-  "./icon-192.png?v=20261016-5",
-  "./icon-512.png?v=20261016-5",
-  "./apple-touch-icon.png?v=20261016-5",
-  "./manifest.webmanifest?v=20261020-2",
+  "./favicon.ico?v=20261123-1",
+  "./favicon.svg?v=20261123-1",
+  "./icon-192.png?v=20261123-1",
+  "./icon-512.png?v=20261123-1",
+  "./apple-touch-icon.png?v=20261123-1",
+  "./manifest.webmanifest?v=20261123-1",
   "./pwa.js?v=20261018-1",
   "./feedback.js?v=20261122-1"
 ];
