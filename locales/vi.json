@@ -680,5 +680,10 @@
   "Permission needed": "Cần xin phép",
   "Not allowed": "Không được phép",
   "Not researched yet": "Chưa nghiên cứu",
-  "Close menu": "Đóng menu"
+  "Close menu": "Đóng menu",
+  "Near {0}": "Gần {0}",
+  "Elevation": "Độ cao",
+  "{0} m": "{0} m",
+  "Nearby photo, {0} away": "Ảnh gần đây, cách {0}",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Khi bạn mở một địa điểm, Nook hỏi Wikimedia Commons, Open-Meteo và OpenStreetMap về ảnh gần đó, độ cao và thị trấn gần nhất. Chỉ tọa độ của địa điểm được gửi đi."
 }

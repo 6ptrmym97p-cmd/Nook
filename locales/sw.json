@@ -680,5 +680,10 @@
   "Permission needed": "Ruhusa inahitajika",
   "Not allowed": "Hairuhusiwi",
   "Not researched yet": "Bado haijachunguzwa",
-  "Close menu": "Funga menyu"
+  "Close menu": "Funga menyu",
+  "Near {0}": "Karibu na {0}",
+  "Elevation": "Mwinuko",
+  "{0} m": "m {0}",
+  "Nearby photo, {0} away": "Picha ya karibu, umbali wa {0}",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Ukifungua mahali, Nook huomba picha ya karibu, mwinuko na mji wa karibu kutoka Wikimedia Commons, Open-Meteo na OpenStreetMap. Ni viwianishi vya mahali hapo pekee vinavyotumwa."
 }

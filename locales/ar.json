@@ -680,5 +680,10 @@
   "Permission needed": "يلزم إذن",
   "Not allowed": "غير مسموح",
   "Not researched yet": "لم يُبحث بعد",
-  "Close menu": "إغلاق القائمة"
+  "Close menu": "إغلاق القائمة",
+  "Near {0}": "قرب {0}",
+  "Elevation": "الارتفاع",
+  "{0} m": "{0} م",
+  "Nearby photo, {0} away": "صورة قريبة، على بُعد {0}",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "عند فتح مكان، يطلب Nook من Wikimedia Commons وOpen-Meteo وOpenStreetMap صورة قريبة والارتفاع وأقرب بلدة. تُرسل إحداثيات المكان فقط."
 }

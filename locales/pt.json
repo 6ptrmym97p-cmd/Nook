@@ -680,5 +680,10 @@
   "Permission needed": "É preciso autorização",
   "Not allowed": "Não permitido",
   "Not researched yet": "Ainda não investigado",
-  "Close menu": "Fechar menu"
+  "Close menu": "Fechar menu",
+  "Near {0}": "Perto de {0}",
+  "Elevation": "Altitude",
+  "{0} m": "{0} m",
+  "Nearby photo, {0} away": "Foto próxima, a {0}",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Ao abrir um local, a Nook pede ao Wikimedia Commons, ao Open-Meteo e ao OpenStreetMap uma foto próxima, a altitude e a localidade mais próxima. Apenas as coordenadas do local são enviadas."
 }

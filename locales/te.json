@@ -680,5 +680,10 @@
   "Permission needed": "అనుమతి అవసరం",
   "Not allowed": "అనుమతి లేదు",
   "Not researched yet": "ఇంకా పరిశోధించలేదు",
-  "Close menu": "మెనూ మూసివేయండి"
+  "Close menu": "మెనూ మూసివేయండి",
+  "Near {0}": "{0} సమీపంలో",
+  "Elevation": "ఎత్తు",
+  "{0} m": "{0} మీ",
+  "Nearby photo, {0} away": "సమీప ఫోటో, {0} దూరంలో",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "మీరు ఒక స్థలాన్ని తెరిచినప్పుడు, Nook సమీప ఫోటో, ఎత్తు మరియు సమీప పట్టణం కోసం Wikimedia Commons, Open-Meteo మరియు OpenStreetMap ను అడుగుతుంది. ఆ స్థలం యొక్క అక్షాంశ రేఖాంశాలు మాత్రమే పంపబడతాయి."
 }

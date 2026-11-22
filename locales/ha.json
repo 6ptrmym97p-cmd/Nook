@@ -680,5 +680,10 @@
   "Permission needed": "Ana buƙatar izini",
   "Not allowed": "Ba a yarda ba",
   "Not researched yet": "Ba a bincika ba tukuna",
-  "Close menu": "Rufe menu"
+  "Close menu": "Rufe menu",
+  "Near {0}": "Kusa da {0}",
+  "Elevation": "Tsayi",
+  "{0} m": "m {0}",
+  "Nearby photo, {0} away": "Hoton kusa, nisan {0}",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Idan ka buɗe wani wuri, Nook yana tambayar Wikimedia Commons, Open-Meteo da OpenStreetMap hoton kusa, tsayin wurin da gari mafi kusa. Ana aika daidaitattun wurin ne kawai."
 }

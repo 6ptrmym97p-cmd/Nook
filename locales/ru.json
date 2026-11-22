@@ -680,5 +680,10 @@
   "Permission needed": "Нужно разрешение",
   "Not allowed": "Запрещено",
   "Not researched yet": "Ещё не изучено",
-  "Close menu": "Закрыть меню"
+  "Close menu": "Закрыть меню",
+  "Near {0}": "Рядом с {0}",
+  "Elevation": "Высота",
+  "{0} m": "{0} м",
+  "Nearby photo, {0} away": "Фото поблизости, в {0}",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Когда вы открываете место, Nook запрашивает у Wikimedia Commons, Open-Meteo и OpenStreetMap фото поблизости, высоту и ближайший населённый пункт. Отправляются только координаты места."
 }

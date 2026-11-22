@@ -680,5 +680,10 @@
   "Permission needed": "İzin gerekli",
   "Not allowed": "Yasak",
   "Not researched yet": "Henüz araştırılmadı",
-  "Close menu": "Menüyü kapat"
+  "Close menu": "Menüyü kapat",
+  "Near {0}": "{0} yakınında",
+  "Elevation": "Yükseklik",
+  "{0} m": "{0} m",
+  "Nearby photo, {0} away": "Yakındaki fotoğraf, {0} uzakta",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Bir yeri açtığınızda Nook, Wikimedia Commons, Open-Meteo ve OpenStreetMap'ten yakındaki bir fotoğrafı, yüksekliği ve en yakın yerleşimi ister. Yalnızca yerin koordinatları gönderilir."
 }

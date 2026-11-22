@@ -680,5 +680,10 @@
   "Permission needed": "अनुमति ज़रूरी",
   "Not allowed": "अनुमति नहीं",
   "Not researched yet": "अभी जाँच नहीं हुई",
-  "Close menu": "मेनू बंद करें"
+  "Close menu": "मेनू बंद करें",
+  "Near {0}": "{0} के पास",
+  "Elevation": "ऊँचाई",
+  "{0} m": "{0} मी",
+  "Nearby photo, {0} away": "पास की फ़ोटो, {0} दूर",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "जब आप कोई जगह खोलते हैं, तो Nook, Wikimedia Commons, Open-Meteo और OpenStreetMap से पास की फ़ोटो, ऊँचाई और सबसे नज़दीकी कस्बा माँगता है। सिर्फ़ जगह के निर्देशांक भेजे जाते हैं।"
 }

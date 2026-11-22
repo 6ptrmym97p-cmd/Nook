@@ -564,6 +564,135 @@ function placeFacts(place) {
     .filter(([label, value]) => value && !unknown.has(String(value)) && !hidden.has(label) && !repeated.has(value));
 }
 
+// Opening a place fetches a nearby photo, elevation and the nearest town. Only the
+// place's coordinates are sent, never the visitor's location, and failures are silent.
+const placeExtrasCache = new Map();
+const NEARBY_PHOTO_RADIUS_M = 1500;
+
+async function fetchJsonWithTimeout(url, options = {}) {
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), 6000);
+  try {
+    const response = await fetch(url, { credentials: "omit", ...options, signal: controller.signal });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
+
+function plainText(html) {
+  return new DOMParser().parseFromString(String(html || ""), "text/html").body.textContent.trim().replace(/\s+/g, " ");
+}
+
+async function nearbyPhoto(lat, lng) {
+  if (navigator.connection?.saveData) return null;
+  const url = new URL("https://commons.wikimedia.org/w/api.php");
+  Object.entries({
+    action: "query", format: "json", origin: "*", generator: "geosearch",
+    ggscoord: `${lat}|${lng}`, ggsradius: String(NEARBY_PHOTO_RADIUS_M), ggsnamespace: "6", ggslimit: "12",
+    prop: "imageinfo|coordinates", iiprop: "url|mime|extmetadata", iiurlwidth: "640",
+    iiextmetadatafilter: "Artist|LicenseShortName",
+  }).forEach(([key, value]) => url.searchParams.set(key, value));
+  const data = await fetchJsonWithTimeout(url);
+  const skip = /\b(map|karte|kaart|carte|mapa|plan|diagram|logo|wappen|coat of arms|sign|schild|bord)\b/i;
+  const photos = Object.values(data?.query?.pages || {})
+    .map((page) => {
+      const info = page.imageinfo?.[0];
+      const point = page.coordinates?.[0];
+      if (!info?.thumburl || !/^image\/(jpeg|webp)$/.test(info.mime || "") || skip.test(page.title || "")) return null;
+      if (!/^https:\/\/upload\.wikimedia\.org\//.test(info.thumburl)) return null;
+      const distanceKm = point ? distanceBetweenPointsKm({ lat, lng }, { lat: point.lat, lng: point.lon }) : NEARBY_PHOTO_RADIUS_M / 1000;
+      return {
+        url: info.thumburl,
+        page: info.descriptionurl,
+        distanceKm,
+        artist: plainText(info.extmetadata?.Artist?.value),
+        license: plainText(info.extmetadata?.LicenseShortName?.value),
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.distanceKm - b.distanceKm);
+  return photos[0] || null;
+}
+
+async function placeElevation(lat, lng) {
+  const url = new URL("https://api.open-meteo.com/v1/elevation");
+  url.searchParams.set("latitude", lat.toFixed(5));
+  url.searchParams.set("longitude", lng.toFixed(5));
+  const data = await fetchJsonWithTimeout(url);
+  const value = Number(data?.elevation?.[0]);
+  return Number.isFinite(value) ? Math.round(value) : null;
+}
+
+async function nearestTown(lat, lng) {
+  const url = new URL("https://nominatim.openstreetmap.org/reverse");
+  Object.entries({ format: "jsonv2", lat: lat.toFixed(5), lon: lng.toFixed(5), zoom: "14", "accept-language": NookI18n.code })
+    .forEach(([key, value]) => url.searchParams.set(key, value));
+  // Nominatim asks clients to identify themselves; send only the site origin.
+  const data = await fetchJsonWithTimeout(url, { referrerPolicy: "strict-origin-when-cross-origin" });
+  const address = data?.address || {};
+  return {
+    name: address.village || address.town || address.city || address.hamlet || address.municipality || address.suburb || "",
+    countryCode: String(address.country_code || "").toUpperCase(),
+  };
+}
+
+function placeExtras(place) {
+  const key = `${place.lat.toFixed(4)},${place.lng.toFixed(4)}`;
+  if (!placeExtrasCache.has(key)) {
+    const settle = (promise) => promise.catch(() => null);
+    placeExtrasCache.set(key, Promise.all([
+      place.photo ? Promise.resolve(null) : settle(nearbyPhoto(place.lat, place.lng)),
+      settle(placeElevation(place.lat, place.lng)),
+      settle(nearestTown(place.lat, place.lng)),
+    ]).then(([photo, elevation, town]) => ({ photo, elevation, town })));
+  }
+  return placeExtrasCache.get(key);
+}
+
+async function enrichPlacePanel(place, sequence) {
+  if (!navigator.onLine || !Number.isFinite(place.lat) || !Number.isFinite(place.lng) || place.approximate) return;
+  const extras = await placeExtras(place);
+  const panel = document.querySelector("#place-panel");
+  if (sequence !== placeDetailSequence || !panel.classList.contains("is-open")) return;
+  const body = panel.querySelector(".place-body");
+  if (extras.town?.name) {
+    const near = document.createElement("p");
+    near.className = "place-near";
+    near.textContent = t("Near {0}", extras.town.name);
+    panel.querySelector(".place-meta")?.after(near);
+  }
+  // Rough country boxes overlap at borders; the reverse lookup knows the actual country.
+  const countryCode = extras.town?.countryCode;
+  const rulesLink = panel.querySelector(".place-rules-link");
+  if (rulesLink && countryCode && countryNames[countryCode] && !place.country) {
+    rulesLink.href = `regels.html?country=${countryCode}`;
+    rulesLink.firstChild.textContent = t("Camping rules in {0}", countryNames[countryCode]);
+  }
+  if (Number.isFinite(extras.elevation)) {
+    let facts = body.querySelector(".place-facts");
+    if (!facts) {
+      facts = document.createElement("dl");
+      facts.className = "place-facts";
+      body.prepend(facts);
+    }
+    const item = document.createElement("div");
+    item.innerHTML = `<dt>${th("Elevation")}</dt><dd>${th("{0} m", extras.elevation)}</dd>`;
+    facts.prepend(item);
+  }
+  if (extras.photo && !body.querySelector(".place-photo-wrap")) {
+    const figure = document.createElement("figure");
+    figure.className = "place-photo-wrap is-nearby";
+    const credit = [extras.photo.artist, extras.photo.license].filter(Boolean).map((value) => escapeHtml(value)).join(" · ");
+    figure.innerHTML = `
+      <img class="place-photo" src="${escapeHtml(extras.photo.url)}" alt="${th("Nearby photo, {0} away", formatDistance(extras.photo.distanceKm))}" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+      <figcaption><a href="${escapeHtml(extras.photo.page)}" target="_blank" rel="noreferrer">${th("Nearby photo, {0} away", formatDistance(extras.photo.distanceKm))}</a>${credit ? ` · ${credit}` : ""}</figcaption>`;
+    figure.querySelector("img").addEventListener("error", () => figure.remove());
+    body.prepend(figure);
+  }
+}
+
 function placeContactLinks(place) {
   const facts = new Map((place.extraFacts || []).map(([label, value]) => [label, String(value || "").trim()]));
   const links = [];
@@ -626,7 +755,7 @@ function renderPlace(place) {
         ${navigateUrl ? `<a class="button button-primary" href="${escapeHtml(navigateUrl)}" target="_blank" rel="noreferrer">${ICON_NAVIGATE}${th("Navigate")}</a>` : ""}
         <a class="button button-secondary place-link" href="${escapeHtml(place.sourceUrl)}" target="_blank" rel="noreferrer">${th("View source")}${ICON_EXTERNAL}</a>
       </div>
-      ${countryCode && countryNames[countryCode] ? `<a class="row-link" href="regels.html?country=${escapeHtml(countryCode)}">${th("Camping rules in {0}", escapeHtml(countryNames[countryCode]))}${ICON_CHEVRON}</a>` : ""}
+      ${countryCode && countryNames[countryCode] ? `<a class="row-link place-rules-link" href="regels.html?country=${escapeHtml(countryCode)}">${th("Camping rules in {0}", escapeHtml(countryNames[countryCode]))}${ICON_CHEVRON}</a>` : ""}
       ${place.licenseUrl ? `<p class="place-attribution"><a href="${escapeHtml(place.licenseUrl)}" target="_blank" rel="noreferrer">${escapeHtml(place.attribution)} · ${escapeHtml(place.licenseLabel)}</a></p>` : ""}
     </div>
   `;
@@ -634,6 +763,7 @@ function renderPlace(place) {
   setFiltersOpen(false);
   openPlacePanel();
   panel.querySelector(".place-body").scrollTop = 0;
+  enrichPlacePanel(place, placeDetailSequence);
 }
 
 function formatDistance(distanceKm) {
@@ -1426,7 +1556,7 @@ function campwildPlace(sourcePlace) {
   const typeLabel = sourcePlace.typeLabel || sourcePlace.sourceType || t("Shelter");
   const placeType = sourcePlace.type || "hut";
   return {
-    name: sourcePlace.name || t("CampWild {0}", typeLabel),
+    name: String(sourcePlace.name || "").replace(/^CampWild\s+/i, "") || typeLabel,
     lat: sourcePlace.lat,
     lng: sourcePlace.lng,
     location: t("{0} · CampWild", countryNames[sourcePlace.country] || t("Europe")),

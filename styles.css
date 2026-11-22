@@ -831,7 +831,7 @@ dialog.sheet::backdrop { background: rgba(5, 20, 14, 0.2); }
   color: var(--muted);
   font-size: var(--fs-small);
 }
-.place-photo-wrap { margin: 0 0 16px; }
+.place-photo-wrap { margin: 0; }
 .place-photo {
   display: block;
   width: 100%;
@@ -1152,3 +1152,8 @@ a.list-row:hover .list-title { text-decoration: underline; }
 .place-caution { color: var(--ink); }
 .place-contact { display: flex; flex-wrap: wrap; gap: 4px 16px; }
 .place-contact a { font-weight: 600; overflow-wrap: anywhere; }
+.place-near { margin-top: 2px; color: var(--muted); font-size: var(--fs-small); }
+.place-photo-wrap.is-nearby { animation: place-photo-in 240ms ease both; }
+.place-photo-wrap figcaption a { color: inherit; }
+@keyframes place-photo-in { from { opacity: 0; } to { opacity: 1; } }
+.sheet:focus { outline: none; }

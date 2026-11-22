@@ -680,5 +680,10 @@
   "Permission needed": "اجازت درکار",
   "Not allowed": "اجازت نہیں",
   "Not researched yet": "ابھی تحقیق نہیں ہوئی",
-  "Close menu": "مینو بند کریں"
+  "Close menu": "مینو بند کریں",
+  "Near {0}": "{0} کے قریب",
+  "Elevation": "بلندی",
+  "{0} m": "{0} میٹر",
+  "Nearby photo, {0} away": "قریبی تصویر، {0} دور",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "جب آپ کوئی جگہ کھولتے ہیں تو Nook، Wikimedia Commons، Open-Meteo اور OpenStreetMap سے قریبی تصویر، بلندی اور قریب ترین قصبہ مانگتا ہے۔ صرف جگہ کے نقاط بھیجے جاتے ہیں۔"
 }

@@ -680,5 +680,10 @@
   "Permission needed": "Toestemming nodig",
   "Not allowed": "Niet toegestaan",
   "Not researched yet": "Nog niet onderzocht",
-  "Close menu": "Menu sluiten"
+  "Close menu": "Menu sluiten",
+  "Near {0}": "Bij {0}",
+  "Elevation": "Hoogte",
+  "{0} m": "{0} m",
+  "Nearby photo, {0} away": "Foto in de buurt, {0} verderop",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Open je een plek, dan vraagt Nook Wikimedia Commons, Open-Meteo en OpenStreetMap om een foto uit de buurt, de hoogte en het dichtstbijzijnde dorp. Alleen de coördinaten van de plek worden verstuurd."
 }

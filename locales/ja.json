@@ -680,5 +680,10 @@
   "Permission needed": "許可が必要",
   "Not allowed": "不可",
   "Not researched yet": "未調査",
-  "Close menu": "メニューを閉じる"
+  "Close menu": "メニューを閉じる",
+  "Near {0}": "{0}付近",
+  "Elevation": "標高",
+  "{0} m": "{0} m",
+  "Nearby photo, {0} away": "近くの写真（{0}先）",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "場所を開くと、Nook は Wikimedia Commons、Open-Meteo、OpenStreetMap に近くの写真、標高、最寄りの町を問い合わせます。送信されるのはその場所の座標だけです。"
 }

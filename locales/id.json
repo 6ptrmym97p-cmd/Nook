@@ -680,5 +680,10 @@
   "Permission needed": "Perlu izin",
   "Not allowed": "Tidak diizinkan",
   "Not researched yet": "Belum diteliti",
-  "Close menu": "Tutup menu"
+  "Close menu": "Tutup menu",
+  "Near {0}": "Dekat {0}",
+  "Elevation": "Ketinggian",
+  "{0} m": "{0} m",
+  "Nearby photo, {0} away": "Foto di dekat sini, {0} jauhnya",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Saat Anda membuka sebuah tempat, Nook meminta foto terdekat, ketinggian, dan kota terdekat dari Wikimedia Commons, Open-Meteo, dan OpenStreetMap. Hanya koordinat tempat itu yang dikirim."
 }

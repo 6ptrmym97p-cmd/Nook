@@ -680,5 +680,10 @@
   "Permission needed": "需要许可",
   "Not allowed": "不允许",
   "Not researched yet": "尚未调查",
-  "Close menu": "关闭菜单"
+  "Close menu": "关闭菜单",
+  "Near {0}": "{0}附近",
+  "Elevation": "海拔",
+  "{0} m": "{0} 米",
+  "Nearby photo, {0} away": "附近照片，距离 {0}",
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "打开地点时，Nook 会向 Wikimedia Commons、Open-Meteo 和 OpenStreetMap 获取附近照片、海拔和最近的城镇。只会发送该地点的坐标。"
 }
