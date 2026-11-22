@@ -186,6 +186,12 @@ const sources = [
   { icon: "R", name: "Reddit", description: t("Recent experiences and local tips, useful as a guide. Then verify each claim with a primary source."), meta: t("Community · varying"), url: "https://www.reddit.com/r/bikepacking/search/?q=camping%20sweden%20denmark%20germany" },
 ];
 
+const ICON_CLOSE = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+const ICON_CHEVRON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+const ICON_EXTERNAL = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>';
+const ICON_NAVIGATE = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 18-7-4-7 4z"/></svg>';
+const ROUTE_DISTANCE_PRESETS = [3, 10, 25];
+
 const publicData = window.NOOK_DATA || {};
 const MAP_VIEW_KEY = "nook-map-view-v1";
 const savedMapView = storedJson(MAP_VIEW_KEY);
@@ -316,7 +322,7 @@ function escapeHtml(value = "") {
 }
 
 function routeFilterEnabled() {
-  return routeState.segments.length > 0 && document.querySelector("#route-filter-active").checked;
+  return routeState.segments.length > 0 && routeFilterActive;
 }
 
 function pointToSegmentDistanceKm(lat, lng, start, end) {
@@ -335,7 +341,7 @@ function pointToSegmentDistanceKm(lat, lng, start, end) {
 
 function isWithinRoute(lat, lng) {
   if (!routeFilterEnabled()) return true;
-  const distanceKm = Number(document.querySelector("#route-distance").value);
+  const distanceKm = routeDistanceKm;
   const latPadding = distanceKm / 110.574;
   const lngPadding = distanceKm / Math.max(20, 111.32 * Math.cos(lat * Math.PI / 180));
 
@@ -516,36 +522,46 @@ function markerIcon(type) {
   });
 }
 
-function renderEmptyPanel(title = t("Choose a place"), message = t("Select a marker for its source, rules and practical details.")) {
+function renderEmptyPanel() {
   placeDetailSequence++;
   const panel = document.querySelector("#place-panel");
   if (panel.contains(document.activeElement)) document.querySelector("#map").focus({ preventScroll: true });
   panel.inert = true;
   panel.classList.remove("is-open");
   panel.setAttribute("aria-hidden", "true");
-  panel.innerHTML = `
-    <div class="empty-state">
-      <span class="empty-icon">⌖</span>
-      <h3>${escapeHtml(title)}</h3>
-      <p>${escapeHtml(message)}</p>
-    </div>
-  `;
+  panel.innerHTML = "";
 }
 
-function showPlaceMessage(title, message) {
-  renderEmptyPanel(title, message);
+function placeSheetHeader(title, meta = "") {
+  return `
+    <div class="sheet-header">
+      <div><h2>${escapeHtml(title)}</h2>${meta}</div>
+      <button class="icon-button place-panel-close" type="button" aria-label="${th("Close location information")}">${ICON_CLOSE}</button>
+    </div>`;
+}
+
+function openPlacePanel() {
   const panel = document.querySelector("#place-panel");
-  const close = document.createElement("button");
-  close.className = "overlay-close place-panel-close";
-  close.type = "button";
-  close.setAttribute("aria-label", t("Close location information"));
-  close.textContent = "×";
-  close.onclick = () => renderEmptyPanel();
-  panel.prepend(close);
+  panel.querySelector(".place-panel-close").addEventListener("click", () => renderEmptyPanel());
   panel.classList.add("is-open");
   panel.setAttribute("aria-hidden", "false");
   panel.inert = false;
   panel.focus({ preventScroll: true });
+}
+
+function showPlaceMessage(title, message) {
+  renderEmptyPanel();
+  const panel = document.querySelector("#place-panel");
+  panel.innerHTML = `${placeSheetHeader(title)}<p class="place-message">${escapeHtml(message)}</p>`;
+  openPlacePanel();
+}
+
+function placeFacts(place) {
+  const unknown = new Set([t("Not listed"), t("Check with source"), t("According to camping conditions")]);
+  const hidden = new Set([t("CampWild ID"), t("Coordinate"), t("Source"), t("Type")]);
+  const repeated = new Set([place.description, place.decision].filter(Boolean));
+  return [[t("Stay"), place.stay], [t("Cost"), place.cost], [t("Water"), place.water], ...(place.extraFacts || [])]
+    .filter(([label, value]) => value && !unknown.has(String(value)) && !hidden.has(label) && !repeated.has(value));
 }
 
 function renderPlace(place) {
@@ -563,54 +579,43 @@ function renderPlace(place) {
   placeDetailSequence++;
   closeCandidatePanel();
   const panel = document.querySelector("#place-panel");
-  const certainty = place.confidence === 3 ? t("Official source") : place.confidence === 2 ? t("Source listed; check locally") : t("Community suggestion");
-  const extraFacts = place.extraFacts || [];
   const hasCoordinates = !place.approximate && Number.isFinite(place.lat) && Number.isFinite(place.lng);
   const coordinates = hasCoordinates ? `${place.lat},${place.lng}` : "";
   const mapLabel = encodeURIComponent(place.name || t("Place to stay"));
-  const appleMapsUrl = hasCoordinates ? `https://maps.apple.com/?ll=${coordinates}&q=${mapLabel}` : "";
-  const googleMapsUrl = hasCoordinates ? `https://www.google.com/maps/search/?api=1&query=${coordinates}` : "";
+  const appleDevice = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+  const navigateUrl = !hasCoordinates ? "" : appleDevice
+    ? `https://maps.apple.com/?daddr=${coordinates}&q=${mapLabel}`
+    : `https://www.google.com/maps/dir/?api=1&destination=${coordinates}`;
+  const typeLabel = sleepTypes[place.type]?.label || t("Place to stay");
+  const metaParts = [typeLabel, place.sourceLabel, place.confidence === 3 ? t("Official source") : ""].filter(Boolean);
+  const meta = `<p class="place-meta"><i class="legend-dot dot-${escapeHtml(place.type || "")}" aria-hidden="true"></i>${escapeHtml(metaParts.join(" · "))}</p>`;
+  const facts = placeFacts(place);
+  const text = [place.decision, place.description].filter((value, index, all) => value && all.indexOf(value) === index);
+  const countryCode = place.country || (hasCoordinates ? countryFromLatLng(place.lat, place.lng) : "");
   panel.innerHTML = `
-    <button class="overlay-close place-panel-close" type="button" aria-label="${th("Close location information")}">×</button>
-    ${place.photo ? `
-      <figure class="place-photo-wrap">
-        <img class="place-photo" src="${escapeHtml(place.photo)}" alt="${th("Photo of {0}", escapeHtml(place.name))}" loading="lazy" referrerpolicy="no-referrer" />
-        <figcaption>${th("Photo: {0}", escapeHtml(place.photoLabel || place.sourceLabel))}</figcaption>
-      </figure>
-    ` : ""}
-    <div class="place-badges">
-      <span class="badge">${escapeHtml(sleepTypes[place.type]?.label || t("Place to stay"))}</span>
-      <span class="badge badge-muted">${escapeHtml(certainty)}</span>
-    </div>
-    <h3>${escapeHtml(place.name)}</h3>
-    <p class="place-location">${escapeHtml(place.location)}</p>
-    ${place.decision ? `<p class="place-decision">${escapeHtml(place.decision)}</p>` : ""}
-    <p class="place-description">${escapeHtml(place.description)}</p>
-    <ul class="place-facts">
-      <li><span>${th("Stay")}</span><strong>${escapeHtml(place.stay)}</strong></li>
-      <li><span>${th("Cost")}</span><strong>${escapeHtml(place.cost)}</strong></li>
-      <li><span>${th("Water")}</span><strong>${escapeHtml(place.water)}</strong></li>
-      <li><span>${th("Source")}</span><strong>${escapeHtml(place.sourceLabel)}</strong></li>
-      ${extraFacts.map(([label, value]) => `<li><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></li>`).join("")}
-    </ul>
-    ${hasCoordinates ? `
-      <div class="place-map-actions">
-        <a href="${escapeHtml(appleMapsUrl)}" target="_blank" rel="noreferrer">Apple Maps <span>↗</span></a>
-        <a href="${escapeHtml(googleMapsUrl)}" target="_blank" rel="noreferrer">Google Maps <span>↗</span></a>
+    ${placeSheetHeader(place.name, meta)}
+    <div class="sheet-body place-body">
+      ${place.photo ? `
+        <figure class="place-photo-wrap">
+          <img class="place-photo" src="${escapeHtml(place.photo)}" alt="${th("Photo of {0}", escapeHtml(place.name))}" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption>${th("Photo: {0}", escapeHtml(place.photoLabel || place.sourceLabel))}</figcaption>
+        </figure>
+      ` : ""}
+      ${facts.length ? `<dl class="place-facts">${facts.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}</dl>` : ""}
+      ${text.map((value) => `<p>${escapeHtml(value)}</p>`).join("")}
+      ${place.caution ? `<p class="place-caution">${escapeHtml(place.caution)}</p>` : ""}
+      <div class="place-actions">
+        ${navigateUrl ? `<a class="button button-primary" href="${escapeHtml(navigateUrl)}" target="_blank" rel="noreferrer">${ICON_NAVIGATE}${th("Navigate")}</a>` : ""}
+        <a class="button button-secondary place-link" href="${escapeHtml(place.sourceUrl)}" target="_blank" rel="noreferrer">${th("View source")}${ICON_EXTERNAL}</a>
       </div>
-    ` : ""}
-    <a class="button button-primary place-link" href="${escapeHtml(place.sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(place.sourceAction || t("Open the source"))} ↗</a>
-    ${place.licenseUrl ? `<p class="place-attribution"><a href="${escapeHtml(place.licenseUrl)}" target="_blank" rel="noreferrer">${escapeHtml(place.attribution)} · ${escapeHtml(place.licenseLabel)}</a></p>` : ""}
-    ${place.caution ? `<div class="place-caution"><strong>${th("Before you go:")}</strong> ${escapeHtml(place.caution)}</div>` : ""}
+      ${countryCode && countryNames[countryCode] ? `<a class="row-link" href="regels.html?country=${escapeHtml(countryCode)}">${th("Camping rules in {0}", escapeHtml(countryNames[countryCode]))}${ICON_CHEVRON}</a>` : ""}
+      ${place.licenseUrl ? `<p class="place-attribution"><a href="${escapeHtml(place.licenseUrl)}" target="_blank" rel="noreferrer">${escapeHtml(place.attribution)} · ${escapeHtml(place.licenseLabel)}</a></p>` : ""}
+    </div>
   `;
-  panel.classList.add("is-open");
-  panel.setAttribute("aria-hidden", "false");
-  panel.inert = false;
-  panel.querySelector(".place-panel-close").addEventListener("click", () => renderEmptyPanel());
   panel.querySelector(".place-photo")?.addEventListener("error", (event) => event.currentTarget.closest(".place-photo-wrap")?.remove());
   setFiltersOpen(false);
-  panel.scrollTop = 0;
-  panel.focus({ preventScroll: true });
+  openPlacePanel();
+  panel.querySelector(".place-body").scrollTop = 0;
 }
 
 function formatDistance(distanceKm) {
@@ -635,7 +640,6 @@ function candidateProviderLabel(provider) {
 
 function rankedCandidates() {
   const anchor = userLocation || map.getCenter();
-  const routeDistanceKm = Number(document.querySelector("#route-distance").value);
   const anchorRoute = nearestRoutePosition(anchor.lat, anchor.lng, 20);
   const useRouteProgress = Boolean(anchorRoute && routeFilterEnabled() && anchorRoute.distanceKm <= 20);
 
@@ -680,7 +684,7 @@ function updateCandidatePanel() {
   const intro = document.querySelector("#candidate-intro");
   if (mapDataError) {
     displayedCandidates = [];
-    list.innerHTML = `<div class="candidate-empty"><strong>${th("Could not load places.")}</strong><span>${th("Check your connection and try again.")}</span><button class="button button-quiet" type="button" data-retry-map>${th("Try again")}</button></div>`;
+    list.innerHTML = `<div class="candidate-empty"><strong>${th("Could not load places.")}</strong><span>${th("Check your connection and try again.")}</span><button class="button button-secondary" type="button" data-retry-map>${th("Try again")}</button></div>`;
     return;
   }
   if (mapDataLoading) {
@@ -689,20 +693,18 @@ function updateCandidatePanel() {
     return;
   }
   const candidates = rankedCandidates();
-  const anchorText = userLocation ? t("your current position") : t("the center of the map");
-  const routeText = routeFilterEnabled() && nearestRoutePosition((userLocation || map.getCenter()).lat, (userLocation || map.getCenter()).lng, 20)?.distanceKm <= 20
-    ? t("further along your GPX route")
-    : t("within a straight-line distance");
-  intro.textContent = t("{0}Ranked from {1}, {2}. Only your active filters count.", locationMessage ? `${locationMessage} ` : "", anchorText, routeText);
+  const onRoute = routeFilterEnabled() && nearestRoutePosition((userLocation || map.getCenter()).lat, (userLocation || map.getCenter()).lng, 20)?.distanceKm <= 20;
+  intro.textContent = userLocation
+    ? onRoute ? t("From your location, further along your route.") : t("From your location.")
+    : onRoute ? t("From the centre of the map, further along your route.") : t("From the centre of the map.");
   updateLocationNote();
 
   if (!candidates.length) {
     displayedCandidates = [];
     list.innerHTML = `
       <div class="candidate-empty">
-        <strong>${th("No suitable places within {0} km.", candidateHorizonKm)}</strong>
-        <span>${th("Choose a greater distance, move the map or expand your filters.")}</span>
-        <button class="button button-quiet" type="button" data-open-filters>${th("Adjust filters")}</button>
+        <span>${th("Nothing within {0} km. Choose a longer distance or turn on more types of place.", candidateHorizonKm)}</span>
+        <button class="button button-secondary" type="button" data-open-filters>${th("Adjust filters")}</button>
       </div>`;
     return;
   }
@@ -710,13 +712,12 @@ function updateCandidatePanel() {
   displayedCandidates = candidates;
   list.innerHTML = candidates.map((candidate, index) => `
     <button class="candidate-item" type="button" data-candidate-index="${index}">
-      <span class="candidate-number">${index + 1}</span>
+      <i class="legend-dot dot-${escapeHtml(candidate.place.type)}" aria-hidden="true"></i>
       <span class="candidate-copy">
         <strong>${escapeHtml(candidate.place.name)}</strong>
-        <small>${escapeHtml(candidateDistanceLabel(candidate))}</small>
-        <span><i class="candidate-type marker-${escapeHtml(candidate.place.type)}"></i>${escapeHtml(sleepTypes[candidate.place.type]?.label || t("Place to stay"))} · ${escapeHtml(candidateProviderLabel(candidate.provider))}</span>
+        <small>${escapeHtml(candidateDistanceLabel(candidate))} · ${escapeHtml(candidateProviderLabel(candidate.provider))}</small>
       </span>
-      <span class="candidate-arrow">→</span>
+      ${ICON_CHEVRON}
     </button>
   `).join("");
 }
@@ -793,14 +794,11 @@ function showLocationStatus(message, tone = "neutral", { sticky = false } = {}) 
 
 function updateLocationNote() {
   const note = document.querySelector("#candidate-location-note");
+  const button = document.querySelector("#candidate-use-location");
   if (!note) return;
-  if (userLocation) {
-    note.textContent = t("Location active, accurate to about {0}.", formatDistance((userLocation.accuracy || 0) / 1000));
-  } else if (locationMessage) {
-    note.textContent = locationMessage;
-  } else {
-    note.textContent = t("Without GPS, Nook uses the center of the map.");
-  }
+  note.textContent = userLocation ? "" : locationMessage;
+  note.hidden = Boolean(userLocation) || !locationMessage;
+  if (button) button.hidden = Boolean(userLocation);
 }
 
 function geolocationUnavailableMessage() {
@@ -874,18 +872,23 @@ function setFiltersOpen(open) {
 }
 
 function updateFilterSummary() {
-  const count = [...document.querySelectorAll('#sleep-filter input:not(:checked)')].length
-    + Number(countrySelectionMode !== "auto") + Number(routeFilterEnabled());
+  const mainTypes = [...document.querySelectorAll("#sleep-filter input[value]")];
+  const allTypes = [...document.querySelectorAll("#sleep-filter input")].every((input) => input.checked);
+  const count = Number(!allTypes) + Number(routeFilterEnabled());
   const badge = document.querySelector("#filter-count");
   badge.textContent = String(count);
   badge.hidden = !count;
-  document.querySelector("#toggle-filters").setAttribute("aria-label", count ? t("Filters, {0} active restrictions", count) : t("Filters"));
+  document.querySelector("#toggle-filters").setAttribute("aria-label", count ? t("Map settings, {0} active", count) : t("Map settings"));
+  document.querySelector("#sleep-summary").textContent = allTypes
+    ? t("All")
+    : t("{0} of {1}", mainTypes.filter((input) => input.checked).length, mainTypes.length);
 }
 
 function resetFilters() {
   document.querySelectorAll('#sleep-filter input').forEach((input) => { input.checked = true; });
-  document.querySelector("#route-filter-active").checked = false;
-  setAutoCountries({ announce: false });
+  routeFilterActive = true;
+  routeDistanceKm = 10;
+  setUserValue(ROUTE_DISTANCE_KEY, String(routeDistanceKm));
   saveFilterPreferences();
   refreshMapPlaces();
 }
@@ -904,241 +907,6 @@ function currentFilters() {
   };
 }
 
-const FILTER_COUNTRIES = [
-  { code: "AF", name: "Afghanistan", center: [33.93, 67.69, 6], bounds: [[29.39, 60.49], [38.47, 74.89]] },
-  { code: "AX", name: "Åland Islands", center: [60.18, 19.98, 10], bounds: [[59.95, 19.51], [60.41, 20.45]] },
-  { code: "AL", name: "Albania", center: [41.2, 20.1, 7], bounds: [[39.6, 19.1], [42.7, 21.1]] },
-  { code: "DZ", name: "Algeria", center: [28.03, 1.64, 5], bounds: [[18.98, -8.68], [37.09, 11.97]] },
-  { code: "AS", name: "American Samoa", center: [-14.3, -170.14, 9], bounds: [[-14.37, -170.83], [-14.22, -169.44]] },
-  { code: "VI", name: "U.S. Virgin Islands", center: [18.03, -64.8, 10], bounds: [[17.68, -65.04], [18.39, -64.56]] },
-  { code: "AD", name: "Andorra", center: [42.55, 1.6, 10], bounds: [[42.4, 1.4], [42.7, 1.8]] },
-  { code: "AO", name: "Angola", center: [-11.94, 17.9, 5], bounds: [[-18.03, 11.74], [-5.84, 24.06]] },
-  { code: "AI", name: "Anguilla", center: [18.22, -63.07, 12], bounds: [[18.17, -63.17], [18.28, -62.97]] },
-  { code: "AG", name: "Antigua & Barbuda", center: [17.36, -61.78, 9], bounds: [[16.99, -61.89], [17.73, -61.67]] },
-  { code: "AR", name: "Argentina", center: [-37.09, -63.62, 4], bounds: [[-52.39, -73.57], [-21.79, -53.66]] },
-  { code: "AM", name: "Armenia", center: [40.08, 45.02, 8], bounds: [[38.86, 43.44], [41.29, 46.6]] },
-  { code: "AW", name: "Aruba", center: [12.52, -69.97, 11], bounds: [[12.42, -70.06], [12.63, -69.88]] },
-  { code: "AU", name: "Australia", center: [-24.92, 133.39, 4], bounds: [[-39.14, 113.16], [-10.69, 153.63]] },
-  { code: "AZ", name: "Azerbaijan", center: [40.14, 47.58, 7], bounds: [[38.39, 44.77], [41.89, 50.39]] },
-  { code: "BS", name: "Bahamas", center: [23.92, -75.87, 6], bounds: [[20.91, -79], [26.93, -72.75]] },
-  { code: "BH", name: "Bahrain", center: [25.93, 50.62, 10], bounds: [[25.58, 50.45], [26.29, 50.8]] },
-  { code: "BD", name: "Bangladesh", center: [23.68, 90.33, 6], bounds: [[20.74, 88.02], [26.62, 92.64]] },
-  { code: "BB", name: "Barbados", center: [13.2, -59.54, 11], bounds: [[13.05, -59.65], [13.34, -59.43]] },
-  { code: "BY", name: "Belarus", center: [53.7, 27.9, 6], bounds: [[51.2, 23.1], [56.2, 32.8]] },
-  { code: "BE", name: "Belgium", center: [50.7, 4.65, 7], bounds: [[49.45, 2.45], [51.55, 6.45]] },
-  { code: "BZ", name: "Belize", center: [17.19, -88.66, 8], bounds: [[15.88, -89.24], [18.49, -88.08]] },
-  { code: "BJ", name: "Benin", center: [9.31, 2.3, 6], bounds: [[6.21, 0.76], [12.4, 3.84]] },
-  { code: "BM", name: "Bermuda", center: [32.32, -64.77, 12], bounds: [[32.25, -64.89], [32.39, -64.65]] },
-  { code: "BT", name: "Bhutan", center: [27.53, 90.41, 8], bounds: [[26.7, 88.73], [28.36, 92.09]] },
-  { code: "BO", name: "Bolivia", center: [-16.29, -63.57, 5], bounds: [[-22.9, -69.67], [-9.68, -57.47]] },
-  { code: "BA", name: "Bosnia & Herzegovina", center: [44.1, 17.8, 7], bounds: [[42.5, 15.7], [45.3, 19.7]] },
-  { code: "BW", name: "Botswana", center: [-22.34, 24.66, 6], bounds: [[-26.89, 19.98], [-17.78, 29.35]] },
-  { code: "BR", name: "Brazil", center: [-14.24, -54.41, 4], bounds: [[-33.74, -74.02], [5.27, -34.79]] },
-  { code: "VG", name: "British Virgin Islands", center: [18.54, -64.52, 10], bounds: [[18.33, -64.77], [18.75, -64.27]] },
-  { code: "BN", name: "Brunei", center: [4.54, 114.68, 9], bounds: [[4.02, 114], [5.06, 115.36]] },
-  { code: "BG", name: "Bulgaria", center: [42.7, 25.3, 7], bounds: [[41.2, 22.3], [44.3, 28.7]] },
-  { code: "BF", name: "Burkina Faso", center: [12.24, -1.57, 6], bounds: [[9.39, -5.52], [15.08, 2.39]] },
-  { code: "BI", name: "Burundi", center: [-3.38, 29.91, 8], bounds: [[-4.46, 28.99], [-2.3, 30.83]] },
-  { code: "KH", name: "Cambodia", center: [12.56, 104.96, 7], bounds: [[10.42, 102.31], [14.7, 107.61]] },
-  { code: "CA", name: "Canada", center: [62.39, -98.31, 3], bounds: [[41.67, -141.01], [83.12, -55.62]] },
-  { code: "CF", name: "Central African Republic", center: [6.62, 20.91, 6], bounds: [[2.24, 14.39], [11, 27.44]] },
-  { code: "CL", name: "Chile", center: [-36.23, -71.36, 4], bounds: [[-54.95, -75.71], [-17.51, -67.01]] },
-  { code: "CN", name: "China", center: [36.9, 104.19, 4], bounds: [[20.24, 73.6], [53.57, 134.77]] },
-  { code: "CO", name: "Colombia", center: [4.12, -72.95, 5], bounds: [[-4.24, -79.02], [12.47, -66.88]] },
-  { code: "KM", name: "Comoros", center: [-11.87, 43.87, 9], bounds: [[-12.38, 43.21], [-11.36, 44.53]] },
-  { code: "CG", name: "Congo - Brazzaville", center: [-0.66, 14.88, 6], bounds: [[-5.02, 11.11], [3.71, 18.64]] },
-  { code: "CD", name: "Congo - Kinshasa", center: [-4.04, 21.75, 5], bounds: [[-13.46, 12.21], [5.38, 31.28]] },
-  { code: "CK", name: "Cook Islands", center: [-15.44, -158.58, 5], bounds: [[-21.94, -159.85], [-8.95, -157.31]] },
-  { code: "CR", name: "Costa Rica", center: [9.62, -84.25, 7], bounds: [[8.03, -85.95], [11.21, -82.56]] },
-  { code: "CU", name: "Cuba", center: [21.52, -79.54, 6], bounds: [[19.83, -84.95], [23.21, -74.13]] },
-  { code: "CW", name: "Curaçao", center: [12.22, -68.96, 11], bounds: [[12.04, -69.17], [12.39, -68.74]] },
-  { code: "CY", name: "Cyprus", center: [35.1, 33.2, 8], bounds: [[34.5, 32.2], [35.8, 34.7]] },
-  { code: "DK", name: "Denmark", center: [56.1, 9.4, 7], bounds: [[54.45, 7.7], [57.9, 15.3]] },
-  { code: "DJ", name: "Djibouti", center: [11.82, 42.58, 8], bounds: [[10.93, 41.75], [12.71, 43.42]] },
-  { code: "DM", name: "Dominica", center: [15.42, -61.37, 10], bounds: [[15.2, -61.49], [15.63, -61.25]] },
-  { code: "DO", name: "Dominican Republic", center: [18.77, -70.17, 8], bounds: [[17.6, -72.01], [19.94, -68.33]] },
-  { code: "DE", name: "Germany", center: [51.2, 10.4, 6], bounds: [[47.2, 5.5], [55.2, 15.2]] },
-  { code: "EC", name: "Ecuador", center: [-1.79, -78.12, 6], bounds: [[-5.01, -81.01], [1.43, -75.23]] },
-  { code: "EG", name: "Egypt", center: [26.83, 30.79, 6], bounds: [[21.99, 24.69], [31.66, 36.9]] },
-  { code: "SV", name: "El Salvador", center: [13.8, -88.91, 8], bounds: [[13.16, -90.11], [14.45, -87.7]] },
-  { code: "GQ", name: "Equatorial Guinea", center: [2.35, 9.88, 7], bounds: [[0.92, 8.42], [3.77, 11.34]] },
-  { code: "ER", name: "Eritrea", center: [15.18, 39.77, 7], bounds: [[12.36, 36.42], [18, 43.12]] },
-  { code: "EE", name: "Estonia", center: [58.7, 25.0, 7], bounds: [[57.5, 21.7], [59.8, 28.3]] },
-  { code: "SZ", name: "Eswatini", center: [-26.53, 31.45, 8], bounds: [[-27.32, 30.78], [-25.74, 32.12]] },
-  { code: "ET", name: "Ethiopia", center: [9.14, 40.48, 5], bounds: [[3.4, 32.99], [14.88, 47.98]] },
-  { code: "FO", name: "Faroe Islands", center: [61.9, -6.85, 9], bounds: [[61.39, -7.43], [62.4, -6.28]] },
-  { code: "FK", name: "Falkland Islands", center: [-51.8, -59.39, 8], bounds: [[-52.34, -61.04], [-51.25, -57.73]] },
-  { code: "FJ", name: "Fiji", center: [-17.21, 178.63, 8], bounds: [[-18.27, 177.25], [-16.15, 180]] },
-  { code: "PH", name: "Philippines", center: [12.11, 121.9, 5], bounds: [[5.57, 117.19], [18.65, 126.62]] },
-  { code: "FI", name: "Finland", center: [63.8, 26.0, 5], bounds: [[59.7, 19.0], [70.1, 31.6]] },
-  { code: "FR", name: "France", center: [46.6, 2.5, 6], bounds: [[41.2, -5.3], [51.3, 9.7]] },
-  { code: "PF", name: "French Polynesia", center: [-13.33, -145.08, 6], bounds: [[-17.87, -151.54], [-8.78, -138.62]] },
-  { code: "GA", name: "Gabon", center: [-0.81, 11.6, 6], bounds: [[-3.94, 8.7], [2.32, 14.5]] },
-  { code: "GM", name: "Gambia", center: [13.44, -15.32, 8], bounds: [[13.07, -16.83], [13.82, -13.82]] },
-  { code: "GE", name: "Georgia", center: [42.31, 43.34, 7], bounds: [[41.04, 39.99], [43.58, 46.69]] },
-  { code: "GH", name: "Ghana", center: [7.95, -1.04, 6], bounds: [[4.74, -3.26], [11.16, 1.19]] },
-  { code: "GI", name: "Gibraltar", center: [36.13, -5.35, 13], bounds: [[36.11, -5.36], [36.14, -5.34]] },
-  { code: "GD", name: "Grenada", center: [12.27, -61.61, 10], bounds: [[12, -61.79], [12.53, -61.42]] },
-  { code: "GR", name: "Greece", center: [39.1, 22.2, 6], bounds: [[34.7, 19.2], [41.8, 28.3]] },
-  { code: "GL", name: "Greenland", center: [71.81, -42.22, 4], bounds: [[59.99, -73.06], [83.63, -11.38]] },
-  { code: "GU", name: "Guam", center: [13.45, 144.79, 10], bounds: [[13.24, 144.62], [13.65, 144.95]] },
-  { code: "GT", name: "Guatemala", center: [15.77, -90.23, 7], bounds: [[13.73, -92.25], [17.82, -88.22]] },
-  { code: "GG", name: "Guernsey", center: [49.57, -2.42, 10], bounds: [[49.41, -2.67], [49.73, -2.17]] },
-  { code: "GN", name: "Guinea", center: [9.93, -11.37, 7], bounds: [[7.19, -15.08], [12.67, -7.66]] },
-  { code: "GW", name: "Guinea-Bissau", center: [11.8, -15.19, 8], bounds: [[10.93, -16.73], [12.68, -13.66]] },
-  { code: "GY", name: "Guyana", center: [4.87, -58.94, 6], bounds: [[1.19, -61.4], [8.56, -56.48]] },
-  { code: "HT", name: "Haiti", center: [18.99, -73.06, 8], bounds: [[18.03, -74.49], [19.95, -71.64]] },
-  { code: "HN", name: "Honduras", center: [14.51, -86.25, 7], bounds: [[12.98, -89.36], [16.03, -83.13]] },
-  { code: "HU", name: "Hungary", center: [47.1, 19.4, 7], bounds: [[45.7, 16.1], [48.6, 22.9]] },
-  { code: "HK", name: "Hong Kong SAR China", center: [22.38, 114.12, 10], bounds: [[22.19, 113.84], [22.56, 114.4]] },
-  { code: "IE", name: "Ireland", center: [53.3, -8.0, 7], bounds: [[51.3, -10.8], [55.4, -5.9]] },
-  { code: "IS", name: "Iceland", center: [64.9, -18.7, 6], bounds: [[63.2, -24.8], [66.7, -13.4]] },
-  { code: "IN", name: "India", center: [21.79, 82.75, 4], bounds: [[8.08, 68.14], [35.5, 97.36]] },
-  { code: "ID", name: "Indonesia", center: [-1.73, 118.09, 4], bounds: [[-9.11, 95.2], [5.65, 140.98]] },
-  { code: "IQ", name: "Iraq", center: [33.22, 43.67, 6], bounds: [[29.06, 38.77], [37.38, 48.56]] },
-  { code: "IR", name: "Iran", center: [32.42, 53.67, 5], bounds: [[25.06, 44.01], [39.77, 63.32]] },
-  { code: "IM", name: "Isle of Man", center: [54.24, -4.55, 10], bounds: [[54.06, -4.79], [54.42, -4.31]] },
-  { code: "IL", name: "Israel", center: [31.45, 35.07, 7], bounds: [[29.49, 34.25], [33.41, 35.89]] },
-  { code: "IT", name: "Italy", center: [43.2, 12.0, 6], bounds: [[35.4, 6.6], [47.2, 18.8]] },
-  { code: "CI", name: "Côte d’Ivoire", center: [7.54, -5.56, 6], bounds: [[4.34, -8.62], [10.73, -2.51]] },
-  { code: "JM", name: "Jamaica", center: [18.11, -77.28, 8], bounds: [[17.7, -78.37], [18.53, -76.19]] },
-  { code: "JP", name: "Japan", center: [38.26, 137.69, 5], bounds: [[31, 129.55], [45.52, 145.82]] },
-  { code: "YE", name: "Yemen", center: [15.8, 47.85, 6], bounds: [[12.6, 42.61], [19, 53.09]] },
-  { code: "JE", name: "Jersey", center: [49.22, -2.13, 12], bounds: [[49.17, -2.24], [49.27, -2.01]] },
-  { code: "JO", name: "Jordan", center: [31.28, 37.12, 7], bounds: [[29.19, 34.95], [33.37, 39.29]] },
-  { code: "KY", name: "Cayman Islands", center: [19.51, -80.57, 9], bounds: [[19.26, -81.42], [19.76, -79.73]] },
-  { code: "CV", name: "Cape Verde", center: [16, -24.01, 8], bounds: [[14.8, -25.36], [17.2, -22.67]] },
-  { code: "CM", name: "Cameroon", center: [7.37, 12.36, 5], bounds: [[1.65, 8.51], [13.08, 16.21]] },
-  { code: "KZ", name: "Kazakhstan", center: [48.01, 66.9, 4], bounds: [[40.58, 46.48], [55.43, 87.32]] },
-  { code: "KE", name: "Kenya", center: [0.18, 37.89, 6], bounds: [[-4.68, 33.89], [5.03, 41.89]] },
-  { code: "KG", name: "Kyrgyzstan", center: [41.23, 74.74, 6], bounds: [[39.19, 69.23], [43.26, 80.26]] },
-  { code: "KI", name: "Kiribati", center: [-0.08, -170.84, 5], bounds: [[-4.09, 173.26], [3.93, 205.06]] },
-  { code: "KW", name: "Kuwait", center: [29.32, 47.48, 8], bounds: [[28.53, 46.53], [30.1, 48.43]] },
-  { code: "XK", name: "Kosovo", center: [42.6, 20.9, 8], bounds: [[41.8, 20.0], [43.3, 21.9]] },
-  { code: "HR", name: "Croatia", center: [45.1, 16.4, 7], bounds: [[42.3, 13.3], [46.6, 19.5]] },
-  { code: "LA", name: "Laos", center: [18.21, 103.88, 6], bounds: [[13.92, 100.1], [22.5, 107.66]] },
-  { code: "LS", name: "Lesotho", center: [-29.61, 28.22, 8], bounds: [[-30.66, 27], [-28.57, 29.44]] },
-  { code: "LV", name: "Latvia", center: [56.9, 24.6, 7], bounds: [[55.6, 20.8], [58.1, 28.3]] },
-  { code: "LB", name: "Lebanon", center: [33.87, 35.85, 8], bounds: [[33.06, 35.1], [34.69, 36.6]] },
-  { code: "LR", name: "Liberia", center: [6.46, -9.43, 7], bounds: [[4.35, -11.48], [8.57, -7.38]] },
-  { code: "LY", name: "Libya", center: [26.34, 17.22, 5], bounds: [[19.5, 9.29], [33.18, 25.16]] },
-  { code: "LI", name: "Liechtenstein", center: [47.15, 9.55, 10], bounds: [[47.0, 9.45], [47.3, 9.65]] },
-  { code: "LT", name: "Lithuania", center: [55.2, 23.9, 7], bounds: [[53.9, 20.9], [56.5, 26.9]] },
-  { code: "LU", name: "Luxembourg", center: [49.8, 6.1, 9], bounds: [[49.4, 5.7], [50.25, 6.6]] },
-  { code: "MO", name: "Macao SAR China", center: [22.16, 113.55, 12], bounds: [[22.11, 113.52], [22.22, 113.59]] },
-  { code: "MG", name: "Madagascar", center: [-18.77, 46.86, 5], bounds: [[-25.6, 43.22], [-11.94, 50.5]] },
-  { code: "MW", name: "Malawi", center: [-13.26, 34.28, 6], bounds: [[-17.14, 32.66], [-9.38, 35.9]] },
-  { code: "MV", name: "Maldives", center: [3.14, 73.29, 6], bounds: [[-0.64, 72.94], [6.92, 73.64]] },
-  { code: "MY", name: "Malaysia", center: [3.94, 109.7, 5], bounds: [[0.85, 100.13], [7.03, 119.28]] },
-  { code: "ML", name: "Mali", center: [17.57, -4.01, 5], bounds: [[10.14, -12.26], [25, 4.24]] },
-  { code: "MT", name: "Malta", center: [35.9, 14.4, 10], bounds: [[35.75, 14.15], [36.1, 14.6]] },
-  { code: "MA", name: "Morocco", center: [28.67, -9.02, 5], bounds: [[21.42, -17.01], [35.93, -1.03]] },
-  { code: "MH", name: "Marshall Islands", center: [7.87, 169.43, 6], bounds: [[4.57, 166.84], [11.17, 172.03]] },
-  { code: "MR", name: "Mauritania", center: [21.01, -10.95, 5], bounds: [[14.73, -17.08], [27.29, -4.82]] },
-  { code: "MU", name: "Mauritius", center: [-20.09, 60.4, 7], bounds: [[-20.52, 57.3], [-19.67, 63.49]] },
-  { code: "MX", name: "Mexico", center: [23.63, -101.93, 5], bounds: [[14.55, -117.13], [32.71, -86.74]] },
-  { code: "FM", name: "Micronesia", center: [7.43, 150.56, 5], bounds: [[5.27, 138.06], [9.59, 163.05]] },
-  { code: "MD", name: "Moldova", center: [47.2, 28.5, 7], bounds: [[45.4, 26.6], [48.5, 30.2]] },
-  { code: "MC", name: "Monaco", center: [43.73, 7.42, 12], bounds: [[43.7, 7.38], [43.75, 7.45]] },
-  { code: "MN", name: "Mongolia", center: [46.86, 103.82, 4], bounds: [[41.59, 87.74], [52.13, 119.91]] },
-  { code: "ME", name: "Montenegro", center: [42.8, 19.2, 8], bounds: [[41.8, 18.4], [43.6, 20.4]] },
-  { code: "MS", name: "Montserrat", center: [16.75, -62.19, 12], bounds: [[16.68, -62.23], [16.82, -62.14]] },
-  { code: "MZ", name: "Mozambique", center: [-18.66, 35.53, 5], bounds: [[-26.86, 30.21], [-10.47, 40.85]] },
-  { code: "MM", name: "Myanmar (Burma)", center: [19.26, 96.67, 5], bounds: [[9.99, 92.17], [28.54, 101.17]] },
-  { code: "NA", name: "Namibia", center: [-22.96, 18.49, 5], bounds: [[-28.96, 11.72], [-16.95, 25.26]] },
-  { code: "NR", name: "Nauru", center: [-0.52, 166.93, 13], bounds: [[-0.55, 166.91], [-0.49, 166.96]] },
-  { code: "NL", name: "Netherlands", center: [52.2, 5.4, 7], bounds: [[50.7, 3.2], [53.7, 7.3]] },
-  { code: "NP", name: "Nepal", center: [28.38, 84.1, 6], bounds: [[26.34, 80.03], [30.42, 88.17]] },
-  { code: "NI", name: "Nicaragua", center: [12.87, -85.41, 7], bounds: [[10.71, -87.69], [15.03, -83.13]] },
-  { code: "NC", name: "New Caledonia", center: [-21.24, 165.73, 8], bounds: [[-22.4, 163.99], [-20.08, 167.46]] },
-  { code: "NZ", name: "New Zealand", center: [-40.54, 172.52, 5], bounds: [[-46.68, 166.47], [-34.4, 178.57]] },
-  { code: "NE", name: "Niger", center: [17.61, 8.06, 5], bounds: [[11.7, 0.15], [23.52, 15.97]] },
-  { code: "NG", name: "Nigeria", center: [9.08, 8.67, 6], bounds: [[4.27, 2.67], [13.88, 14.67]] },
-  { code: "NU", name: "Niue", center: [-19.05, -169.87, 11], bounds: [[-19.14, -169.95], [-18.96, -169.78]] },
-  { code: "KP", name: "North Korea", center: [40.34, 127.51, 7], bounds: [[37.68, 124.32], [43.01, 130.7]] },
-  { code: "MK", name: "North Macedonia", center: [41.6, 21.7, 8], bounds: [[40.8, 20.4], [42.4, 23.1]] },
-  { code: "MP", name: "Northern Mariana Islands", center: [17.33, 145.39, 6], bounds: [[14.11, 144.9], [20.56, 145.87]] },
-  { code: "NO", name: "Norway", center: [62.2, 9.2, 5], bounds: [[57.8, 4.0], [71.4, 31.2]] },
-  { code: "NF", name: "Norfolk Island", center: [-29.04, 167.95, 13], bounds: [[-29.08, 167.91], [-29, 168]] },
-  { code: "UG", name: "Uganda", center: [1.37, 32.28, 6], bounds: [[-1.48, 29.55], [4.22, 35.01]] },
-  { code: "UA", name: "Ukraine", center: [49.0, 31.4, 6], bounds: [[44.0, 22.1], [52.4, 40.2]] },
-  { code: "UZ", name: "Uzbekistan", center: [41.37, 64.56, 5], bounds: [[37.19, 55.98], [45.56, 73.15]] },
-  { code: "OM", name: "Oman", center: [20.81, 55.91, 6], bounds: [[16.64, 51.98], [24.98, 59.84]] },
-  { code: "TL", name: "Timor-Leste", center: [-8.91, 125.67, 8], bounds: [[-9.5, 124.03], [-8.31, 127.31]] },
-  { code: "AT", name: "Austria", center: [47.6, 14.1, 7], bounds: [[46.35, 9.5], [49.1, 17.2]] },
-  { code: "PK", name: "Pakistan", center: [30.37, 68.95, 5], bounds: [[23.69, 60.84], [37.05, 77.05]] },
-  { code: "PW", name: "Palau", center: [5.38, 132.9, 7], bounds: [[3.02, 131.13], [7.73, 134.66]] },
-  { code: "PS", name: "Palestinian Territories", center: [31.88, 34.89, 9], bounds: [[31.21, 34.2], [32.54, 35.57]] },
-  { code: "PA", name: "Panama", center: [8.42, -80.11, 7], bounds: [[7.21, -83.05], [9.63, -77.16]] },
-  { code: "PG", name: "Papua New Guinea", center: [-6.65, 146.63, 6], bounds: [[-10.7, 140.85], [-2.59, 152.42]] },
-  { code: "PY", name: "Paraguay", center: [-23.44, -58.45, 6], bounds: [[-27.59, -62.65], [-19.29, -54.25]] },
-  { code: "PE", name: "Peru", center: [-9.18, -75.01, 5], bounds: [[-18.34, -81.34], [-0.03, -68.68]] },
-  { code: "PN", name: "Pitcairn Islands", center: [-24.7, -129.21, 9], bounds: [[-25.08, -130.12], [-24.32, -128.29]] },
-  { code: "PL", name: "Poland", center: [52.1, 19.4, 6], bounds: [[49.0, 14.1], [54.9, 24.2]] },
-  { code: "PT", name: "Portugal", center: [39.6, -8.0, 7], bounds: [[36.9, -9.6], [42.2, -6.0]] },
-  { code: "PR", name: "Puerto Rico", center: [18.22, -66.43, 9], bounds: [[17.92, -67.27], [18.52, -65.59]] },
-  { code: "QA", name: "Qatar", center: [25.36, 51.18, 8], bounds: [[24.56, 50.75], [26.16, 51.62]] },
-  { code: "RO", name: "Romania", center: [45.9, 24.9, 7], bounds: [[43.6, 20.2], [48.3, 29.7]] },
-  { code: "RU", name: "Russia", center: [59.47, 103.66, 2], bounds: [[41.19, 27.33], [77.74, 180]] },
-  { code: "RW", name: "Rwanda", center: [-1.94, 29.87, 8], bounds: [[-2.83, 28.86], [-1.06, 30.89]] },
-  { code: "KN", name: "St. Kitts & Nevis", center: [17.26, -62.7, 11], bounds: [[17.1, -62.86], [17.42, -62.54]] },
-  { code: "LC", name: "St. Lucia", center: [13.91, -60.98, 10], bounds: [[13.71, -61.08], [14.11, -60.88]] },
-  { code: "VC", name: "St. Vincent & Grenadines", center: [13.18, -61.2, 10], bounds: [[12.97, -61.28], [13.38, -61.12]] },
-  { code: "BL", name: "St. Barthélemy", center: [17.91, -62.83, 13], bounds: [[17.88, -62.87], [17.93, -62.79]] },
-  { code: "MF", name: "St. Martin", center: [18.08, -63.08, 12], bounds: [[18.03, -63.15], [18.12, -63.01]] },
-  { code: "PM", name: "St. Pierre & Miquelon", center: [46.95, -56.27, 10], bounds: [[46.75, -56.4], [47.14, -56.14]] },
-  { code: "SB", name: "Solomon Islands", center: [-9.22, 161.3, 6], bounds: [[-11.85, 156.45], [-6.6, 166.15]] },
-  { code: "WS", name: "Samoa", center: [-13.76, -172.11, 9], bounds: [[-14.05, -172.78], [-13.46, -171.44]] },
-  { code: "SM", name: "San Marino", center: [43.94, 12.46, 11], bounds: [[43.88, 12.38], [44.0, 12.52]] },
-  { code: "ST", name: "São Tomé & Príncipe", center: [0.86, 6.96, 8], bounds: [[0.02, 6.46], [1.7, 7.46]] },
-  { code: "SA", name: "Saudi Arabia", center: [24.25, 45.11, 5], bounds: [[16.37, 34.57], [32.12, 55.64]] },
-  { code: "SN", name: "Senegal", center: [14.5, -14.46, 7], bounds: [[12.31, -17.54], [16.69, -11.38]] },
-  { code: "RS", name: "Serbia", center: [44.0, 20.8, 7], bounds: [[42.2, 18.8], [46.2, 23.1]] },
-  { code: "SC", name: "Seychelles", center: [-6.87, 51.25, 6], bounds: [[-9.45, 46.21], [-4.29, 56.29]] },
-  { code: "SL", name: "Sierra Leone", center: [8.46, -11.79, 7], bounds: [[6.92, -13.3], [10, -10.28]] },
-  { code: "SG", name: "Singapore", center: [1.36, 103.82, 11], bounds: [[1.26, 103.64], [1.45, 104]] },
-  { code: "SH", name: "St. Helena", center: [-24.14, -10.03, 4], bounds: [[-40.4, -14.42], [-7.88, -5.65]] },
-  { code: "SX", name: "Sint Maarten", center: [18.04, -63.07, 13], bounds: [[18.02, -63.12], [18.06, -63.02]] },
-  { code: "SI", name: "Slovenia", center: [46.1, 14.9, 8], bounds: [[45.4, 13.3], [46.9, 16.7]] },
-  { code: "SK", name: "Slovakia", center: [48.7, 19.5, 7], bounds: [[47.7, 16.8], [49.7, 22.6]] },
-  { code: "SD", name: "Sudan", center: [15.45, 30.21, 5], bounds: [[8.68, 21.81], [22.23, 38.6]] },
-  { code: "SO", name: "Somalia", center: [5.15, 46.19, 5], bounds: [[-1.7, 40.97], [11.99, 51.42]] },
-  { code: "ES", name: "Spain", center: [40.3, -3.7, 6], bounds: [[36.0, -9.4], [43.9, 4.4]] },
-  { code: "LK", name: "Sri Lanka", center: [7.88, 80.79, 7], bounds: [[5.92, 79.7], [9.83, 81.89]] },
-  { code: "SR", name: "Suriname", center: [3.92, -56.03, 7], bounds: [[1.83, -58.07], [6.01, -53.99]] },
-  { code: "SY", name: "Syria", center: [34.82, 39.05, 7], bounds: [[32.31, 35.72], [37.32, 42.38]] },
-  { code: "TJ", name: "Tajikistan", center: [38.86, 71.25, 7], bounds: [[36.68, 67.34], [41.04, 75.16]] },
-  { code: "TW", name: "Taiwan", center: [23.6, 121.03, 7], bounds: [[21.9, 120.05], [25.29, 122.01]] },
-  { code: "TZ", name: "Tanzania", center: [-6.36, 34.89, 6], bounds: [[-11.73, 29.32], [-0.99, 40.45]] },
-  { code: "TH", name: "Thailand", center: [13.04, 101.5, 5], bounds: [[5.63, 97.35], [20.45, 105.65]] },
-  { code: "TG", name: "Togo", center: [8.62, 0.81, 7], bounds: [[6.1, -0.17], [11.13, 1.78]] },
-  { code: "TO", name: "Tonga", center: [-18.51, -174.8, 6], bounds: [[-21.45, -175.69], [-15.56, -173.91]] },
-  { code: "TT", name: "Trinidad & Tobago", center: [10.7, -61.23, 9], bounds: [[10.04, -61.93], [11.35, -60.52]] },
-  { code: "TD", name: "Chad", center: [15.45, 18.72, 5], bounds: [[7.46, 13.45], [23.44, 23.98]] },
-  { code: "CZ", name: "Czechia", center: [49.8, 15.5, 7], bounds: [[48.5, 12.0], [51.1, 18.9]] },
-  { code: "TN", name: "Tunisia", center: [33.79, 9.52, 6], bounds: [[30.23, 7.48], [37.35, 11.56]] },
-  { code: "TR", name: "Türkiye", center: [39.0, 35.2, 5], bounds: [[35.8, 25.6], [42.2, 44.8]] },
-  { code: "TM", name: "Turkmenistan", center: [38.97, 59.54, 6], bounds: [[35.14, 52.44], [42.79, 66.65]] },
-  { code: "TC", name: "Turks & Caicos Islands", center: [21.7, -71.81, 9], bounds: [[21.43, -72.48], [21.96, -71.13]] },
-  { code: "TV", name: "Tuvalu", center: [-7.55, 178.02, 7], bounds: [[-9.42, 176.13], [-5.68, 179.91]] },
-  { code: "UY", name: "Uruguay", center: [-32.54, -55.78, 7], bounds: [[-34.97, -58.44], [-30.1, -53.11]] },
-  { code: "VU", name: "Vanuatu", center: [-16.68, 168.01, 6], bounds: [[-19.66, 166.52], [-13.71, 169.5]] },
-  { code: "VA", name: "Vatican City", center: [41.9, 12.45, 13], bounds: [[41.89, 12.44], [41.91, 12.46]] },
-  { code: "VE", name: "Venezuela", center: [6.42, -66.6, 5], bounds: [[0.65, -73.39], [12.2, -59.82]] },
-  { code: "GB", name: "United Kingdom", center: [54.5, -3.2, 6], bounds: [[49.8, -8.7], [60.9, 1.9]] },
-  { code: "AE", name: "United Arab Emirates", center: [24.35, 53.98, 7], bounds: [[22.62, 51.57], [26.07, 56.38]] },
-  { code: "US", name: "United States", center: [48.27, -117.56, 3], bounds: [[25.12, -168.14], [71.41, -66.98]] },
-  { code: "VN", name: "Vietnam", center: [15.97, 105.8, 5], bounds: [[8.57, 102.12], [23.37, 109.47]] },
-  { code: "WF", name: "Wallis & Futuna", center: [-13.76, -177.16, 8], bounds: [[-14.32, -178.19], [-13.21, -176.13]] },
-  { code: "EH", name: "Western Sahara", center: [24.21, -12.89, 6], bounds: [[20.77, -17.1], [27.66, -8.68]] },
-  { code: "ZM", name: "Zambia", center: [-13.13, 27.83, 6], bounds: [[-18.07, 21.98], [-8.19, 33.67]] },
-  { code: "ZW", name: "Zimbabwe", center: [-19.01, 29.13, 6], bounds: [[-22.4, 25.22], [-15.61, 33.04]] },
-  { code: "ZA", name: "South Africa", center: [-28.47, 24.68, 5], bounds: [[-34.82, 16.47], [-22.13, 32.89]] },
-  { code: "KR", name: "South Korea", center: [36.46, 127.86, 7], bounds: [[34.29, 126.13], [38.62, 129.59]] },
-  { code: "SS", name: "South Sudan", center: [7.85, 30.02, 6], bounds: [[3.49, 24.12], [12.22, 35.92]] },
-  { code: "SE", name: "Sweden", center: [61.0, 15.2, 5], bounds: [[55.0, 10.6], [69.2, 24.3]] },
-  { code: "CH", name: "Switzerland", center: [46.8, 8.2, 7], bounds: [[45.75, 5.75], [47.85, 10.65]] },
-];
 
 const countryDisplayNames = typeof Intl.DisplayNames === "function" ? new Intl.DisplayNames([NookI18n.locale], { type: "region" }) : null;
 const countryNames = Object.fromEntries(FILTER_COUNTRIES.map((country) => [country.code, countryDisplayNames?.of(country.code) || country.name]));
@@ -1156,9 +924,8 @@ const PERSONAL_STORAGE_KEYS = [
 const ALL_COUNTRY_CODES = FILTER_COUNTRIES.map((country) => country.code);
 const COUNTRY_CENTERS = Object.fromEntries(FILTER_COUNTRIES.map((country) => [country.code, country.center]));
 const COUNTRY_BOUNDS = Object.fromEntries(FILTER_COUNTRIES.map((country) => [country.code, country.bounds]));
-let countrySelectionMode = "auto";
-let countryListExpanded = false;
-let manualCountryCodes = new Set();
+let routeDistanceKm = 10;
+let routeFilterActive = true;
 
 function userStorage() {
   return localStorage;
@@ -1210,126 +977,18 @@ function orderedCountryCodes(codes) {
 }
 
 function selectedCountryCodes() {
-  if (countrySelectionMode === "auto") return new Set(ALL_COUNTRY_CODES);
-  return new Set(orderedCountryCodes([...manualCountryCodes]).filter((code) => ALL_COUNTRY_CODES.includes(code)));
+  return new Set(ALL_COUNTRY_CODES);
 }
 
-function syncCountryInputs() {
-  const selected = selectedCountryCodes();
-  document.querySelectorAll("[data-country]").forEach((input) => {
-    input.checked = selected.has(input.dataset.country);
-  });
-}
 
-function renderCountryFilter() {
-  const grid = document.querySelector("#country-toggle-grid");
-  if (!grid) return;
-  grid.innerHTML = FILTER_COUNTRIES.map((country) => `
-    <label class="country-chip" title="${escapeHtml(countryNames[country.code] || country.name)}">
-      <input type="checkbox" data-country="${escapeHtml(country.code)}" />
-      <span>${escapeHtml(country.code)}</span>
-    </label>
-  `).join("");
-  updateCountryFilterControls();
-}
 
-function selectedCountryLabel() {
-  const selected = [...selectedCountryCodes()];
-  if (!selected.length) return t("No countries");
-  if (countrySelectionMode === "auto") {
-    return t("Map area");
-  }
-  if (selected.length === ALL_COUNTRY_CODES.length) return t("all countries");
-  if (selected.length <= 4) return selected.map((code) => countryNames[code]).join(", ");
-  return t("{0} countries", selected.length);
-}
 
-function updateCountryFilterControls() {
-  const summary = document.querySelector("#country-selection-summary");
-  const toggle = document.querySelector("#toggle-country-list");
-  const autoButton = document.querySelector("#set-auto-countries");
-  const grid = document.querySelector("#country-toggle-grid");
-  syncCountryInputs();
-  if (summary) {
-    summary.textContent = countrySelectionMode === "auto"
-      ? t("{0}. Places appear in the visible map area, including across borders.", selectedCountryLabel())
-      : selectedCountryLabel();
-  }
-  if (toggle) {
-    toggle.textContent = countryListExpanded ? t("Hide list") : t("Choose countries");
-    toggle.setAttribute("aria-expanded", String(countryListExpanded));
-  }
-  if (autoButton) autoButton.classList.toggle("is-active", countrySelectionMode === "auto");
-  if (grid) grid.hidden = !countryListExpanded;
-}
 
-function renderCountrySelectionPanel() {
-  const selected = [...selectedCountryCodes()];
-  renderEmptyPanel(
-    countrySelectionMode === "auto" ? t("Explore the map area") : selected.length ? t("Explore {0}", selectedCountryLabel()) : t("No countries selected"),
-    selected.length
-      ? t("Click on clusters to zoom in. At maximum zoom, the individual source pins appear.")
-      : t("Select one or more countries to show places to sleep on the map."),
-  );
-}
 
-function saveCountrySelection() {
-  setUserValue(COUNTRY_FILTER_KEY, JSON.stringify({
-    mode: countrySelectionMode,
-    countries: [...manualCountryCodes],
-  }));
-}
 
-function setSelectedCountries(countryCodes, { persist = true, fit = false, announce = true } = {}) {
-  const selected = new Set(countryCodes.filter((code) => ALL_COUNTRY_CODES.includes(code)));
-  countrySelectionMode = "custom";
-  manualCountryCodes = selected;
-  updateCountryFilterControls();
-  if (persist) saveCountrySelection();
-  if (fit) fitSelectedCountries();
-  if (announce) renderCountrySelectionPanel();
-}
 
-function setAutoCountries({ persist = true, announce = true } = {}) {
-  countrySelectionMode = "auto";
-  countryListExpanded = false;
-  updateCountryFilterControls();
-  if (persist) saveCountrySelection();
-  if (announce) renderCountrySelectionPanel();
-}
 
-function restoreCountrySelection() {
-  try {
-    const saved = storedJson(COUNTRY_FILTER_KEY);
-    if (saved?.mode === "custom" && Array.isArray(saved.countries)) {
-      const countryCodes = saved.countries.filter((code) => ALL_COUNTRY_CODES.includes(code));
-      if (countryCodes.length) {
-        setSelectedCountries(countryCodes, { persist: false, announce: false, fit: false });
-        return;
-      }
-    }
-    if (Array.isArray(saved) && saved.some((code) => ALL_COUNTRY_CODES.includes(code)) && saved.length !== ALL_COUNTRY_CODES.length) {
-      setSelectedCountries(saved, { persist: false, announce: false, fit: false });
-      return;
-    }
-    setAutoCountries({ persist: false, announce: false });
-  } catch (error) {
-    console.warn(t("Country selection could not be restored."), error);
-    setAutoCountries({ persist: false, announce: false });
-  }
-}
 
-function fitSelectedCountries() {
-  const selected = [...selectedCountryCodes()];
-  if (!selected.length) return;
-  if (selected.length === 1 && COUNTRY_CENTERS[selected[0]]) {
-    const [lat, lng, zoom] = COUNTRY_CENTERS[selected[0]];
-    navigateMapTo([lat, lng], zoom);
-    return;
-  }
-  const points = selected.flatMap((code) => COUNTRY_BOUNDS[code] || []);
-  if (points.length) map.fitBounds(L.latLngBounds(points), { padding: [48, 48], maxZoom: 6 });
-}
 
 function countryFromLatLng(lat, lng) {
   const matches = Object.entries(COUNTRY_BOUNDS)
@@ -1403,7 +1062,7 @@ function requestMapSources(filters) {
     };
   }
   const enabled = routeFilterEnabled();
-  const distance = Number(document.querySelector("#route-distance").value);
+  const distance = routeDistanceKm;
   const routeChanged = lastWorkerRoute !== routeState || lastWorkerDistance !== distance || lastWorkerRouteEnabled !== enabled;
   if (routeChanged) {
     mapWorker.postMessage({ type: "route", route: enabled ? { grid: routeState.segmentGrid, distanceKm: distance } : null });
@@ -1414,7 +1073,7 @@ function requestMapSources(filters) {
   const bounds = sourceLayerBounds();
   const candidateBounds = candidatePanelOpen ? boundsAroundPoint(userLocation || map.getCenter(), 95) : null;
   const selection = {
-    countries: countrySelectionMode === "auto" ? null : [...filters.countries].sort(),
+    countries: null,
     types: [...filters.types].sort(), networks: [...filters.networks].sort(), confidence: filters.confidence,
   };
   const current = map.getBounds();
@@ -1556,7 +1215,8 @@ function showCoincidentPlaces(points, page = 0) {
   list.className = "coincident-places";
   selection.forEach((point) => {
     const button = document.createElement("button");
-    button.className = "button button-quiet";
+    button.className = "button button-secondary";
+    button.type = "button";
     button.textContent = mapPointPlace(point).name;
     button.onclick = () => renderPlace(mapPointPlace(point));
     list.append(button);
@@ -1564,14 +1224,13 @@ function showCoincidentPlaces(points, page = 0) {
   });
   if ((page + 1) * 20 < points.length) {
     const next = document.createElement("button");
-    next.className = "button button-quiet";
+    next.className = "button button-secondary";
+    next.type = "button";
     next.textContent = t("Next places");
     next.onclick = () => showCoincidentPlaces(points, page + 1);
     list.append(next);
   }
   panel.append(list);
-  panel.classList.add("is-open");
-  panel.setAttribute("aria-hidden", "false");
 }
 
 function updateMapDataHint() {
@@ -1705,13 +1364,10 @@ function refugePlace(item) {
     sourceLabel: "Refuges.info",
     sourceUrl: item.sourceUrl,
     sourceAction: t("Open the source"),
-    decision: t("Source listed; check locally"),
-    description: t("Shelter or hut; check source and local rules"),
-    stay: t("Check with source"), cost: t("Not listed"), water: t("Not listed"),
-    extraFacts: [[t("Capacity"), item.capacity], [t("Coordinate"), `${item.lat.toFixed(5)}, ${item.lng.toFixed(5)}`], [t("Source"), "Refuges.info contributors · CC BY-SA 2.0"]],
+    stay: "", cost: "", water: "",
+    extraFacts: [[t("Capacity"), item.capacity]],
     licenseUrl: "https://creativecommons.org/licenses/by-sa/2.0/",
     attribution: "Refuges.info contributors", licenseLabel: "CC BY-SA 2.0",
-    caution: t("Check the official source before departure."),
   };
 }
 
@@ -1761,44 +1417,15 @@ function campwildPlace(sourcePlace) {
     sourceLabel: "CampWild",
     sourceUrl: sourcePlace.sourceUrl || "https://map.campwild.org/",
     sourceAction: t("Open in CampWild"),
-    decision: t("Public CampWild Map Pin."),
-    description: t("Shelter, lean-to, bivouac spot or hut from the public CampWild map layer. Open the source for photos, comments and any check-ins."),
-    stay: placeType === "designated" ? t("Bivouac area; check source and local rules") : t("Shelter or hut; check source and local rules"),
-    cost: t("Not listed"),
-    water: t("Not listed"),
-    extraFacts: [
-      [t("Type"), typeLabel],
-      [t("CampWild ID"), String(sourcePlace.id)],
-    ],
-    caution: t("CampWild is community data. Check the source page, local rules, signs and current condition before planning a stay."),
+    stay: "",
+    cost: "",
+    water: "",
+    extraFacts: [],
+    caution: t("Community data: check the source and local rules before you go."),
   };
 }
 
-function renderCountries() {
-  document.querySelector("#country-grid").innerHTML = countries.map((country) => `
-    <article class="country-card">
-      <div class="country-topline">
-        <span class="country-flag" aria-hidden="true">${country.flag}</span>
-        <span class="status-pill ${country.statusClass}">${escapeHtml(country.status)}</span>
-      </div>
-      <h3>${escapeHtml(country.name)}</h3>
-      <p class="country-summary">${escapeHtml(country.summary)}</p>
-      <ul class="country-rules">${country.rules.map((rule) => `<li>${escapeHtml(rule)}</li>`).join("")}</ul>
-      <a class="country-source" href="${escapeHtml(country.url)}" target="_blank" rel="noreferrer">${escapeHtml(country.source)} ↗</a>
-    </article>
-  `).join("");
-}
 
-function renderSources() {
-  document.querySelector("#source-grid").innerHTML = sources.map((source) => `
-    <a class="source-card" href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">
-      <span class="source-icon">${escapeHtml(source.icon)}</span>
-      <h3>${escapeHtml(source.name)}</h3>
-      <p>${escapeHtml(source.description)}</p>
-      <span class="source-meta"><span>${escapeHtml(source.meta)}</span><span>↗</span></span>
-    </a>
-  `).join("");
-}
 
 function osmPhoto(tags) {
   if (/^https?:\/\//i.test(tags.image || "")) return tags.image;
@@ -1821,7 +1448,7 @@ function filterPreferenceState() {
     networks: [...document.querySelectorAll("[data-network]")]
       .map((input) => ({ value: input.dataset.network, checked: input.checked })),
     candidateHorizonKm,
-    routeFilterActive: document.querySelector("#route-filter-active").checked,
+    routeFilterActive,
   };
 }
 
@@ -1832,9 +1459,7 @@ function saveFilterPreferences() {
 function restoreFilterPreferences() {
   const preferences = storedJson(FILTER_PREFERENCES_KEY);
   if (!preferences || typeof preferences !== "object") return;
-  if (typeof preferences.routeFilterActive === "boolean") {
-    document.querySelector("#route-filter-active").checked = preferences.routeFilterActive;
-  }
+  if (typeof preferences.routeFilterActive === "boolean") routeFilterActive = preferences.routeFilterActive;
   const hasLegacyCampingLayer = Object.prototype.hasOwnProperty.call(preferences, "campingLayer");
 
   if (Array.isArray(preferences.sleepTypes)) {
@@ -1902,7 +1527,7 @@ function campingPlace(sourcePlace) {
     ? t("OSM reports restricted access. Check membership, reservation and conditions before cycling there.")
     : sourcePlace.tents === "no"
       ? t("This place is listed in OSM as not suitable for tents. Check this extra carefully before bikepacking.")
-      : t("Always check the official campsite website, opening hours and whether tents are welcome. OpenStreetMap may be outdated or incomplete.");
+      : t("OpenStreetMap may be out of date. Check opening hours and whether tents are welcome.");
   const photo = osmPhoto({
     image: sourcePlace.image,
     wikimedia_commons: sourcePlace.wikimediaCommons,
@@ -1928,10 +1553,10 @@ function campingPlace(sourcePlace) {
       sourceLabel: "OpenStreetMap",
       sourceUrl: sourcePlace.sourceUrl || "https://www.openstreetmap.org/",
       sourceAction: t("Open in OpenStreetMap"),
-      description: t("Campsite or motorhome site from OpenStreetMap. Nook shows these with the same clustering and filters as other places."),
-      stay: t("According to camping conditions"),
-      cost: sourcePlace.fee === "no" ? t("Marked as free") : sourcePlace.fee === "yes" ? t("Paid; check rate") : t("Not listed"),
-      water: sourcePlace.drinkingWater === "yes" ? t("Drinking water marked") : sourcePlace.waterPoint === "yes" ? t("Water point marked") : t("Not listed"),
+      description: "",
+      stay: "",
+      cost: sourcePlace.fee === "no" ? t("Marked as free") : sourcePlace.fee === "yes" ? t("Paid; check rate") : "",
+      water: sourcePlace.drinkingWater === "yes" ? t("Drinking water marked") : sourcePlace.waterPoint === "yes" ? t("Water point marked") : "",
       extraFacts: extras,
       caution,
     },
@@ -1973,45 +1598,39 @@ function renderImportedWaypoints() {
 
 function updateRouteStatus() {
   const status = document.querySelector("#route-status");
-  const distanceKm = Number(document.querySelector("#route-distance").value);
-  document.querySelector("#route-distance-output").textContent = t("{0} km", distanceKm);
+  const summary = document.querySelector("#route-summary");
   document.querySelectorAll("[data-route-distance]").forEach((button) => {
-    button.classList.toggle("is-active", Number(button.dataset.routeDistance) === distanceKm);
+    const value = button.dataset.routeDistance;
+    const active = value === "all" ? !routeFilterActive : routeFilterActive && Number(value) === routeDistanceKm;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
   });
 
   if (!routeState.segments.length) {
-    if (savedRoutes.length && importedWaypoints.length) {
-      status.textContent = t("{0} GPX waypoints visible. Select a route with track for the distance filter.", importedWaypoints.length.toLocaleString(NookI18n.locale));
-    } else if (savedRoutes.length) {
-      status.textContent = t("No active GPX track. Check a route to filter places along the route.");
-    } else {
-      status.textContent = t("Import a GPX track from, for example, Komoot, EuroVelo or cycle.travel.");
-    }
+    summary.textContent = savedRoutes.length && importedWaypoints.length
+      ? t("{0} waypoints", importedWaypoints.length.toLocaleString(NookI18n.locale))
+      : savedRoutes.length ? t("No route selected") : t("No route yet");
+    status.textContent = "";
+    status.hidden = true;
     return;
   }
 
-  const visibleTotal = Object.values(visiblePlaceCounts).reduce((total, count) => total + count, 0);
-  const routeLength = Math.round(routeState.lengthKm).toLocaleString(NookI18n.locale);
-  const savedLabel = routesPersisted ? t(" GPX list saved locally.") : t(" GPX list no longer fits in browser storage.");
-  status.textContent = routeFilterEnabled()
-    ? t("{0} spots within {1} km of {2} ({3} km).{4}", visibleTotal.toLocaleString(NookI18n.locale), distanceKm, routeState.name, routeLength, savedLabel)
-    : t("{0} ({1} km) is on the map; the distance filter is disabled.{2}", routeState.name, routeLength, savedLabel);
+  summary.textContent = routeFilterEnabled()
+    ? t("{0} · within {1} km", routeState.name, routeDistanceKm)
+    : t("{0} · all places", routeState.name);
+  status.textContent = routesPersisted ? "" : t("Your routes no longer fit in browser storage.");
+  status.hidden = routesPersisted;
 }
 
 function refreshMapPlaces() {
   requestMapSources(currentFilters());
   updateRouteStatus();
-  updateCountryFilterControls();
   updateFilterSummary();
 }
 
 function setRouteControls(hasActiveTrack, hasSavedRoutes = hasActiveTrack) {
-  document.querySelector("#route-distance").disabled = !hasActiveTrack;
-  document.querySelector("#route-filter-active").disabled = !hasActiveTrack;
-  document.querySelector("#clear-route").disabled = !hasSavedRoutes;
-  document.querySelectorAll("[data-route-distance]").forEach((button) => {
-    button.disabled = !hasActiveTrack;
-  });
+  document.querySelector("#route-distance-group").hidden = !hasActiveTrack;
+  document.querySelector("#clear-route").hidden = savedRoutes.length < 2 || !hasSavedRoutes;
 }
 
 function drawRoute() {
@@ -2070,22 +1689,17 @@ function normalizeRouteRecord(route, index = 0) {
 function renderRouteLibrary() {
   const library = document.querySelector("#route-library");
   const list = document.querySelector("#route-list");
-  const count = document.querySelector("#route-library-count");
   if (!savedRoutes.length) {
     library.hidden = true;
     list.innerHTML = "";
-    count.textContent = t("0 routes");
     return;
   }
 
   library.hidden = false;
-  const activeCount = savedRoutes.filter((route) => route.enabled).length;
-  count.textContent = t("{0}/{1} active", activeCount, savedRoutes.length);
   list.innerHTML = savedRoutes.map((route) => {
-    const lengthLabel = route.lengthKm ? t("{0} km", Math.round(route.lengthKm).toLocaleString(NookI18n.locale)) : t("waypoints");
-    const pointLabel = route.pointCount ? t("{0} points", route.pointCount.toLocaleString(NookI18n.locale)) : t("{0} waypoints", route.waypoints.length.toLocaleString(NookI18n.locale));
-    const sizeLabel = formatFileSize(route.originalSize);
-    const meta = [lengthLabel, pointLabel, sizeLabel].filter(Boolean).join(" · ");
+    const meta = route.lengthKm
+      ? t("{0} km", Math.round(route.lengthKm).toLocaleString(NookI18n.locale))
+      : t("{0} waypoints", route.waypoints.length.toLocaleString(NookI18n.locale));
     return `
       <div class="route-list-item">
         <label>
@@ -2095,7 +1709,7 @@ function renderRouteLibrary() {
             <small>${escapeHtml(meta)}</small>
           </span>
         </label>
-        <button type="button" data-route-remove="${escapeHtml(route.id)}" aria-label="${th("Remove {0}", escapeHtml(route.name))}">×</button>
+        <button type="button" data-route-remove="${escapeHtml(route.id)}" aria-label="${th("Remove {0}", escapeHtml(route.name))}">${ICON_CLOSE}</button>
       </div>
     `;
   }).join("");
@@ -2279,7 +1893,7 @@ function importGpx(file) {
         return;
       }
       savedRoutes.push(record);
-      if (rawLines.length) document.querySelector("#route-filter-active").checked = true;
+      if (rawLines.length) routeFilterActive = true;
       const saved = saveRouteLibrary();
       saveFilterPreferences();
       rebuildActiveRoutes({ fitPoints: rawLines.length ? rawLines.flat() : waypoints });
@@ -2302,25 +1916,6 @@ document.querySelectorAll("#sleep-filter input").forEach((control) => {
   });
 });
 
-document.querySelector("#country-filter").addEventListener("change", (event) => {
-  if (!event.target.matches("[data-country]")) return;
-  const checkedCountries = [...document.querySelectorAll("[data-country]:checked")].map((input) => input.dataset.country);
-  setSelectedCountries(checkedCountries, { persist: true, fit: false, announce: false });
-  refreshMapPlaces();
-  renderCountrySelectionPanel();
-});
-document.querySelector("#set-auto-countries").addEventListener("click", () => {
-  setAutoCountries();
-  refreshMapPlaces();
-});
-document.querySelector("#toggle-country-list").addEventListener("click", () => {
-  countryListExpanded = !countryListExpanded;
-  updateCountryFilterControls();
-});
-document.querySelector("#clear-countries").addEventListener("click", () => {
-  setSelectedCountries([], { fit: false });
-  refreshMapPlaces();
-});
 
 document.querySelector("#gpx-file").addEventListener("change", (event) => {
   const [file] = event.target.files;
@@ -2329,23 +1924,22 @@ document.querySelector("#gpx-file").addEventListener("change", (event) => {
 });
 document.querySelector("#choose-gpx").addEventListener("click", () => document.querySelector("#gpx-file").click());
 document.querySelector("#undo-route-removal").addEventListener("click", undoRouteRemoval);
-document.querySelector("#open-my-route").addEventListener("click", openRouteImportPanelFromLink);
-document.querySelector("#route-distance").addEventListener("input", updateRouteStatus);
-document.querySelector("#route-distance").addEventListener("change", (event) => {
-  setUserValue(ROUTE_DISTANCE_KEY, event.target.value);
-  refreshMapPlaces();
-});
 document.querySelectorAll("[data-route-distance]").forEach((button) => {
   button.addEventListener("click", () => {
-    const distance = button.dataset.routeDistance;
-    document.querySelector("#route-distance").value = distance;
-    setUserValue(ROUTE_DISTANCE_KEY, distance);
+    const value = button.dataset.routeDistance;
+    if (value === "all") {
+      routeFilterActive = false;
+    } else {
+      routeFilterActive = true;
+      routeDistanceKm = Number(value);
+      setUserValue(ROUTE_DISTANCE_KEY, value);
+    }
+    saveFilterPreferences();
     refreshMapPlaces();
   });
 });
-document.querySelector("#route-filter-active").addEventListener("change", () => {
-  saveFilterPreferences();
-  refreshMapPlaces();
+document.querySelectorAll("[data-disclosure]").forEach((toggle) => {
+  toggle.addEventListener("click", () => setDisclosure(toggle, toggle.getAttribute("aria-expanded") !== "true"));
 });
 document.querySelector("#clear-route").addEventListener("click", clearRoute);
 document.querySelector("#route-list").addEventListener("change", (event) => {
@@ -2404,7 +1998,6 @@ document.querySelector("#toggle-filters").addEventListener("click", () => {
   setFiltersOpen(!isOpen);
 });
 document.querySelector("#close-filters").addEventListener("click", () => setFiltersOpen(false));
-document.querySelector("#show-filtered-map").addEventListener("click", () => setFiltersOpen(false));
 document.querySelector("#reset-filters").addEventListener("click", resetFilters);
 document.querySelector("#map-data-action").addEventListener("click", () => mapDataError ? retryMapData() : setFiltersOpen(true));
 document.querySelector("#map-sidebar").addEventListener("cancel", (event) => {
@@ -2432,31 +2025,27 @@ document.addEventListener("keydown", (event) => {
   else renderEmptyPanel();
 });
 
-renderCountryFilter();
 const savedRouteDistance = Number(getUserValue(ROUTE_DISTANCE_KEY));
 if (savedRouteDistance >= 1 && savedRouteDistance <= 50) {
-  document.querySelector("#route-distance").value = savedRouteDistance;
+  // Older versions saved any value from 1 to 50 km; snap it to the nearest preset.
+  routeDistanceKm = ROUTE_DISTANCE_PRESETS.reduce((best, value) => Math.abs(value - savedRouteDistance) < Math.abs(best - savedRouteDistance) ? value : best);
 }
 
-restoreCountrySelection();
+removeUserValue(COUNTRY_FILTER_KEY);
 restoreFilterPreferences();
 restoreRoute();
 refreshMapPlaces();
+function setDisclosure(toggle, open) {
+  toggle.setAttribute("aria-expanded", String(open));
+  const body = document.getElementById(toggle.getAttribute("aria-controls"));
+  if (body) body.hidden = !open;
+}
+
 function openRouteImportPanelFromLink() {
-  const sidebar = document.querySelector("#map-sidebar");
-  sidebar.classList.add("no-transition");
   setFiltersOpen(true);
-  const routeImport = document.querySelector("#route-import");
-  routeImport.classList.add("is-highlighted");
-  const positionRouteImport = () => {
-    document.querySelector("#choose-gpx").focus({ preventScroll: true });
-    document.querySelector(".filter-content").scrollTop = Math.max(0, routeImport.offsetTop - 12);
-  };
+  setDisclosure(document.querySelector('[aria-controls="route-panel"]'), true);
   history.replaceState(null, "", window.location.pathname);
-  positionRouteImport();
-  requestAnimationFrame(positionRouteImport);
-  window.setTimeout(() => sidebar.classList.remove("no-transition"), 350);
-  window.setTimeout(() => routeImport.classList.remove("is-highlighted"), 2200);
+  document.querySelector("#choose-gpx").focus({ preventScroll: true });
 }
 
 const wantsRouteImport = new URLSearchParams(window.location.search).get("route") === "import" || window.location.hash === "#route-import";
@@ -2464,8 +2053,6 @@ if (wantsRouteImport) openRouteImportPanelFromLink();
 window.addEventListener("hashchange", () => {
   if (window.location.hash === "#route-import") openRouteImportPanelFromLink();
 });
-if (document.querySelector("#country-grid")) renderCountries();
-if (document.querySelector("#source-grid")) renderSources();
 
 window.addEventListener("load", () => {
   window.setTimeout(() => map.invalidateSize(), 120);

@@ -15,7 +15,6 @@ const feedbackServerMessages = {
   dialog.innerHTML = `
     <form class="feedback-form" novalidate>
       <button class="dialog-close" type="button" data-feedback-close aria-label="${th("Close")}">×</button>
-      <p class="eyebrow">${th("Feedback")}</p>
       <h2 id="feedback-title">${th("Suggestion, complaint or bug?")}</h2>
       <fieldset class="feedback-kinds">
         <legend class="visually-hidden">${th("Type of message")}</legend>
@@ -40,12 +39,6 @@ const feedbackServerMessages = {
     </form>`;
   document.body.append(dialog);
 
-  const fab = document.createElement("button");
-  fab.type = "button";
-  fab.className = "feedback-fab";
-  fab.setAttribute("aria-label", t("Send a suggestion, complaint or bug report"));
-  fab.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm3 5v2h10V9H7Zm0 4v2h7v-2H7Z"/></svg>`;
-  document.body.append(fab);
 
   const form = dialog.querySelector("form");
   const status = dialog.querySelector(".feedback-status");
@@ -82,7 +75,6 @@ const feedbackServerMessages = {
   }
 
   document.querySelectorAll("[data-feedback-open]").forEach((button) => button.addEventListener("click", open));
-  fab.addEventListener("click", open);
   dialog.querySelector("[data-feedback-close]").addEventListener("click", close);
   dialog.addEventListener("click", (event) => { if (event.target === dialog) close(); });
 

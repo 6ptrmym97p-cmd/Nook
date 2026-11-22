@@ -3,12 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title data-i18n-text="[&quot;About | Nook&quot;]">About | Nook</title>
+    <meta name="description" content="What Nook is, where the places come from and how your data is handled." data-i18n-attrs="{&quot;content&quot;: &quot;What Nook is, where the places come from and how your data is handled.&quot;}" />
+    <title data-i18n-text="[&quot;About Nook&quot;]">About Nook</title>
     <meta name="theme-color" content="#123127" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://tile.openstreetmap.org https://images.unsplash.com https://firebasestorage.googleapis.com https://mapcentia-www.s3-eu-west-1.amazonaws.com https://commons.wikimedia.org https://upload.wikimedia.org https://thumb.wikimedia.org; connect-src 'self'; worker-src 'self'; manifest-src 'self'; frame-src 'none'; upgrade-insecure-requests"
-    />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://tile.openstreetmap.org https://images.unsplash.com https://firebasestorage.googleapis.com https://mapcentia-www.s3-eu-west-1.amazonaws.com https://commons.wikimedia.org https://upload.wikimedia.org https://thumb.wikimedia.org; connect-src 'self'; worker-src 'self'; manifest-src 'self'; frame-src 'none'; upgrade-insecure-requests" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <link rel="manifest" href="manifest.webmanifest?v=20261020-2" />
@@ -17,52 +15,76 @@
     <link rel="icon" href="favicon.svg?v=20261016-5" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20261024-2" />
-    <script src="i18n.js?v=20261027-1"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20261122-1" />
+    <script src="i18n.js?v=20261122-1"></script>
+    <script src="site.js?v=20261122-1" defer></script>
   </head>
-  <body data-feedback-script="feedback.js?v=20261020-3">
+  <body data-feedback-script="feedback.js?v=20261122-1">
     <a class="skip-link" href="#main-content" data-i18n-text="[&quot;To content&quot;]">To content</a>
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Nook map" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Nook map&quot;}"><img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="38" height="38" aria-hidden="true" /><span>Nook</span></a>
-      <nav aria-label="Main navigation" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Main navigation&quot;}"><a href="index.html" data-i18n-text="[&quot;Map&quot;]">Map</a><a href="routebronnen.html" data-i18n-text="[&quot;Routes&quot;]">Routes</a><a href="regels.html" data-i18n-text="[&quot;Rules&quot;]">Rules</a><a href="netwerken.html" data-i18n-text="[&quot;Sources&quot;]">Sources</a><a class="mobile-about" href="over.html" aria-current="page" data-i18n-text="[&quot;About&quot;]">About</a></nav>
-      <div class="header-actions"><button class="header-action" type="button" data-feedback-open data-i18n-text="[&quot;Feedback&quot;]">Feedback</button><label class="language-control"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span class="language-code" aria-hidden="true">EN</span><select id="language-select" aria-label="Language" title="Choose language" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Language&quot;,&quot;title&quot;:&quot;Choose language&quot;}" disabled><option value="en">English</option></select></label></div>
+      <a class="brand" href="index.html" aria-label="Nook map" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Nook map&quot;}">
+        <img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="28" height="28" aria-hidden="true" />
+        <span>Nook</span>
+      </a>
+      <div class="site-menu" id="site-menu">
+        <nav class="site-nav" aria-label="Main navigation" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Main navigation&quot;}">
+        <a href="index.html" data-i18n-text="[&quot;Map&quot;]">Map</a>
+        <a href="routebronnen.html" data-i18n-text="[&quot;Routes&quot;]">Routes</a>
+        <a href="regels.html" data-i18n-text="[&quot;Camping rules&quot;]">Camping rules</a>
+        <a href="over.html" aria-current="page" data-i18n-text="[&quot;About&quot;]">About</a>
+        </nav>
+        <div class="header-actions">
+          <button class="header-action" type="button" data-feedback-open><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9.5L4 20z"/></svg><span data-i18n-text="[&quot;Feedback&quot;]">Feedback</span></button>
+          <label class="language-control"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4.5 5-4.5 13 0 18M12 3c4.5 5 4.5 13 0 18"/></svg><span class="language-code" aria-hidden="true">EN</span><span class="language-label" data-i18n-text="[&quot;Language&quot;]">Language</span><select id="language-select" aria-label="Language" title="Choose language" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Language&quot;, &quot;title&quot;: &quot;Choose language&quot;}" disabled><option value="en">English</option></select></label>
+        </div>
+      </div>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="site-menu" aria-expanded="false" aria-label="Menu" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Menu&quot;}">
+        <span class="icon-open"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span><span class="icon-close"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+      </button>
     </header>
-    <main id="main-content" tabindex="-1" class="info-main">
-      <section class="info-hero">
-        <div>
-          <p class="eyebrow" data-i18n-text="[&quot;About Nook&quot;]">About Nook</p>
-          <h1 data-i18n-text="[&quot;Sleep spots for people on the move.&quot;]">Sleep spots for people on the move.</h1>
-        </div>
-        <p data-i18n-text="[&quot;Nook helps bikepackers and touring cyclists find a feasible place to sleep along a route. The map combines official places, guest networks, public map data, campsites and private GPX files.&quot;]">Nook helps bikepackers and touring cyclists find a feasible place to sleep along a route. The map combines official places, guest networks, public map data, campsites and private GPX files.</p>
+
+    <main id="main-content" tabindex="-1" class="page">
+      <div class="page-intro">
+        <h1 data-i18n-text="[&quot;About Nook&quot;]">About Nook</h1>
+        <p class="lead" data-i18n-text="[&quot;Sleep spots for bikepackers and touring cyclists. Official places, host networks, campsites and your own GPX route on one map.&quot;]">Sleep spots for bikepackers and touring cyclists. Official places, host networks, campsites and your own GPX route on one map.</p>
+      </div>
+      <section class="page-section" id="bronnen">
+        <h2 data-i18n-text="[&quot;Sources on the map&quot;]">Sources on the map</h2>
+        <ul class="list">
+          <li><a class="list-row" href="https://opencampingmap.org/" target="_blank" rel="noreferrer"><span class="list-text"><span class="list-title">OpenStreetMap</span><span class="list-meta" data-i18n-text="[&quot;Campsites and camper sites&quot;]">Campsites and camper sites</span></span><span class="list-value" data-i18n-number="199621">199,621</span></a></li>
+          <li><a class="list-row" href="https://welcometomygarden.org/nl/explore" target="_blank" rel="noreferrer"><span class="list-text"><span class="list-title">Welcome To My Garden</span><span class="list-meta" data-i18n-text="[&quot;Camping in a garden, arranged in advance&quot;]">Camping in a garden, arranged in advance</span></span><span class="list-value" data-i18n-number="6772">6,772</span></a></li>
+          <li><a class="list-row" href="https://map.campwild.org/" target="_blank" rel="noreferrer"><span class="list-text"><span class="list-title">CampWild</span><span class="list-meta" data-i18n-text="[&quot;Huts, shelters and simple camping spots&quot;]">Huts, shelters and simple camping spots</span></span><span class="list-value" data-i18n-number="6095">6,095</span></a></li>
+          <li><a class="list-row" href="https://www.vriendenopdefiets.nl/zoek-een-logeeradres" target="_blank" rel="noreferrer"><span class="list-text"><span class="list-title">Vrienden op de Fiets</span><span class="list-meta" data-i18n-text="[&quot;Guest addresses, contact through the provider&quot;]">Guest addresses, contact through the provider</span></span><span class="list-value" data-i18n-number="5341">5,341</span></a></li>
+          <li><a class="list-row" href="https://1nitetent.com/#map" target="_blank" rel="noreferrer"><span class="list-text"><span class="list-title">1NITE TENT</span><span class="list-meta" data-i18n-text="[&quot;One night in a garden, arranged in advance&quot;]">One night in a garden, arranged in advance</span></span><span class="list-value" data-i18n-number="2655">2,655</span></a></li>
+          <li><a class="list-row" href="https://udinaturen.dk/kort" target="_blank" rel="noreferrer"><span class="list-text"><span class="list-title">Ud i Naturen</span><span class="list-meta" data-i18n-text="[&quot;Huts and camping spots in Denmark&quot;]">Huts and camping spots in Denmark</span></span><span class="list-value" data-i18n-number="2480">2,480</span></a></li>
+          <li><a class="list-row" href="https://www.refuges.info/" target="_blank" rel="noreferrer"><span class="list-text"><span class="list-title">Refuges.info</span><span class="list-meta" data-i18n-text="[&quot;Huts and shelters · CC BY-SA 2.0&quot;]">Huts and shelters · CC BY-SA 2.0</span></span><span class="list-value" data-i18n-number="1280">1,280</span></a></li>
+        </ul>
       </section>
-      <section class="info-content about-grid">
-        <article class="info-note">
-          <p class="eyebrow" data-i18n-text="[&quot;Who it’s for&quot;]">Who it’s for</p>
-          <h2 data-i18n-text="[&quot;On the road with bicycle and tent&quot;]">On the road with bicycle and tent</h2>
-          <p data-i18n-text="[&quot;Nook is intended for multi-day cycling trips. You can search for shelters, bivouac sites, free tent areas, guest gardens, cycling accommodation addresses, campsites and your own waypoints.&quot;]">Nook is intended for multi-day cycling trips. You can search for shelters, bivouac sites, free tent areas, guest gardens, cycling accommodation addresses, campsites and your own waypoints.</p>
-          <a class="info-link" href="index.html" data-i18n-text="[&quot;Open the map&quot;]">Open the map <span>→</span></a>
-        </article>
-        <div class="about-principles">
-          <article><span>01</span><div><h3 data-i18n-text="[&quot;Filter by country and type&quot;]">Filter by country and type</h3><p data-i18n-text="[&quot;Choose multiple countries, turn layers on or off, and only zoom in when you want to see individual pins.&quot;]">Choose multiple countries, turn layers on or off, and only zoom in when you want to see individual pins.</p></div></article>
-          <article><span>02</span><div><h3 data-i18n-text="[&quot;Use your GPX route&quot;]">Use your GPX route</h3><p data-i18n-text="[&quot;Import a route and only show places within a set distance from the route.&quot;]">Import a route and only show places within a set distance from the route.</p></div></article>
-          <article><span>03</span><div><h3 data-i18n-text="[&quot;Find somewhere nearby or further along&quot;]">Find somewhere nearby or further along</h3><p data-i18n-text="[&quot;Location access allows Nook to arrange places from your current position or from the center of the map.&quot;]">Location access allows Nook to arrange places from your current position or from the center of the map.</p></div></article>
-        </div>
-        <article class="data-note">
-          <p class="eyebrow" data-i18n-text="[&quot;Data&quot;]">Data</p>
-          <h2 data-i18n-text="[&quot;What stays in your browser&quot;]">What stays in your browser</h2>
-          <p data-i18n-text="[&quot;GPX routes, custom points and preferences are saved locally or for the session only. Other visitors do not see that data. Guest network contact information remains with the original platform.&quot;]">GPX routes, custom points and preferences are saved locally or for the session only. Other visitors do not see that data. Guest network contact information remains with the original platform.</p>
-        </article>
-        <article class="data-note">
-          <p class="eyebrow" data-i18n-text="[&quot;Privacy&quot;]">Privacy</p>
-          <h2 data-i18n-text="[&quot;No account; routes on your device&quot;]">No account; routes on your device</h2>
-          <p data-i18n-text="[&quot;Nook does not require an account. Your location will only be used with permission. GPX routes remain in your browser. If you send feedback, your message and the associated technical data will be stored.&quot;]">Nook does not require an account. Your location will only be used with permission. GPX routes remain in your browser. If you send feedback, your message and the associated technical data will be stored.</p>
-          <p data-i18n-text="[&quot;We count successful GPX imports without cookies or route data. These counts are kept for 90 days.&quot;]">We count successful GPX imports without cookies or route data. These counts are kept for 90 days.</p>
-        </article>
+      <section class="page-section" id="elders">
+        <h2 data-i18n-text="[&quot;Not on the map&quot;]">Not on the map</h2>
+        <ul class="list">
+          <li><a class="list-row" href="https://play.google.com/store/apps/details?id=org.warmshowers.app" target="_blank" rel="noreferrer"><span class="list-text"><span class="list-title">Warmshowers</span><span class="list-meta" data-i18n-text="[&quot;Guest addresses for cyclists, in the app&quot;]">Guest addresses for cyclists, in the app</span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li>
+          <li><a class="list-row" href="https://www.bivakzone.be/overzichtskaart.html" target="_blank" rel="noreferrer"><span class="list-text"><span class="list-title">Bivakzone.be</span><span class="list-meta" data-i18n-text="[&quot;Bivouac zones in Belgium&quot;]">Bivouac zones in Belgium</span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li>
+          <li><a class="list-row" href="https://kart.statskog.no/" target="_blank" rel="noreferrer"><span class="list-text"><span class="list-title">Statskog</span><span class="list-meta" data-i18n-text="[&quot;Huts and shelters in Norway&quot;]">Huts and shelters in Norway</span></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li>
+        </ul>
       </section>
+      <section class="page-section" id="privacy">
+        <h2 data-i18n-text="[&quot;Privacy&quot;]">Privacy</h2>
+        <ul class="plain-list">
+          <li data-i18n-text="[&quot;No account needed.&quot;]">No account needed.</li>
+          <li data-i18n-text="[&quot;Your location is only used when you allow it.&quot;]">Your location is only used when you allow it.</li>
+          <li data-i18n-text="[&quot;GPX routes stay on your device.&quot;]">GPX routes stay on your device.</li>
+          <li data-i18n-text="[&quot;We count successful GPX imports without cookies or route data, and keep the counts for 90 days.&quot;]">We count successful GPX imports without cookies or route data, and keep the counts for 90 days.</li>
+          <li data-i18n-text="[&quot;Feedback is stored with technical details.&quot;]">Feedback is stored with technical details.</li>
+        </ul>
+      </section>
+      <div class="callout">
+        <p data-i18n-text="[&quot;Spotted a mistake or missing a place?&quot;]">Spotted a mistake or missing a place?</p>
+        <button class="button button-secondary" type="button" data-feedback-open><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9.5L4 20z"/></svg><span data-i18n-text="[&quot;Feedback&quot;]">Feedback</span></button>
+      </div>
     </main>
-    <footer class="site-footer"><span>Nook</span><p data-i18n-text="[&quot;A map for cycle trips with campsites, shelters and hosts.&quot;]">A map for cycle trips with campsites, shelters and hosts. <a href="netwerken.html" data-i18n-text="[&quot;View resources&quot;]">View resources</a></p><a href="regels.html" data-i18n-text="[&quot;Read the rules&quot;]">Read the rules <span>→</span></a></footer>
     <script src="pwa.js?v=20261018-1"></script>
-    <script src="bootstrap.js?v=20261020-2"></script>
+    <script src="bootstrap.js?v=20261122-1"></script>
   </body>
 </html>

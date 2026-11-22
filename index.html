@@ -3,16 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta
-      name="description"
-      content="Map for bikepackers and touring cyclists: find places to sleep, import GPX routes and filter by distance, country and type."
-     data-i18n-attrs="{&quot;content&quot;:&quot;Map for bikepackers and touring cyclists: find places to sleep, import GPX routes and filter by distance, country and type.&quot;}"/>
+    <meta name="description" content="Map for bikepackers and touring cyclists: find places to sleep, import GPX routes and filter by distance and type." data-i18n-attrs="{&quot;content&quot;: &quot;Map for bikepackers and touring cyclists: find places to sleep, import GPX routes and filter by distance and type.&quot;}" />
     <title data-i18n-text="[&quot;Nook | Sleep spots for people on the move&quot;]">Nook | Sleep spots for people on the move</title>
     <meta name="theme-color" content="#123127" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://tile.openstreetmap.org https://images.unsplash.com https://firebasestorage.googleapis.com https://mapcentia-www.s3-eu-west-1.amazonaws.com https://commons.wikimedia.org https://upload.wikimedia.org https://thumb.wikimedia.org; connect-src 'self'; worker-src 'self'; manifest-src 'self'; frame-src 'none'; upgrade-insecure-requests"
-    />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://tile.openstreetmap.org https://images.unsplash.com https://firebasestorage.googleapis.com https://mapcentia-www.s3-eu-west-1.amazonaws.com https://commons.wikimedia.org https://upload.wikimedia.org https://thumb.wikimedia.org; connect-src 'self'; worker-src 'self'; manifest-src 'self'; frame-src 'none'; upgrade-insecure-requests" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <link rel="manifest" href="manifest.webmanifest?v=20261020-2" />
@@ -21,227 +15,153 @@
     <link rel="icon" href="favicon.svg?v=20261016-5" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="vendor/leaflet-1.9.4/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin=""
-    />
-    <link
-      rel="stylesheet"
-      href="vendor/leaflet.markercluster-1.5.3/MarkerCluster.css"
-      integrity="sha256-YU3qCpj/P06tdPBJGPax0bm6Q1wltfwjsho5TR4+TYc="
-      crossorigin=""
-    />
-    <link
-      rel="stylesheet"
-      href="vendor/leaflet.markercluster-1.5.3/MarkerCluster.Default.css"
-      integrity="sha256-YSWCMtmNZNwqex4CEw1nQhvFub2lmU7vcCKP+XVwwXA="
-      crossorigin=""
-    />
-    <link rel="stylesheet" href="styles.css?v=20261024-2" />
-    <script src="i18n.js?v=20261027-1"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="vendor/leaflet-1.9.4/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="vendor/leaflet.markercluster-1.5.3/MarkerCluster.css" integrity="sha256-YU3qCpj/P06tdPBJGPax0bm6Q1wltfwjsho5TR4+TYc=" crossorigin="" />
+    <link rel="stylesheet" href="vendor/leaflet.markercluster-1.5.3/MarkerCluster.Default.css" integrity="sha256-YSWCMtmNZNwqex4CEw1nQhvFub2lmU7vcCKP+XVwwXA=" crossorigin="" />
+    <link rel="stylesheet" href="styles.css?v=20261122-1" />
+    <script src="i18n.js?v=20261122-1"></script>
+    <script src="site.js?v=20261122-1" defer></script>
   </head>
-  <body data-feedback-script="feedback.js?v=20261020-3" data-app-script="app.js?v=20261025-1" class="map-app">
+  <body data-feedback-script="feedback.js?v=20261122-1" data-app-script="app.js?v=20261122-1" class="map-app">
     <a class="skip-link" href="#main-content" data-i18n-text="[&quot;To content&quot;]">To content</a>
     <header class="site-header">
-      <a class="brand" href="index.html" aria-label="Nook map" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Nook map&quot;}">
-        <img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="38" height="38" aria-hidden="true" />
+      <a class="brand" href="index.html" aria-label="Nook map" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Nook map&quot;}">
+        <img class="brand-mark" src="favicon.svg?v=20261016-5" alt="" width="28" height="28" aria-hidden="true" />
         <span>Nook</span>
       </a>
-      <nav aria-label="Main navigation" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Main navigation&quot;}">
+      <div class="site-menu" id="site-menu">
+        <nav class="site-nav" aria-label="Main navigation" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Main navigation&quot;}">
         <a href="index.html" aria-current="page" data-i18n-text="[&quot;Map&quot;]">Map</a>
         <a href="routebronnen.html" data-i18n-text="[&quot;Routes&quot;]">Routes</a>
-        <a href="regels.html" data-i18n-text="[&quot;Rules&quot;]">Rules</a>
-        <a href="netwerken.html" data-i18n-text="[&quot;Sources&quot;]">Sources</a>
-      <a class="mobile-about" href="over.html" data-i18n-text="[&quot;About&quot;]">About</a></nav>
-      <div class="header-actions"><button class="header-action" type="button" data-feedback-open data-i18n-text="[&quot;Feedback&quot;]">Feedback</button><label class="language-control"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span class="language-code" aria-hidden="true">EN</span><select id="language-select" aria-label="Language" title="Choose language" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Language&quot;,&quot;title&quot;:&quot;Choose language&quot;}" disabled><option value="en">English</option></select></label></div>
+        <a href="regels.html" data-i18n-text="[&quot;Camping rules&quot;]">Camping rules</a>
+        <a href="over.html" data-i18n-text="[&quot;About&quot;]">About</a>
+        </nav>
+        <div class="header-actions">
+          <button class="header-action" type="button" data-feedback-open><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9.5L4 20z"/></svg><span data-i18n-text="[&quot;Feedback&quot;]">Feedback</span></button>
+          <label class="language-control"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4.5 5-4.5 13 0 18M12 3c4.5 5 4.5 13 0 18"/></svg><span class="language-code" aria-hidden="true">EN</span><span class="language-label" data-i18n-text="[&quot;Language&quot;]">Language</span><select id="language-select" aria-label="Language" title="Choose language" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Language&quot;, &quot;title&quot;: &quot;Choose language&quot;}" disabled><option value="en">English</option></select></label>
+        </div>
+      </div>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="site-menu" aria-expanded="false" aria-label="Menu" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Menu&quot;}">
+        <span class="icon-open"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span><span class="icon-close"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+      </button>
     </header>
 
     <main id="main-content" tabindex="-1" class="map-main">
       <section class="map-section" id="kaart">
         <h1 class="visually-hidden" data-i18n-text="[&quot;Nook: sleep spots for people on the move&quot;]">Nook: sleep spots for people on the move</h1>
-
         <div class="map-shell">
           <div class="map-frame">
-            <div id="map" aria-label="Map of places to stay" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Map of places to stay&quot;}"></div>
+            <div id="map" aria-label="Map of places to stay" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Map of places to stay&quot;}"></div>
             <div class="map-data-hint" id="map-data-hint" role="status">
               <span id="map-data-copy" data-i18n-text="[&quot;Loading places…&quot;]">Loading places…</span>
               <button id="map-data-action" type="button" hidden data-i18n-text="[&quot;Try again&quot;]">Try again</button>
             </div>
           </div>
 
-          <div class="map-actions" aria-label="Map actions" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Map actions&quot;}">
-            <button class="map-overlay-button filter-toggle" id="toggle-filters" type="button" aria-controls="map-sidebar" aria-expanded="false" data-i18n-text="[&quot;Filters&quot;]">
-              <span aria-hidden="true">☷</span> Filters <small id="filter-count" hidden></small>
+          <div class="map-controls">
+            <button class="map-button" id="toggle-filters" type="button" aria-controls="map-sidebar" aria-expanded="false" aria-label="Map settings" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Map settings&quot;}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M19 7h1M4 17h3M13 17h7"/><circle cx="16" cy="7" r="2.5"/><circle cx="10" cy="17" r="2.5"/></svg><span data-i18n-text="[&quot;Map&quot;]">Map</span><span class="map-badge" id="filter-count" aria-hidden="true" hidden></span>
             </button>
-            <button class="map-overlay-button route-toggle" id="open-my-route" type="button" aria-controls="map-sidebar" data-i18n-text="[&quot;My route&quot;]">
-              <span aria-hidden="true">↝</span> My route
+            <button class="map-button" id="show-candidates" type="button" aria-controls="candidate-panel">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span data-i18n-text="[&quot;Tonight&quot;]">Tonight</span>
             </button>
-          </div>
-          <div class="map-decision-actions" aria-label="Find a place on your trip" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Find a place on your trip&quot;}">
-            <button class="map-location-button" id="locate-me" type="button" aria-label="Go to my current location" title="My location" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Go to my current location&quot;,&quot;title&quot;:&quot;My location&quot;}">
-              <span aria-hidden="true">◎</span>
-            </button>
-            <button class="tonight-button" id="show-candidates" type="button">
-              <span aria-hidden="true">⌖</span>
-              <strong data-i18n-text="[&quot;A place for tonight&quot;]">A place for tonight</strong>
+            <button class="map-button map-button-round" id="locate-me" type="button" aria-label="Go to my current location" title="My location" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Go to my current location&quot;, &quot;title&quot;: &quot;My location&quot;}">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg>
             </button>
           </div>
           <p class="location-status" id="location-status" aria-live="polite" hidden></p>
-          <dialog class="map-sidebar" id="map-sidebar" aria-labelledby="filters-title" aria-hidden="true">
-            <div class="overlay-panel-heading">
-              <div>
-                <span data-i18n-text="[&quot;Map settings&quot;]">Map settings</span>
-                <strong id="filters-title" data-i18n-text="[&quot;What do you want to see?&quot;]">What do you want to see?</strong>
-              </div>
-              <button class="overlay-close" id="close-filters" type="button" aria-label="Close filters" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Close filters&quot;}">×</button>
+
+          <dialog class="sheet map-sidebar" id="map-sidebar" aria-labelledby="filters-title" aria-hidden="true">
+            <div class="sheet-header">
+              <h2 id="filters-title" data-i18n-text="[&quot;Map&quot;]">Map</h2>
+              <button class="text-button" id="reset-filters" type="button" data-i18n-text="[&quot;Reset&quot;]">Reset</button>
+              <button class="icon-button" id="close-filters" type="button" aria-label="Close" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Close&quot;}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
             </div>
-            <div class="filter-content">
-            <fieldset class="filter-block sleep-filter" id="sleep-filter">
-              <legend data-i18n-text="[&quot;Type of stay&quot;]">Type of stay</legend>
-              <label class="check-row" data-i18n-text="[&quot;Designated free site&quot;]">
-                <input type="checkbox" value="designated" checked />
-                <span class="legend-dot dot-designated"></span>
-                Designated free site
-              </label>
-              <label class="check-row" data-i18n-text="[&quot;Hut or shelter&quot;]">
-                <input type="checkbox" value="hut" checked />
-                <span class="legend-dot dot-hut"></span>
-                Hut or shelter
-              </label>
-              <label class="check-row" data-i18n-text="[&quot;Host network&quot;]">
-                <input type="checkbox" value="host" checked />
-                <span class="legend-dot dot-host"></span>
-                Host network
-              </label>
-              <label class="check-row check-row-nested">
-                <input type="checkbox" data-network="wtmg" checked />
-                <span class="legend-ring ring-wtmg"></span>
-                Welcome To My Garden
-              </label>
-              <label class="check-row check-row-nested">
-                <input type="checkbox" data-network="nitetent" checked />
-                <span class="legend-ring ring-nitetent"></span>
-                1NITE TENT
-              </label>
-              <label class="check-row check-row-nested">
-                <input type="checkbox" data-network="vodf" checked />
-                <span class="legend-ring ring-vodf"></span>
-                Vrienden op de Fiets
-              </label>
-              <label class="check-row" data-i18n-text="[&quot;Campsites&quot;]">
-                <input id="camping-layer-active" type="checkbox" value="camping" checked />
-                <span class="legend-dot dot-camping"></span>
-                Campsites <small>OSM</small>
-              </label>
-              <p class="microcopy" data-i18n-text="[&quot;Numbers show how many places are grouped together. Zoom in to see individual places.&quot;]">Numbers show how many places are grouped together. Zoom in to see individual places.</p>
-              <p class="microcopy"><a href="regels.html#regiogids" data-i18n-text="[&quot;Rules for free camping and permission →&quot;]">Rules for free camping and permission →</a></p>
-              <p class="microcopy" id="camping-status" aria-live="polite" data-i18n-text="[&quot;OpenStreetMap campsites are included on the map.&quot;]">
-                OpenStreetMap campsites are included on the map.
-              </p>
-            </fieldset>
-
-            <fieldset class="filter-block country-filter" id="country-filter">
-              <legend data-i18n-text="[&quot;Countries&quot;]">Countries</legend>
-              <p class="microcopy country-note" id="country-selection-summary" data-i18n-text="[&quot;Based on the current map area.&quot;]">Based on the current map area.</p>
-              <div class="country-filter-actions" aria-label="Quick country selection" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Quick country selection&quot;}">
-                <button type="button" id="set-auto-countries" data-i18n-text="[&quot;Map area&quot;]">Map area</button>
-                <button type="button" id="toggle-country-list" aria-controls="country-toggle-grid" aria-expanded="false" data-i18n-text="[&quot;Choose countries&quot;]">Choose countries</button>
-                <button type="button" id="clear-countries" data-i18n-text="[&quot;None&quot;]">None</button>
-              </div>
-              <div class="country-toggle-grid" id="country-toggle-grid" hidden></div>
-            </fieldset>
-
-            <fieldset class="filter-block route-filter" id="route-import">
-              <legend data-i18n-text="[&quot;My route&quot;]">My route</legend>
-              <button class="button button-quiet gpx-button" id="choose-gpx" type="button" data-i18n-text="[&quot;Choose GPX from Files&quot;]">
-                Choose GPX from Files
-              </button>
-              <input id="gpx-file" class="visually-hidden" type="file" aria-labelledby="choose-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml" />
-              <a class="route-source-link" href="routebronnen.html" data-i18n-text="[&quot;Need a GPX? Find a route&quot;]">Need a GPX? Find a route <span>→</span></a>
-              <p class="route-feedback" id="route-feedback" role="status" hidden></p>
-              <div class="route-library" id="route-library" hidden>
-                <div class="route-library-heading">
-                  <span data-i18n-text="[&quot;Saved GPX routes&quot;]">Saved GPX routes</span>
-                  <small id="route-library-count" data-i18n-text="[&quot;0 routes&quot;]">0 routes</small>
+            <div class="sheet-body filter-content">
+              <section class="disclosure" id="route-import">
+                <button class="disclosure-toggle" type="button" aria-expanded="true" aria-controls="route-panel" data-disclosure>
+                  <span><span class="disclosure-title" data-i18n-text="[&quot;Route&quot;]">Route</span><span class="disclosure-summary" id="route-summary" data-i18n-text="[&quot;No route yet&quot;]">No route yet</span></span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="disclosure-body" id="route-panel">
+                  <p class="route-feedback" id="route-feedback" role="status" hidden></p>
+                  <div class="route-library" id="route-library" hidden>
+                    <div class="route-list" id="route-list"></div>
+                  </div>
+                  <div class="route-undo" id="route-undo" hidden>
+                    <span id="route-undo-message" role="status"></span>
+                    <button class="text-button" id="undo-route-removal" type="button" data-i18n-text="[&quot;Restore&quot;]">Restore</button>
+                  </div>
+                  <div class="route-actions">
+                    <button class="button button-secondary" id="choose-gpx" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span data-i18n-text="[&quot;Add GPX&quot;]">Add GPX</span></button>
+                    <input id="gpx-file" class="visually-hidden" type="file" aria-labelledby="choose-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml" />
+                    <a class="text-link" href="routebronnen.html" data-i18n-text="[&quot;Find a route&quot;]">Find a route</a>
+                  </div>
+                  <div class="field-group" id="route-distance-group" role="group" aria-labelledby="route-distance-label" hidden>
+                    <span class="field-label" id="route-distance-label" data-i18n-text="[&quot;Distance to route&quot;]">Distance to route</span>
+                    <div class="segmented">
+                      <button type="button" data-route-distance="3" aria-pressed="false">3 km</button>
+                      <button type="button" data-route-distance="10" aria-pressed="true">10 km</button>
+                      <button type="button" data-route-distance="25" aria-pressed="false">25 km</button>
+                      <button type="button" data-route-distance="all" aria-pressed="false" data-i18n-text="[&quot;All&quot;]">All</button>
+                    </div>
+                  </div>
+                  <p class="microcopy" id="route-status" aria-live="polite"></p>
+                  <button class="text-button text-button-danger" id="clear-route" type="button" hidden data-i18n-text="[&quot;Clear all GPX routes&quot;]">Clear all GPX routes</button>
                 </div>
-                <div class="route-list" id="route-list"></div>
-              </div>
-              <div class="route-undo" id="route-undo" hidden>
-                <span id="route-undo-message" role="status"></span>
-                <button id="undo-route-removal" type="button" data-i18n-text="[&quot;Restore&quot;]">Restore</button>
-              </div>
-              <div class="route-distance-control">
-                <label for="route-distance" data-i18n-text="[&quot;Maximum distance from route&quot;]">Maximum distance from route</label>
-                <output id="route-distance-output" for="route-distance">10 km</output>
-              </div>
-              <input id="route-distance" class="route-distance" type="range" min="1" max="50" step="1" value="10" disabled />
-              <div class="route-presets" aria-label="Distance presets" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Distance presets&quot;}">
-                <button type="button" data-route-distance="3" disabled>3 km</button>
-                <button type="button" data-route-distance="8" disabled>8 km</button>
-                <button type="button" data-route-distance="15" disabled>15 km</button>
-                <button type="button" data-route-distance="25" disabled>25 km</button>
-              </div>
-              <label class="check-row route-active-row" data-i18n-text="[&quot;Only places along the route&quot;]">
-                <input id="route-filter-active" type="checkbox" checked disabled />
-                Only places along the route
-              </label>
-              <button class="route-clear" id="clear-route" type="button" disabled data-i18n-text="[&quot;Clear all GPX routes&quot;]">Clear all GPX routes</button>
-            <p class="microcopy" id="route-status" aria-live="polite" data-i18n-text="[&quot;GPX from Komoot, EuroVelo or cycle.travel.&quot;]">
-                GPX from Komoot, EuroVelo or cycle.travel.
-              </p>
-            </fieldset>
-            </div>
-            <div class="filter-footer">
-              <button class="button button-primary" id="show-filtered-map" type="button" data-i18n-text="[&quot;Show map&quot;]">Show map</button>
-              <button class="filter-reset" id="reset-filters" type="button" data-i18n-text="[&quot;Reset filters&quot;]">Reset filters</button>
+              </section>
+
+              <section class="disclosure" id="sleep-section">
+                <button class="disclosure-toggle" type="button" aria-expanded="false" aria-controls="sleep-filter" data-disclosure>
+                  <span><span class="disclosure-title" data-i18n-text="[&quot;Type of place&quot;]">Type of place</span><span class="disclosure-summary" id="sleep-summary" data-i18n-text="[&quot;All&quot;]">All</span></span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <fieldset class="disclosure-body" id="sleep-filter" hidden>
+                  <legend class="visually-hidden" data-i18n-text="[&quot;Type of place&quot;]">Type of place</legend>
+                  <div class="check-list">
+              <label class="check-row" data-i18n-text="[&quot;Designated free site&quot;]"><input type="checkbox" value="designated" checked /><span class="legend-dot dot-designated"></span>Designated free site</label>
+              <label class="check-row" data-i18n-text="[&quot;Hut or shelter&quot;]"><input type="checkbox" value="hut" checked /><span class="legend-dot dot-hut"></span>Hut or shelter</label>
+              <label class="check-row" data-i18n-text="[&quot;Host network&quot;]"><input type="checkbox" value="host" checked /><span class="legend-dot dot-host"></span>Host network</label>
+              <label class="check-row check-row-nested"><input type="checkbox" data-network="wtmg" checked /><span class="legend-ring ring-wtmg"></span>Welcome To My Garden</label>
+              <label class="check-row check-row-nested"><input type="checkbox" data-network="nitetent" checked /><span class="legend-ring ring-nitetent"></span>1NITE TENT</label>
+              <label class="check-row check-row-nested"><input type="checkbox" data-network="vodf" checked /><span class="legend-ring ring-vodf"></span>Vrienden op de Fiets</label>
+              <label class="check-row" data-i18n-text="[&quot;Campsites&quot;]"><input type="checkbox" id="camping-layer-active" value="camping" checked /><span class="legend-dot dot-camping"></span>Campsites</label>
+                  </div>
+                  <a class="text-link" href="regels.html" data-i18n-text="[&quot;Camping rules per country&quot;]">Camping rules per country</a>
+                </fieldset>
+              </section>
             </div>
           </dialog>
 
-          <aside class="place-panel" id="place-panel" aria-label="Place details" tabindex="-1" aria-live="polite" aria-hidden="true" inert data-i18n-attrs="{&quot;aria-label&quot;:&quot;Place details&quot;}"></aside>
-          <aside class="candidate-panel" id="candidate-panel" aria-label="Places for tonight" tabindex="-1" aria-hidden="true" inert data-i18n-attrs="{&quot;aria-label&quot;:&quot;Places for tonight&quot;}">
-            <div class="candidate-heading">
-              <div><span data-i18n-text="[&quot;Find a place on your trip&quot;]">Find a place on your trip</span><strong data-i18n-text="[&quot;Places for tonight&quot;]">Places for tonight</strong></div>
-              <button class="candidate-close" id="close-candidates" type="button" aria-label="Close suggestions" data-i18n-attrs="{&quot;aria-label&quot;:&quot;Close suggestions&quot;}">×</button>
+          <aside class="sheet panel-sheet place-panel" id="place-panel" aria-label="Place details" tabindex="-1" aria-hidden="true" inert data-i18n-attrs="{&quot;aria-label&quot;: &quot;Place details&quot;}"></aside>
+          <aside class="sheet panel-sheet candidate-panel" id="candidate-panel" aria-labelledby="candidate-title" tabindex="-1" aria-hidden="true" inert>
+            <div class="sheet-header">
+              <h2 id="candidate-title" data-i18n-text="[&quot;Tonight&quot;]">Tonight</h2>
+              <button class="icon-button" id="close-candidates" type="button" aria-label="Close" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Close&quot;}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
             </div>
-            <p class="candidate-intro" id="candidate-intro" data-i18n-text="[&quot;Use your location to rank suitable places nearby or further along your route.&quot;]">Use your location to rank suitable places nearby or further along your route.</p>
-            <div class="candidate-location-tools">
-              <button class="candidate-location-button" id="candidate-use-location" type="button" data-i18n-text="[&quot;Use current location&quot;]">
-                <span aria-hidden="true">◎</span>
-                Use current location
-              </button>
-              <span id="candidate-location-note" data-i18n-text="[&quot;Without GPS, Nook uses the center of the map.&quot;]">Without GPS, Nook uses the center of the map.</span>
+            <div class="sheet-body candidate-body">
+              <p class="microcopy" id="candidate-intro" data-i18n-text="[&quot;From the centre of the map.&quot;]">From the centre of the map.</p>
+              <button class="button button-secondary button-block" id="candidate-use-location" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg><span data-i18n-text="[&quot;Use my location&quot;]">Use my location</span></button>
+              <p class="microcopy" id="candidate-location-note" hidden></p>
+              <div class="segmented candidate-horizon" role="group" aria-label="Distance left to ride" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Distance left to ride&quot;}">
+                <button type="button" data-horizon="15" aria-pressed="false">15 km</button>
+                <button type="button" data-horizon="35" aria-pressed="true" class="is-active">35 km</button>
+                <button type="button" data-horizon="70" aria-pressed="false">70 km</button>
+              </div>
+              <div class="candidate-list" id="candidate-list"></div>
             </div>
-            <div class="candidate-horizon" aria-label="How far do you want to cycle?" data-i18n-attrs="{&quot;aria-label&quot;:&quot;How far do you want to cycle?&quot;}">
-              <span data-i18n-text="[&quot;Distance left to ride&quot;]">Distance left to ride</span>
-              <button type="button" data-horizon="15" aria-pressed="false">15 km</button>
-              <button type="button" data-horizon="35" aria-pressed="true" class="is-active">35 km</button>
-              <button type="button" data-horizon="70" aria-pressed="false">70 km</button>
-            </div>
-            <div class="candidate-list" id="candidate-list"></div>
           </aside>
         </div>
       </section>
     </main>
 
-    <script
-      src="vendor/leaflet-1.9.4/leaflet.js"
-      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-      crossorigin=""
-    ></script>
-    <script
-      src="vendor/leaflet.markercluster-1.5.3/leaflet.markercluster.js"
-      integrity="sha256-Hk4dIpcqOSb0hZjgyvFOP+cEmDXUKKNE/tT542ZbNQg="
-      crossorigin=""
-    ></script>
+    <script src="vendor/leaflet-1.9.4/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="vendor/leaflet.markercluster-1.5.3/leaflet.markercluster.js" integrity="sha256-Hk4dIpcqOSb0hZjgyvFOP+cEmDXUKKNE/tT542ZbNQg=" crossorigin=""></script>
+    <script src="countries.js?v=20261122-1"></script>
     <script src="public-data.js?v=20261024-1"></script>
     <script src="map-canvas.js?v=20261021-2"></script>
     <script src="pwa.js?v=20261018-1"></script>
-    <script src="bootstrap.js?v=20261020-2"></script>
+    <script src="bootstrap.js?v=20261122-1"></script>
   </body>
 </html>
