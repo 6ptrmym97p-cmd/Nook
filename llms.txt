@@ -1,0 +1,72 @@
+# Nook
+
+> Nook (https://ridewithnook.com) is a free, multilingual web map for bikepackers and touring cyclists. It helps you find a feasible place to sleep along a cycling route: campsites, huts and shelters, designated free tent sites and host gardens, with over 220,000 places worldwide.
+
+Nook runs in the browser and can be installed as a PWA. It needs no account and uses no tracking cookies. Imported GPX routes stay on the visitor's device. The interface is available in 21 languages; English is the default and other languages can be opened with `?lang=` (for example `?lang=nl`, `?lang=de`, `?lang=fr`).
+
+## What you can do with Nook
+
+- Filter the map by country and by type of stay: campsites, hut or shelter, designated free site, host network.
+- Import a GPX track or route (for example from Komoot, EuroVelo or cycle.travel) and show only places within a chosen distance of the route (for example 3, 8, 15 or 25 km).
+- "A place for tonight": rank up to nine nearby candidates from your current position, or further along your GPX route, for 15, 35 or 70 km of remaining cycling distance.
+- Look up the wild camping rules of 35 countries, with the official source (for example the Norwegian right to roam, Danish designated sites, strict rules in the Netherlands).
+
+## Pages
+
+- [Map](https://ridewithnook.com/): the interactive map with filters, GPX import and "A place for tonight".
+- [Camping rules](https://ridewithnook.com/regels): search a country for its wild camping rule, official source and regional notes (35 countries checked against official sources).
+- [Route sources](https://ridewithnook.com/routebronnen): where to find cycling and bikepacking routes as GPX.
+- [About Nook](https://ridewithnook.com/over): who Nook is for, every data source on the map with its number of places, and privacy.
+
+All pages also exist in Dutch under https://ridewithnook.com/nl/ (for example https://ridewithnook.com/nl/regels).
+
+## Wild camping by country
+
+Each guide gives the main rule, the official source, a regional background and the number of places on the Nook map for that country.
+
+- [Wild camping in Argentina](https://ridewithnook.com/wild-camping/argentina) · [Wildkamperen in Argentinië](https://ridewithnook.com/nl/wildkamperen/argentinie)
+- [Wild camping in Australia](https://ridewithnook.com/wild-camping/australia) · [Wildkamperen in Australië](https://ridewithnook.com/nl/wildkamperen/australie)
+- [Wild camping in Austria](https://ridewithnook.com/wild-camping/austria) · [Wildkamperen in Oostenrijk](https://ridewithnook.com/nl/wildkamperen/oostenrijk)
+- [Wild camping in Belgium](https://ridewithnook.com/wild-camping/belgium) · [Wildkamperen in België](https://ridewithnook.com/nl/wildkamperen/belgie)
+- [Wild camping in Bulgaria](https://ridewithnook.com/wild-camping/bulgaria) · [Wildkamperen in Bulgarije](https://ridewithnook.com/nl/wildkamperen/bulgarije)
+- [Wild camping in Canada](https://ridewithnook.com/wild-camping/canada) · [Wildkamperen in Canada](https://ridewithnook.com/nl/wildkamperen/canada)
+- [Wild camping in Chile](https://ridewithnook.com/wild-camping/chile) · [Wildkamperen in Chili](https://ridewithnook.com/nl/wildkamperen/chili)
+- [Wild camping in Croatia](https://ridewithnook.com/wild-camping/croatia) · [Wildkamperen in Kroatië](https://ridewithnook.com/nl/wildkamperen/kroatie)
+- [Wild camping in Czechia](https://ridewithnook.com/wild-camping/czechia) · [Wildkamperen in Tsjechië](https://ridewithnook.com/nl/wildkamperen/tsjechie)
+- [Wild camping in Denmark](https://ridewithnook.com/wild-camping/denmark) · [Wildkamperen in Denemarken](https://ridewithnook.com/nl/wildkamperen/denemarken)
+- [Wild camping in Estonia](https://ridewithnook.com/wild-camping/estonia) · [Wildkamperen in Estland](https://ridewithnook.com/nl/wildkamperen/estland)
+- [Wild camping in Finland](https://ridewithnook.com/wild-camping/finland) · [Wildkamperen in Finland](https://ridewithnook.com/nl/wildkamperen/finland)
+- [Wild camping in France](https://ridewithnook.com/wild-camping/france) · [Wildkamperen in Frankrijk](https://ridewithnook.com/nl/wildkamperen/frankrijk)
+- [Wild camping in Georgia](https://ridewithnook.com/wild-camping/georgia) · [Wildkamperen in Georgië](https://ridewithnook.com/nl/wildkamperen/georgie)
+- [Wild camping in Germany](https://ridewithnook.com/wild-camping/germany) · [Wildkamperen in Duitsland](https://ridewithnook.com/nl/wildkamperen/duitsland)
+- [Wild camping in Iceland](https://ridewithnook.com/wild-camping/iceland) · [Wildkamperen in IJsland](https://ridewithnook.com/nl/wildkamperen/ijsland)
+- [Wild camping in Ireland](https://ridewithnook.com/wild-camping/ireland) · [Wildkamperen in Ierland](https://ridewithnook.com/nl/wildkamperen/ierland)
+- [Wild camping in Italy](https://ridewithnook.com/wild-camping/italy) · [Wildkamperen in Italië](https://ridewithnook.com/nl/wildkamperen/italie)
+- [Wild camping in Japan](https://ridewithnook.com/wild-camping/japan) · [Wildkamperen in Japan](https://ridewithnook.com/nl/wildkamperen/japan)
+- [Wild camping in Latvia](https://ridewithnook.com/wild-camping/latvia) · [Wildkamperen in Letland](https://ridewithnook.com/nl/wildkamperen/letland)
+- [Wild camping in Lithuania](https://ridewithnook.com/wild-camping/lithuania) · [Wildkamperen in Litouwen](https://ridewithnook.com/nl/wildkamperen/litouwen)
+- [Wild camping in Luxembourg](https://ridewithnook.com/wild-camping/luxembourg) · [Wildkamperen in Luxemburg](https://ridewithnook.com/nl/wildkamperen/luxemburg)
+- [Wild camping in the Netherlands](https://ridewithnook.com/wild-camping/netherlands) · [Wildkamperen in Nederland](https://ridewithnook.com/nl/wildkamperen/nederland)
+- [Wild camping in New Zealand](https://ridewithnook.com/wild-camping/new-zealand) · [Wildkamperen in Nieuw-Zeeland](https://ridewithnook.com/nl/wildkamperen/nieuw-zeeland)
+- [Wild camping in Norway](https://ridewithnook.com/wild-camping/norway) · [Wildkamperen in Noorwegen](https://ridewithnook.com/nl/wildkamperen/noorwegen)
+- [Wild camping in Poland](https://ridewithnook.com/wild-camping/poland) · [Wildkamperen in Polen](https://ridewithnook.com/nl/wildkamperen/polen)
+- [Wild camping in Portugal](https://ridewithnook.com/wild-camping/portugal) · [Wildkamperen in Portugal](https://ridewithnook.com/nl/wildkamperen/portugal)
+- [Wild camping in Romania](https://ridewithnook.com/wild-camping/romania) · [Wildkamperen in Roemenië](https://ridewithnook.com/nl/wildkamperen/roemenie)
+- [Wild camping in Slovakia](https://ridewithnook.com/wild-camping/slovakia) · [Wildkamperen in Slowakije](https://ridewithnook.com/nl/wildkamperen/slowakije)
+- [Wild camping in Slovenia](https://ridewithnook.com/wild-camping/slovenia) · [Wildkamperen in Slovenië](https://ridewithnook.com/nl/wildkamperen/slovenie)
+- [Wild camping in Spain](https://ridewithnook.com/wild-camping/spain) · [Wildkamperen in Spanje](https://ridewithnook.com/nl/wildkamperen/spanje)
+- [Wild camping in Sweden](https://ridewithnook.com/wild-camping/sweden) · [Wildkamperen in Zweden](https://ridewithnook.com/nl/wildkamperen/zweden)
+- [Wild camping in Switzerland](https://ridewithnook.com/wild-camping/switzerland) · [Wildkamperen in Zwitserland](https://ridewithnook.com/nl/wildkamperen/zwitserland)
+- [Wild camping in the United Kingdom](https://ridewithnook.com/wild-camping/united-kingdom) · [Wildkamperen in Verenigd Koninkrijk](https://ridewithnook.com/nl/wildkamperen/verenigd-koninkrijk)
+- [Wild camping in the United States](https://ridewithnook.com/wild-camping/united-states) · [Wildkamperen in Verenigde Staten](https://ridewithnook.com/nl/wildkamperen/verenigde-staten)
+
+## Data sources on the map
+
+- OpenStreetMap campsites and caravan sites (about 199,600), via OpenCampingMap.
+- CampWild cabins, shelters and simple camping spots (about 6,100).
+- Welcome To My Garden host gardens (about 6,800) and 1NITE TENT host gardens (about 2,700): arrange your stay with the network first.
+- Vrienden op de Fiets addresses for cyclists and walkers (about 5,300).
+- Ud i Naturen official shelters and free tent areas in Denmark (about 2,500).
+- Refuges.info unguarded huts (about 1,300, CC BY-SA 2.0).
+
+Data are periodic public snapshots. Host networks are shown only as public map positions, without names or contact details. Always check the original source and local signs before staying somewhere.

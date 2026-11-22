@@ -12,7 +12,7 @@ Nook gebruikt `ridewithnook.com`. De kaart en informatiepagina's draaien statisc
 - Root directory: leeg (repository root)
 - Environment variables / secrets: niet nodig voor de statische build; feedback gebruikt de bindings en eventuele mailsecret hieronder.
 
-De build kopieert de bestaande HTML, CSS, JavaScript, iconen, manifest, `_headers`, `data/` en `vendor/` ongewijzigd naar `dist/`. Documentatie, ontwikkelscripts, Git-metadata en het oude GitHub Pages-bestand `CNAME` worden niet gepubliceerd. Er zijn geen npm-dependencies en er worden tijdens de build geen externe databronnen opgehaald.
+De build kopieert de bestaande HTML, CSS, JavaScript, iconen, manifest, `_headers`, `data/` en `vendor/` ongewijzigd naar `dist/`. Daarna genereert hij de Nederlandse pagina's onder `/nl/`, de landengidsen en `sitemap.xml` uit diezelfde bestanden; zie [vindbaarheid](vindbaarheid.md). Documentatie, ontwikkelscripts, Git-metadata en het oude GitHub Pages-bestand `CNAME` worden niet gepubliceerd. Er zijn geen npm-dependencies en er worden tijdens de build geen externe databronnen opgehaald.
 
 ## GitHub-integratie
 

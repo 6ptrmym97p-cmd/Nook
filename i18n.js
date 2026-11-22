@@ -33,6 +33,19 @@
     try { return normalize(localStorage.getItem(STORAGE_KEY)); } catch { return ""; }
   }
 
+  // Build-time pages (/nl/…, country guides) carry their own language; ?lang= still overrides it.
+  const prerendered = normalize(document.documentElement.getAttribute?.("data-prerendered-lang"));
+
+  function alternateFor(language) {
+    const href = prerendered && document.querySelector(`link[rel="alternate"][hreflang="${language}"]`)?.getAttribute("href");
+    if (!href) return "";
+    // Stay on the current host (previews, local builds) and keep page state such as ?country=;
+    // only the path comes from the alternate.
+    const current = new URL(location.href);
+    current.searchParams.delete("lang");
+    return new URL(href, location.href).pathname + current.search + current.hash;
+  }
+
   function setDocumentLanguage(language) {
     code = language;
     document.documentElement.lang = language;
@@ -98,7 +111,7 @@
       element.textContent = number(Number(element.dataset.i18nNumber));
     });
     const url = new URL(location.href);
-    if (code !== "en" || url.searchParams.has("lang")) {
+    if (code !== prerendered && (code !== "en" || url.searchParams.has("lang"))) {
       url.searchParams.set("lang", code);
       try { history.replaceState(history.state, "", url); } catch { /* Navigation still works without history access. */ }
       document.querySelectorAll('a[href]').forEach((anchor) => {
@@ -132,6 +145,11 @@
     try {
       await loadDictionary(language);
       try { localStorage.setItem(STORAGE_KEY, language); } catch { /* The URL preserves the choice if storage is blocked. */ }
+      const alternate = alternateFor(language);
+      if (alternate) {
+        location.assign(new URL(alternate, location.href).href);
+        return;
+      }
       const target = new URL(location.href);
       target.searchParams.set("lang", language);
       location.assign(target.href);
@@ -142,7 +160,7 @@
     }
   }
 
-  const requested = normalize(new URL(location.href).searchParams.get("lang")) || readPreference() || "en";
+  const requested = normalize(new URL(location.href).searchParams.get("lang")) || prerendered || readPreference() || "en";
   let failed = false;
   const ready = loadDictionary(requested).then((data) => {
     dictionary = data;

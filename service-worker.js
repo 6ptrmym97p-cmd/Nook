@@ -1,4 +1,4 @@
-const SHELL_CACHE = "nook-shell-20261122-1";
+const SHELL_CACHE = "nook-shell-20261122-2";
 const RUNTIME_CACHE = "nook-runtime-20261024-1";
 const TILE_CACHE = "nook-tiles-v1";
 const MAX_TILES = 256;
@@ -9,14 +9,14 @@ const APP_SHELL = [
   "./regels.html",
   "./netwerken.html",
   "./over.html",
-  "./i18n.js?v=20261122-1",
+  "./i18n.js?v=20261122-2",
   "./site.js?v=20261122-1",
   "./bootstrap.js?v=20261122-1",
   "./styles.css?v=20261122-1",
   "./app.js?v=20261122-1",
   "./countries.js?v=20261122-1",
-  "./country-rules.js?v=20261122-1",
-  "./rules.js?v=20261122-1",
+  "./country-rules.js?v=20261122-2",
+  "./rules.js?v=20261122-2",
   "./map-canvas.js?v=20261021-2",
   "./map-worker.js?v=20261024-1",
   "./vendor/supercluster-8.0.1.min.js",
