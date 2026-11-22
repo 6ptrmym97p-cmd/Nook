@@ -7,7 +7,7 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const output = path.join(root, "dist");
 rmSync(output, { recursive: true, force: true });
 mkdirSync(output);
-const assets = readdirSync(root).filter((name) => /\.(html|css|js|png|ico|svg|webmanifest)$/.test(name));
+const assets = readdirSync(root).filter((name) => /\.(html|css|js|png|jpg|ico|svg|webmanifest|txt|xml)$/.test(name));
 for (const name of [...assets, "_headers", "data", "vendor", "locales"]) {
   cpSync(path.join(root, name), path.join(output, name), { recursive: true });
 }

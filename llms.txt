@@ -1,0 +1,31 @@
+# Nook
+
+> Nook (https://ridewithnook.com) is a free, multilingual web map for bikepackers and touring cyclists. It helps you find a feasible place to sleep along a cycling route: campsites, huts and shelters, designated free tent sites and host gardens, with over 220,000 places worldwide.
+
+Nook runs in the browser and can be installed as a PWA. It needs no account and uses no tracking cookies. Imported GPX routes stay on the visitor's device. The interface is available in 21 languages; English is the default and other languages can be opened with `?lang=` (for example `?lang=nl`, `?lang=de`, `?lang=fr`).
+
+## What you can do with Nook
+
+- Filter the map by country and by type of stay: campsites, hut or shelter, designated free site, host network.
+- Import a GPX track or route (for example from Komoot, EuroVelo or cycle.travel) and show only places within a chosen distance of the route (for example 3, 8, 15 or 25 km).
+- "A place for tonight": rank up to nine nearby candidates from your current position, or further along your GPX route, for 15, 35 or 70 km of remaining cycling distance.
+- Read a country guide to the rules for wild camping and overnight stays (for example the Norwegian right to roam, Danish designated sites, strict rules in the Netherlands).
+
+## Pages
+
+- [Map](https://ridewithnook.com/): the interactive map with filters, GPX import and "A place for tonight".
+- [Rules: where can you stay overnight?](https://ridewithnook.com/regels): a country guide to wild camping and overnight stays for cyclists with a small tent, with official sources per country.
+- [Sources: places and providers](https://ridewithnook.com/netwerken): every data source on the map, with number of places and how to arrange a stay.
+- [Route sources](https://ridewithnook.com/routebronnen): where to find cycling and bikepacking routes as GPX.
+- [About Nook](https://ridewithnook.com/over): who Nook is for, how it works and privacy.
+
+## Data sources on the map
+
+- OpenStreetMap campsites and caravan sites (about 199,600), via OpenCampingMap.
+- CampWild cabins, shelters and simple camping spots (about 6,100).
+- Welcome To My Garden host gardens (about 6,800) and 1NITE TENT host gardens (about 2,700): arrange your stay with the network first.
+- Vrienden op de Fiets addresses for cyclists and walkers (about 5,300).
+- Ud i Naturen official shelters and free tent areas in Denmark (about 2,500).
+- Refuges.info unguarded huts (about 1,300, CC BY-SA 2.0).
+
+Data are periodic public snapshots. Host networks are shown only as public map positions, without names or contact details. Always check the original source and local signs before staying somewhere.
