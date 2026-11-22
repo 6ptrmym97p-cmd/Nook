@@ -558,10 +558,27 @@ function showPlaceMessage(title, message) {
 
 function placeFacts(place) {
   const unknown = new Set([t("Not listed"), t("Check with source"), t("According to camping conditions")]);
-  const hidden = new Set([t("CampWild ID"), t("Coordinate"), t("Source"), t("Type")]);
+  const hidden = new Set([t("CampWild ID"), t("Coordinate"), t("Source"), t("Type"), t("Website"), t("Telephone"), t("Email")]);
   const repeated = new Set([place.description, place.decision].filter(Boolean));
   return [[t("Stay"), place.stay], [t("Cost"), place.cost], [t("Water"), place.water], ...(place.extraFacts || [])]
     .filter(([label, value]) => value && !unknown.has(String(value)) && !hidden.has(label) && !repeated.has(value));
+}
+
+function placeContactLinks(place) {
+  const facts = new Map((place.extraFacts || []).map(([label, value]) => [label, String(value || "").trim()]));
+  const links = [];
+  const website = facts.get(t("Website"));
+  if (website) {
+    try {
+      const url = new URL(/^https?:\/\//i.test(website) ? website : `https://${website}`);
+      if (["http:", "https:"].includes(url.protocol)) links.push([url.href, url.hostname.replace(/^www\./, "")]);
+    } catch { /* Skip malformed source websites. */ }
+  }
+  const phone = facts.get(t("Telephone"));
+  if (phone && /^[+\d][\d\s().-]{4,}$/.test(phone)) links.push([`tel:${phone.replace(/[^\d+]/g, "")}`, phone]);
+  const email = facts.get(t("Email"));
+  if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) links.push([`mailto:${email}`, email]);
+  return links;
 }
 
 function renderPlace(place) {
@@ -603,6 +620,7 @@ function renderPlace(place) {
       ` : ""}
       ${facts.length ? `<dl class="place-facts">${facts.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}</dl>` : ""}
       ${text.map((value) => `<p>${escapeHtml(value)}</p>`).join("")}
+      ${placeContactLinks(place).length ? `<p class="place-contact">${placeContactLinks(place).map(([href, label]) => `<a href="${escapeHtml(href)}"${href.startsWith("http") ? ' target="_blank" rel="noreferrer"' : ""}>${escapeHtml(label)}</a>`).join("")}</p>` : ""}
       ${place.caution ? `<p class="place-caution">${escapeHtml(place.caution)}</p>` : ""}
       <div class="place-actions">
         ${navigateUrl ? `<a class="button button-primary" href="${escapeHtml(navigateUrl)}" target="_blank" rel="noreferrer">${ICON_NAVIGATE}${th("Navigate")}</a>` : ""}

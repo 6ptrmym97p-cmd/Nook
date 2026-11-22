@@ -12,6 +12,13 @@ const url = (file = "", language) => {
 };
 const catalogue = (code) => JSON.parse(fs.readFileSync(path.join(root, "locales", code + ".json"), "utf8"));
 const expectedPlaces = JSON.parse(fs.readFileSync(path.join(root, "data/map-index.json"), "utf8")).count;
+const openMenu = async (page) => {
+  if (await page.locator("#menu-toggle").isVisible() && (await page.locator("#menu-toggle").getAttribute("aria-expanded")) !== "true") await page.locator("#menu-toggle").click();
+};
+const openFeedback = async (page) => {
+  await openMenu(page);
+  await page.locator(".header-actions [data-feedback-open]").click();
+};
 const settled = async (page) => {
   await page.waitForFunction(() => typeof mapDataLoading !== "undefined" && !mapDataLoading);
   assert.equal(await page.evaluate(() => mapDataError), "");
@@ -29,7 +36,7 @@ const settled = async (page) => {
     await page.goto(url(), { waitUntil: "load" });
     await settled(page);
     assert.equal(await page.getAttribute("html", "lang"), "en");
-    assert.equal(await page.locator('nav a[href="index.html"]').innerText(), "Map");
+    assert.equal(await page.locator('.site-nav a[href="index.html"]').textContent(), "Map");
     assert.equal(downloads.length, 0, "The English default does not download other languages");
     assert.equal(await page.locator("#language-select option").count(), 21);
     console.log("PASS: English is the default for a Dutch browser, with 21 selectable languages and no extra language downloads");
@@ -42,15 +49,15 @@ const settled = async (page) => {
       assert.equal(await page.getAttribute("html", "lang"), language);
       assert.equal(await page.getAttribute("html", "dir"), ["ar", "ur"].includes(language) ? "rtl" : "ltr");
       assert.equal(await page.evaluate(() => mapManifest.count), expectedPlaces);
-      assert.equal(await page.locator("#show-candidates strong").innerText(), words["A place for tonight"]);
+      assert.equal(await page.locator("#show-candidates span").innerText(), words["Tonight"]);
       await page.locator("#toggle-filters").click();
-      assert.equal(await page.locator("#filters-title").innerText(), words["What do you want to see?"]);
-      assert.equal(await page.locator("#choose-gpx").innerText(), words["Choose GPX from Files"]);
+      assert.equal(await page.locator("#filters-title").innerText(), words["Map"]);
+      assert.equal(await page.locator("#choose-gpx").innerText(), words["Add GPX"]);
       await page.keyboard.press("Escape");
-      await page.locator(".feedback-fab").click();
+      await openFeedback(page);
       assert.equal(await page.locator("#feedback-title").innerText(), words["Suggestion, complaint or bug?"]);
       await page.locator("[data-feedback-close]").click();
-      for (const file of ["netwerken.html", "regels.html", "routebronnen.html", "over.html"]) {
+      for (const file of ["regels.html", "routebronnen.html", "over.html"]) {
         await page.goto(url(file, language), { waitUntil: "load" });
         await page.waitForFunction((code) => window.NookI18n?.code === code, language);
         assert.ok(await page.locator("h1").isVisible());
@@ -61,10 +68,11 @@ const settled = async (page) => {
     for (const width of [320, 844, 1440]) {
       await page.setViewportSize({ width, height: 900 });
       for (const language of ["en", "nl", "de", "ar", "ta", "zh"]) {
-        for (const file of ["", "netwerken.html", "regels.html"]) {
+        for (const file of ["", "over.html", "regels.html"]) {
           await page.goto(url(file, language), { waitUntil: "load" });
           await page.waitForFunction((code) => window.NookI18n?.code === code, language);
           assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${file}: overflow at ${width}px in ${language}`);
+          await openMenu(page);
           assert.ok(await page.locator("#language-select").isVisible());
         }
       }
@@ -77,19 +85,20 @@ const settled = async (page) => {
     const flowPage = await flow.newPage();
     await flowPage.goto(url(), { waitUntil: "load" });
     await settled(flowPage);
-    await flowPage.locator("#open-my-route").click();
+    await flowPage.locator("#toggle-filters").click();
     const routeName = 'My <img src=x onerror="window.unexpectedMarkup=true"> & route';
     const track = `<gpx version="1.1"><trk><name><![CDATA[${routeName}]]></name><trkseg><trkpt lat="52.1" lon="5.1"/><trkpt lat="52.12" lon="5.12"/></trkseg></trk></gpx>`;
     await flowPage.locator("#gpx-file").setInputFiles({ name: "route.gpx", mimeType: "application/gpx+xml", buffer: Buffer.from(track) });
     await flowPage.waitForFunction(() => savedRoutes.length === 1);
-    await flowPage.locator("#route-filter-active").uncheck();
+    await flowPage.locator('[data-route-distance="all"]').click();
     await flowPage.keyboard.press("Escape");
     await flowPage.evaluate(() => map.setView([52.1, 5.1], 11, { animate: false }));
+    await openMenu(flowPage);
     await Promise.all([flowPage.waitForURL((value) => value.searchParams.get("lang") === "fr"), flowPage.locator("#language-select").selectOption("fr")]);
     await settled(flowPage);
     assert.equal(await flowPage.getAttribute("html", "lang"), "fr");
     assert.equal(await flowPage.evaluate(() => savedRoutes[0].name), routeName);
-    assert.equal(await flowPage.locator("#route-filter-active").isChecked(), false);
+    assert.equal(await flowPage.evaluate(() => routeFilterActive), false);
     assert.equal(await flowPage.evaluate(() => map.getZoom()), 11);
     assert.equal(await flowPage.locator(".route-list-item img").count(), 0);
     assert.equal(await flowPage.evaluate(() => Boolean(window.unexpectedMarkup)), false);
@@ -101,7 +110,8 @@ const settled = async (page) => {
     assert.equal(await flowPage.getAttribute("html", "lang"), "fr");
     assert.equal(await flowPage.evaluate(() => savedRoutes[0].name), routeName);
     await flow.setOffline(false);
-    await flowPage.locator('nav a[href*="over.html"]').click();
+    await openMenu(flowPage);
+    await flowPage.locator('.site-nav a[href*="over.html"]').click();
     await flowPage.waitForFunction(() => window.NookI18n?.code === "fr");
     assert.equal(await flowPage.getAttribute("html", "lang"), "fr");
     console.log("PASS: language selection preserves GPX names, map view and filters, survives offline reload and follows navigation");
@@ -111,7 +121,7 @@ const settled = async (page) => {
       assert.equal(body.context.language, "fr");
       await route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ error: "Feedback is nog niet ingesteld." }) });
     });
-    await flowPage.locator(".feedback-fab").click();
+    await openFeedback(flowPage);
     await flowPage.locator('[name="message"]').fill("Interface language test");
     await flowPage.locator('.feedback-form [type="submit"]').click();
     await flowPage.waitForFunction(() => document.querySelector(".feedback-status").classList.contains("is-error"));

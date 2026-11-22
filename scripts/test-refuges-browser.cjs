@@ -32,16 +32,17 @@ const sample = JSON.parse(fs.readFileSync(path.join(root, "data", chunk.file)))[
     await page.goto(base, { waitUntil: "domcontentloaded" });
     await settled();
     await page.locator("#toggle-filters").click();
+    await page.evaluate(() => { const toggle = document.querySelector('[aria-controls="sleep-filter"]'); if (toggle.getAttribute("aria-expanded") !== "true") toggle.click(); });
     for (const input of await page.locator('#sleep-filter input[value]').all()) if (await input.getAttribute("value") !== "hut") await input.uncheck();
     await page.locator("#close-filters").click();
     await page.evaluate(([lat, lng]) => { map.setView([lat, lng], 17, { animate: false }); refreshMapPlaces(); }, [sample.lat, sample.lng]);
     await settled();
     assert.ok(await page.evaluate(() => visiblePlaceCounts.refuges > 0));
     await open();
-    assert.equal(await page.locator("#place-panel h3").innerText(), sample.name);
+    assert.equal(await page.locator("#place-panel h2").innerText(), sample.name);
     assert.ok(await page.locator('.place-attribution a[href="https://creativecommons.org/licenses/by-sa/2.0/"]').isVisible());
     assert.match(await page.locator("#place-panel").innerText(), /Refuges.info contributors/);
-    assert.match(await page.locator(".place-facts li").filter({ hasText: /^Cost/ }).innerText(), /Not listed/);
+    assert.equal(await page.locator(".place-facts dt").filter({ hasText: /^Cost$/ }).count(), 0, "Unknown prices are left out instead of shown as 'Not listed'");
     await page.locator("#place-panel .place-panel-close").click();
     await page.evaluate(() => navigator.serviceWorker.ready);
     await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
@@ -49,7 +50,7 @@ const sample = JSON.parse(fs.readFileSync(path.join(root, "data", chunk.file)))[
     await page.reload({ waitUntil: "load" });
     await settled();
     await open();
-    assert.equal(await page.locator("#place-panel h3").innerText(), sample.name);
+    assert.equal(await page.locator("#place-panel h2").innerText(), sample.name);
     assert.deepEqual(errors, []);
     console.log("PASS: real Refuges.info pin, source page, attribution, unknown price, hut filter and visited details work offline");
     await context.close();
