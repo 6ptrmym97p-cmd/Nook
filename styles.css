@@ -300,15 +300,15 @@ img { max-width: 100%; }
   text-decoration: none;
 }
 .brand-mark { display: block; width: 32px; height: 32px; border-radius: 8px; }
+/* The wordmark is drawn from the same arch as the n in the emblem. */
 .brand-name {
   grid-column: 2;
   grid-row: 1;
   justify-self: center;
   color: var(--ink);
-  font-size: var(--fs-lead);
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  line-height: 0;
 }
+.brand-name svg { display: block; width: auto; height: 22px; }
 
 .site-menu { display: contents; }
 
