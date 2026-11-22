@@ -685,5 +685,14 @@
   "Elevation": "الارتفاع",
   "{0} m": "{0} م",
   "Nearby photo, {0} away": "صورة قريبة، على بُعد {0}",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "عند فتح مكان، يطلب Nook من Wikimedia Commons وOpen-Meteo وOpenStreetMap صورة قريبة والارتفاع وأقرب بلدة. تُرسل إحداثيات المكان فقط."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "عند فتح مكان، يطلب Nook من Wikimedia Commons وOpen-Meteo وOpenStreetMap صورة قريبة والارتفاع وأقرب بلدة. تُرسل إحداثيات المكان فقط.",
+  "Guide": "الدليل",
+  "Camping rules and routes per country | Nook": "قواعد التخييم والمسارات حسب البلد | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "قواعد التخييم البري ومسارات الدراجات حسب البلد، مع مصادر رسمية.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "قواعد التخييم والمسارات حسب البلد، مع مصدر. تحقق دائمًا في المكان أيضًا.",
+  "Routes in {0}": "مسارات في {0}",
+  "Route planners": "أدوات تخطيط المسارات",
+  "To ride a GPX route, add it on the map under Map → Route.": "لاتباع مسار GPX، أضفه على الخريطة من خريطة ← المسار.",
+  "Applies once you add a GPX route.": "يُطبَّق عند إضافة مسار GPX.",
+  "Route sources are now in the guide.": "مصادر المسارات موجودة الآن في الدليل."
 }

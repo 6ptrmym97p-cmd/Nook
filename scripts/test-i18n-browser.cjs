@@ -57,7 +57,7 @@ const settled = async (page) => {
       await openFeedback(page);
       assert.equal(await page.locator("#feedback-title").innerText(), words["Suggestion, complaint or bug?"]);
       await page.locator("[data-feedback-close]").click();
-      for (const file of ["regels.html", "routebronnen.html", "over.html"]) {
+      for (const file of ["regels.html", "over.html"]) {
         await page.goto(url(file, language), { waitUntil: "load" });
         await page.waitForFunction((code) => window.NookI18n?.code === code, language);
         assert.ok(await page.locator("h1").isVisible());

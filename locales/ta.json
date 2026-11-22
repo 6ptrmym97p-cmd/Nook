@@ -685,5 +685,14 @@
   "Elevation": "உயரம்",
   "{0} m": "{0} மீ",
   "Nearby photo, {0} away": "அருகிலுள்ள படம், {0} தொலைவில்",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "நீங்கள் ஓர் இடத்தைத் திறக்கும்போது, Nook அருகிலுள்ள படம், உயரம், அருகிலுள்ள ஊர் ஆகியவற்றை Wikimedia Commons, Open-Meteo, OpenStreetMap இடம் கேட்கிறது. அந்த இடத்தின் ஆயத்தொலைவுகள் மட்டுமே அனுப்பப்படும்."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "நீங்கள் ஓர் இடத்தைத் திறக்கும்போது, Nook அருகிலுள்ள படம், உயரம், அருகிலுள்ள ஊர் ஆகியவற்றை Wikimedia Commons, Open-Meteo, OpenStreetMap இடம் கேட்கிறது. அந்த இடத்தின் ஆயத்தொலைவுகள் மட்டுமே அனுப்பப்படும்.",
+  "Guide": "வழிகாட்டி",
+  "Camping rules and routes per country | Nook": "நாடு வாரியான முகாம் விதிகள் மற்றும் வழிகள் | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "நாடு வாரியான திறந்தவெளி முகாம் விதிகள் மற்றும் சைக்கிள் வழிகள், அதிகாரப்பூர்வ ஆதாரங்களுடன்.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "நாடு வாரியான முகாம் விதிகள் மற்றும் வழிகள், ஆதாரத்துடன். எப்போதும் இடத்திலும் சரிபாருங்கள்.",
+  "Routes in {0}": "{0} இல் வழிகள்",
+  "Route planners": "வழித் திட்டமிடும் கருவிகள்",
+  "To ride a GPX route, add it on the map under Map → Route.": "GPX வழியில் செல்ல, வரைபடத்தில் வரைபடம் → வழி இல் சேர்க்கவும்.",
+  "Applies once you add a GPX route.": "GPX வழியைச் சேர்த்ததும் பொருந்தும்.",
+  "Route sources are now in the guide.": "வழி ஆதாரங்கள் இப்போது வழிகாட்டியில் உள்ளன."
 }

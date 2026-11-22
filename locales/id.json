@@ -685,5 +685,14 @@
   "Elevation": "Ketinggian",
   "{0} m": "{0} m",
   "Nearby photo, {0} away": "Foto di dekat sini, {0} jauhnya",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Saat Anda membuka sebuah tempat, Nook meminta foto terdekat, ketinggian, dan kota terdekat dari Wikimedia Commons, Open-Meteo, dan OpenStreetMap. Hanya koordinat tempat itu yang dikirim."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Saat Anda membuka sebuah tempat, Nook meminta foto terdekat, ketinggian, dan kota terdekat dari Wikimedia Commons, Open-Meteo, dan OpenStreetMap. Hanya koordinat tempat itu yang dikirim.",
+  "Guide": "Panduan",
+  "Camping rules and routes per country | Nook": "Aturan berkemah dan rute per negara | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "Aturan berkemah liar dan rute sepeda per negara, dengan sumber resmi.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "Aturan berkemah dan rute per negara, dengan sumber. Selalu periksa juga di lokasi.",
+  "Routes in {0}": "Rute di {0}",
+  "Route planners": "Perencana rute",
+  "To ride a GPX route, add it on the map under Map → Route.": "Untuk mengikuti rute GPX, tambahkan di peta melalui Peta → Rute.",
+  "Applies once you add a GPX route.": "Berlaku setelah Anda menambahkan rute GPX.",
+  "Route sources are now in the guide.": "Sumber rute kini ada di panduan."
 }

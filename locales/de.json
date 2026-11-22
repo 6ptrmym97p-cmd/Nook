@@ -685,5 +685,14 @@
   "Elevation": "Höhe",
   "{0} m": "{0} m",
   "Nearby photo, {0} away": "Foto in der Nähe, {0} entfernt",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Wenn du einen Platz öffnest, fragt Nook Wikimedia Commons, Open-Meteo und OpenStreetMap nach einem Foto aus der Nähe, der Höhe und dem nächsten Ort. Gesendet werden nur die Koordinaten des Platzes."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Wenn du einen Platz öffnest, fragt Nook Wikimedia Commons, Open-Meteo und OpenStreetMap nach einem Foto aus der Nähe, der Höhe und dem nächsten Ort. Gesendet werden nur die Koordinaten des Platzes.",
+  "Guide": "Guide",
+  "Camping rules and routes per country | Nook": "Campingregeln und Routen nach Land | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "Regeln zum Wildcampen und Radrouten nach Land, mit offiziellen Quellen.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "Campingregeln und Routen nach Land, mit Quelle. Prüfe immer auch vor Ort.",
+  "Routes in {0}": "Routen in {0}",
+  "Route planners": "Routenplaner",
+  "To ride a GPX route, add it on the map under Map → Route.": "Eine GPX-Route fügst du auf der Karte unter Karte → Route hinzu.",
+  "Applies once you add a GPX route.": "Gilt, sobald du eine GPX-Route hinzufügst.",
+  "Route sources are now in the guide.": "Routenquellen stehen jetzt im Guide."
 }

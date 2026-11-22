@@ -685,5 +685,14 @@
   "Elevation": "Tsayi",
   "{0} m": "m {0}",
   "Nearby photo, {0} away": "Hoton kusa, nisan {0}",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Idan ka buɗe wani wuri, Nook yana tambayar Wikimedia Commons, Open-Meteo da OpenStreetMap hoton kusa, tsayin wurin da gari mafi kusa. Ana aika daidaitattun wurin ne kawai."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Idan ka buɗe wani wuri, Nook yana tambayar Wikimedia Commons, Open-Meteo da OpenStreetMap hoton kusa, tsayin wurin da gari mafi kusa. Ana aika daidaitattun wurin ne kawai.",
+  "Guide": "Jagora",
+  "Camping rules and routes per country | Nook": "Dokokin zango da hanyoyi a kowace ƙasa | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "Dokokin zango a daji da hanyoyin keke a kowace ƙasa, tare da majiyoyin hukuma.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "Dokokin zango da hanyoyi a kowace ƙasa, tare da majiya. Koyaushe ka tabbatar a wurin kuma.",
+  "Routes in {0}": "Hanyoyi a {0}",
+  "Route planners": "Masu tsara hanya",
+  "To ride a GPX route, add it on the map under Map → Route.": "Don bin hanyar GPX, ƙara ta a taswira ta Taswira → Hanya.",
+  "Applies once you add a GPX route.": "Yana aiki da zarar ka ƙara hanyar GPX.",
+  "Route sources are now in the guide.": "Majiyoyin hanyoyi yanzu suna cikin jagora."
 }

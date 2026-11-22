@@ -685,5 +685,14 @@
   "Elevation": "Высота",
   "{0} m": "{0} м",
   "Nearby photo, {0} away": "Фото поблизости, в {0}",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Когда вы открываете место, Nook запрашивает у Wikimedia Commons, Open-Meteo и OpenStreetMap фото поблизости, высоту и ближайший населённый пункт. Отправляются только координаты места."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Когда вы открываете место, Nook запрашивает у Wikimedia Commons, Open-Meteo и OpenStreetMap фото поблизости, высоту и ближайший населённый пункт. Отправляются только координаты места.",
+  "Guide": "Гид",
+  "Camping rules and routes per country | Nook": "Правила кемпинга и маршруты по странам | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "Правила дикого кемпинга и веломаршруты по странам, с официальными источниками.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "Правила кемпинга и маршруты по странам, с источником. Всегда уточняйте на месте.",
+  "Routes in {0}": "Маршруты: {0}",
+  "Route planners": "Планировщики маршрутов",
+  "To ride a GPX route, add it on the map under Map → Route.": "Чтобы ехать по маршруту GPX, добавьте его на карте: Карта → Маршрут.",
+  "Applies once you add a GPX route.": "Применяется, когда вы добавите маршрут GPX.",
+  "Route sources are now in the guide.": "Источники маршрутов теперь в гиде."
 }

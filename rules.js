@@ -6,6 +6,7 @@
   const hint = document.querySelector("#rules-hint");
   const card = document.querySelector("#country-rule");
   const guideSection = document.querySelector("#country-guides");
+  const routeSection = document.querySelector("#country-routes");
   if (!input || !card) return;
   // Country guide pages (/wild-camping/norway) name their country; the rules page itself has none.
   const preset = (card.dataset.country || "").toUpperCase();
@@ -117,10 +118,26 @@
     });
   }
 
+  function renderRoutes(code, entry) {
+    if (!routeSection) return;
+    const routes = entry?.routes || [];
+    routeSection.hidden = !routes.length;
+    routeSection.innerHTML = !routes.length ? "" : `
+      <h2>${escape(t("Routes in {0}", nameOf(code)))}</h2>
+      <ul class="list">
+        ${routes.map((route) => `
+          <li><a class="list-row" href="${escape(route.url)}" target="_blank" rel="noreferrer">
+            <span class="list-text"><span class="list-title">${escape(route.name)}</span><span class="list-meta">${route.meta.map((item) => escape(t(item))).join(" · ")}</span></span>
+            ${ICON_EXTERNAL}
+          </a></li>`).join("")}
+      </ul>`;
+  }
+
   function render(code, { fromMap = false } = {}) {
     if (!byCode.has(code)) {
       card.innerHTML = "";
       renderGuides(null);
+      renderRoutes(code, null);
       hint.hidden = true;
       return;
     }
@@ -150,6 +167,7 @@
       ${body}`;
     card.querySelector("[data-country]")?.addEventListener("click", (event) => select(event.currentTarget.dataset.country));
     renderGuides(entry);
+    renderRoutes(code, entry);
     input.placeholder = nameOf(code);
     hint.textContent = t("From your map view");
     hint.hidden = !fromMap;

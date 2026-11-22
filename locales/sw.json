@@ -685,5 +685,14 @@
   "Elevation": "Mwinuko",
   "{0} m": "m {0}",
   "Nearby photo, {0} away": "Picha ya karibu, umbali wa {0}",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Ukifungua mahali, Nook huomba picha ya karibu, mwinuko na mji wa karibu kutoka Wikimedia Commons, Open-Meteo na OpenStreetMap. Ni viwianishi vya mahali hapo pekee vinavyotumwa."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Ukifungua mahali, Nook huomba picha ya karibu, mwinuko na mji wa karibu kutoka Wikimedia Commons, Open-Meteo na OpenStreetMap. Ni viwianishi vya mahali hapo pekee vinavyotumwa.",
+  "Guide": "Mwongozo",
+  "Camping rules and routes per country | Nook": "Kanuni za kupiga kambi na njia kwa nchi | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "Kanuni za kupiga kambi porini na njia za baiskeli kwa nchi, pamoja na vyanzo rasmi.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "Kanuni za kupiga kambi na njia kwa nchi, pamoja na chanzo. Hakikisha pia papo hapo.",
+  "Routes in {0}": "Njia nchini {0}",
+  "Route planners": "Wapangaji wa njia",
+  "To ride a GPX route, add it on the map under Map → Route.": "Ili kufuata njia ya GPX, iongeze kwenye ramani chini ya Ramani → Njia.",
+  "Applies once you add a GPX route.": "Inatumika ukishaongeza njia ya GPX.",
+  "Route sources are now in the guide.": "Vyanzo vya njia sasa viko kwenye mwongozo."
 }

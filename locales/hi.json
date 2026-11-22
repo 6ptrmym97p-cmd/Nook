@@ -685,5 +685,14 @@
   "Elevation": "ऊँचाई",
   "{0} m": "{0} मी",
   "Nearby photo, {0} away": "पास की फ़ोटो, {0} दूर",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "जब आप कोई जगह खोलते हैं, तो Nook, Wikimedia Commons, Open-Meteo और OpenStreetMap से पास की फ़ोटो, ऊँचाई और सबसे नज़दीकी कस्बा माँगता है। सिर्फ़ जगह के निर्देशांक भेजे जाते हैं।"
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "जब आप कोई जगह खोलते हैं, तो Nook, Wikimedia Commons, Open-Meteo और OpenStreetMap से पास की फ़ोटो, ऊँचाई और सबसे नज़दीकी कस्बा माँगता है। सिर्फ़ जगह के निर्देशांक भेजे जाते हैं।",
+  "Guide": "गाइड",
+  "Camping rules and routes per country | Nook": "देश के अनुसार कैंपिंग नियम और रूट | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "देश के अनुसार खुले में कैंपिंग के नियम और साइकिल रूट, आधिकारिक स्रोतों के साथ।",
+  "Camping rules and routes per country, with sources. Always check locally too.": "देश के अनुसार कैंपिंग नियम और रूट, स्रोत के साथ। हमेशा मौके पर भी जाँच करें।",
+  "Routes in {0}": "{0} में रूट",
+  "Route planners": "रूट प्लानर",
+  "To ride a GPX route, add it on the map under Map → Route.": "GPX रूट पर चलने के लिए उसे नक्शे पर मानचित्र → रूट में जोड़ें।",
+  "Applies once you add a GPX route.": "GPX रूट जोड़ने पर लागू होता है।",
+  "Route sources are now in the guide.": "रूट स्रोत अब गाइड में हैं।"
 }

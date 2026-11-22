@@ -14,8 +14,7 @@ Nook runs in the browser and can be installed as a PWA. It needs no account and 
 ## Pages
 
 - [Map](https://ridewithnook.com/): the interactive map with filters, GPX import and "A place for tonight".
-- [Camping rules](https://ridewithnook.com/regels): search a country for its wild camping rule, official source and regional notes (35 countries checked against official sources).
-- [Route sources](https://ridewithnook.com/routebronnen): where to find cycling and bikepacking routes as GPX.
+- [Guide](https://ridewithnook.com/regels): search a country for its wild camping rule, official source, regional notes and national cycling routes (35 countries checked against official sources), plus route planners for finding GPX routes.
 - [About Nook](https://ridewithnook.com/over): who Nook is for, every data source on the map with its number of places, and privacy.
 
 All pages also exist in Dutch under https://ridewithnook.com/nl/ (for example https://ridewithnook.com/nl/regels).

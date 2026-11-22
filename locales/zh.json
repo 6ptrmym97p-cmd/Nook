@@ -685,5 +685,14 @@
   "Elevation": "海拔",
   "{0} m": "{0} 米",
   "Nearby photo, {0} away": "附近照片，距离 {0}",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "打开地点时，Nook 会向 Wikimedia Commons、Open-Meteo 和 OpenStreetMap 获取附近照片、海拔和最近的城镇。只会发送该地点的坐标。"
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "打开地点时，Nook 会向 Wikimedia Commons、Open-Meteo 和 OpenStreetMap 获取附近照片、海拔和最近的城镇。只会发送该地点的坐标。",
+  "Guide": "指南",
+  "Camping rules and routes per country | Nook": "各国露营规定和路线 | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "各国野营规定和骑行路线，附官方来源。",
+  "Camping rules and routes per country, with sources. Always check locally too.": "各国露营规定和路线，附来源。务必也在当地确认。",
+  "Routes in {0}": "{0}的路线",
+  "Route planners": "路线规划工具",
+  "To ride a GPX route, add it on the map under Map → Route.": "要按 GPX 路线骑行，请在地图的地图 → 路线中添加。",
+  "Applies once you add a GPX route.": "添加 GPX 路线后生效。",
+  "Route sources are now in the guide.": "路线来源现在在指南中。"
 }

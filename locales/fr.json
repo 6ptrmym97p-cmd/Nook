@@ -685,5 +685,14 @@
   "Elevation": "Altitude",
   "{0} m": "{0} m",
   "Nearby photo, {0} away": "Photo à proximité, à {0}",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Quand vous ouvrez un lieu, Nook demande à Wikimedia Commons, Open-Meteo et OpenStreetMap une photo proche, l’altitude et la localité la plus proche. Seules les coordonnées du lieu sont envoyées."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Quand vous ouvrez un lieu, Nook demande à Wikimedia Commons, Open-Meteo et OpenStreetMap une photo proche, l’altitude et la localité la plus proche. Seules les coordonnées du lieu sont envoyées.",
+  "Guide": "Guide",
+  "Camping rules and routes per country | Nook": "Règles de camping et itinéraires par pays | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "Règles de camping sauvage et itinéraires vélo par pays, avec sources officielles.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "Règles de camping et itinéraires par pays, avec sources. Vérifiez toujours aussi sur place.",
+  "Routes in {0}": "Itinéraires : {0}",
+  "Route planners": "Planificateurs d’itinéraires",
+  "To ride a GPX route, add it on the map under Map → Route.": "Pour suivre une trace GPX, ajoutez-la sur la carte via Carte → Itinéraire.",
+  "Applies once you add a GPX route.": "S’applique dès que vous ajoutez une trace GPX.",
+  "Route sources are now in the guide.": "Les sources d’itinéraires sont maintenant dans le guide."
 }

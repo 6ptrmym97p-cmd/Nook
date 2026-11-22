@@ -35,10 +35,10 @@
     <link rel="stylesheet" href="vendor/leaflet.markercluster-1.5.3/MarkerCluster.css" integrity="sha256-YU3qCpj/P06tdPBJGPax0bm6Q1wltfwjsho5TR4+TYc=" crossorigin="" />
     <link rel="stylesheet" href="vendor/leaflet.markercluster-1.5.3/MarkerCluster.Default.css" integrity="sha256-YSWCMtmNZNwqex4CEw1nQhvFub2lmU7vcCKP+XVwwXA=" crossorigin="" />
     <link rel="stylesheet" href="styles.css?v=20261123-1" />
-    <script src="i18n.js?v=20261123-1"></script>
+    <script src="i18n.js?v=20261123-2"></script>
     <script src="site.js?v=20261122-1" defer></script>
   </head>
-  <body data-feedback-script="feedback.js?v=20261122-1" data-app-script="app.js?v=20261123-1" class="map-app">
+  <body data-feedback-script="feedback.js?v=20261122-1" data-app-script="app.js?v=20261123-2" class="map-app">
     <a class="skip-link" href="#main-content" data-i18n-text="[&quot;To content&quot;]">To content</a>
     <header class="site-header">
       <a class="brand" href="index.html" aria-label="Nook map" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Nook map&quot;}">
@@ -48,8 +48,7 @@
       <div class="site-menu" id="site-menu">
         <nav class="site-nav" aria-label="Main navigation" data-i18n-attrs="{&quot;aria-label&quot;: &quot;Main navigation&quot;}">
         <a href="index.html" aria-current="page" data-i18n-text="[&quot;Map&quot;]">Map</a>
-        <a href="routebronnen.html" data-i18n-text="[&quot;Routes&quot;]">Routes</a>
-        <a href="regels.html" data-i18n-text="[&quot;Camping rules&quot;]">Camping rules</a>
+        <a href="regels.html" data-i18n-text="[&quot;Guide&quot;]">Guide</a>
         <a href="over.html" data-i18n-text="[&quot;About&quot;]">About</a>
         </nav>
         <div class="header-actions">
@@ -87,7 +86,7 @@
           </div>
           <p class="location-status" id="location-status" aria-live="polite" hidden></p>
 
-          <dialog class="sheet map-sidebar" id="map-sidebar" aria-labelledby="filters-title" aria-hidden="true">
+          <dialog class="sheet map-sidebar" id="map-sidebar" aria-labelledby="filters-title" aria-hidden="true" tabindex="-1">
             <div class="sheet-header">
               <h2 id="filters-title" data-i18n-text="[&quot;Map&quot;]">Map</h2>
               <button class="text-button" id="reset-filters" type="button" data-i18n-text="[&quot;Reset&quot;]">Reset</button>
@@ -111,9 +110,9 @@
                   <div class="route-actions">
                     <button class="button button-secondary" id="choose-gpx" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span data-i18n-text="[&quot;Add GPX&quot;]">Add GPX</span></button>
                     <input id="gpx-file" class="visually-hidden" type="file" aria-labelledby="choose-gpx" accept=".gpx,application/gpx+xml,application/xml,text/xml" />
-                    <a class="text-link" href="routebronnen.html" data-i18n-text="[&quot;Find a route&quot;]">Find a route</a>
+                    <a class="text-link" href="regels.html#planners" data-i18n-text="[&quot;Find a route&quot;]">Find a route</a>
                   </div>
-                  <div class="field-group" id="route-distance-group" role="group" aria-labelledby="route-distance-label" hidden>
+                  <div class="field-group" id="route-distance-group" role="group" aria-labelledby="route-distance-label">
                     <span class="field-label" id="route-distance-label" data-i18n-text="[&quot;Distance to route&quot;]">Distance to route</span>
                     <div class="segmented">
                       <button type="button" data-route-distance="3" aria-pressed="false">3 km</button>
@@ -122,6 +121,7 @@
                       <button type="button" data-route-distance="all" aria-pressed="false" data-i18n-text="[&quot;All&quot;]">All</button>
                     </div>
                   </div>
+                  <p class="microcopy" id="route-distance-hint" data-i18n-text="[&quot;Applies once you add a GPX route.&quot;]">Applies once you add a GPX route.</p>
                   <p class="microcopy" id="route-status" aria-live="polite"></p>
                   <button class="text-button text-button-danger" id="clear-route" type="button" hidden data-i18n-text="[&quot;Clear all GPX routes&quot;]">Clear all GPX routes</button>
                 </div>

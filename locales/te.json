@@ -685,5 +685,14 @@
   "Elevation": "ఎత్తు",
   "{0} m": "{0} మీ",
   "Nearby photo, {0} away": "సమీప ఫోటో, {0} దూరంలో",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "మీరు ఒక స్థలాన్ని తెరిచినప్పుడు, Nook సమీప ఫోటో, ఎత్తు మరియు సమీప పట్టణం కోసం Wikimedia Commons, Open-Meteo మరియు OpenStreetMap ను అడుగుతుంది. ఆ స్థలం యొక్క అక్షాంశ రేఖాంశాలు మాత్రమే పంపబడతాయి."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "మీరు ఒక స్థలాన్ని తెరిచినప్పుడు, Nook సమీప ఫోటో, ఎత్తు మరియు సమీప పట్టణం కోసం Wikimedia Commons, Open-Meteo మరియు OpenStreetMap ను అడుగుతుంది. ఆ స్థలం యొక్క అక్షాంశ రేఖాంశాలు మాత్రమే పంపబడతాయి.",
+  "Guide": "గైడ్",
+  "Camping rules and routes per country | Nook": "దేశాల వారీగా క్యాంపింగ్ నియమాలు మరియు మార్గాలు | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "దేశాల వారీగా బహిరంగ క్యాంపింగ్ నియమాలు మరియు సైకిల్ మార్గాలు, అధికారిక మూలాలతో.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "దేశాల వారీగా క్యాంపింగ్ నియమాలు మరియు మార్గాలు, మూలంతో. ఎప్పుడూ అక్కడికక్కడే కూడా తనిఖీ చేయండి.",
+  "Routes in {0}": "{0}లో మార్గాలు",
+  "Route planners": "మార్గ ప్లానర్లు",
+  "To ride a GPX route, add it on the map under Map → Route.": "GPX మార్గంలో వెళ్లడానికి, మ్యాప్‌లో మ్యాప్ → మార్గం లో జోడించండి.",
+  "Applies once you add a GPX route.": "GPX మార్గాన్ని జోడించిన తర్వాత వర్తిస్తుంది.",
+  "Route sources are now in the guide.": "మార్గ మూలాలు ఇప్పుడు గైడ్‌లో ఉన్నాయి."
 }

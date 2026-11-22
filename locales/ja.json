@@ -685,5 +685,14 @@
   "Elevation": "標高",
   "{0} m": "{0} m",
   "Nearby photo, {0} away": "近くの写真（{0}先）",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "場所を開くと、Nook は Wikimedia Commons、Open-Meteo、OpenStreetMap に近くの写真、標高、最寄りの町を問い合わせます。送信されるのはその場所の座標だけです。"
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "場所を開くと、Nook は Wikimedia Commons、Open-Meteo、OpenStreetMap に近くの写真、標高、最寄りの町を問い合わせます。送信されるのはその場所の座標だけです。",
+  "Guide": "ガイド",
+  "Camping rules and routes per country | Nook": "国別のキャンプのルールとルート | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "国別の野営ルールとサイクリングルート（公式情報源付き）。",
+  "Camping rules and routes per country, with sources. Always check locally too.": "国別のキャンプのルールとルート、情報源付き。必ず現地でも確認してください。",
+  "Routes in {0}": "{0}のルート",
+  "Route planners": "ルートプランナー",
+  "To ride a GPX route, add it on the map under Map → Route.": "GPXルートで走るには、地図の地図 → ルートから追加します。",
+  "Applies once you add a GPX route.": "GPXルートを追加すると適用されます。",
+  "Route sources are now in the guide.": "ルート情報はガイドに移動しました。"
 }

@@ -685,5 +685,14 @@
   "Elevation": "بلندی",
   "{0} m": "{0} میٹر",
   "Nearby photo, {0} away": "قریبی تصویر، {0} دور",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "جب آپ کوئی جگہ کھولتے ہیں تو Nook، Wikimedia Commons، Open-Meteo اور OpenStreetMap سے قریبی تصویر، بلندی اور قریب ترین قصبہ مانگتا ہے۔ صرف جگہ کے نقاط بھیجے جاتے ہیں۔"
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "جب آپ کوئی جگہ کھولتے ہیں تو Nook، Wikimedia Commons، Open-Meteo اور OpenStreetMap سے قریبی تصویر، بلندی اور قریب ترین قصبہ مانگتا ہے۔ صرف جگہ کے نقاط بھیجے جاتے ہیں۔",
+  "Guide": "رہنما",
+  "Camping rules and routes per country | Nook": "ملک کے لحاظ سے کیمپنگ کے قواعد اور راستے | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "ملک کے لحاظ سے کھلی جگہ کیمپنگ کے قواعد اور سائیکل راستے، سرکاری ذرائع کے ساتھ۔",
+  "Camping rules and routes per country, with sources. Always check locally too.": "ملک کے لحاظ سے کیمپنگ کے قواعد اور راستے، ذریعے کے ساتھ۔ ہمیشہ موقع پر بھی تصدیق کریں۔",
+  "Routes in {0}": "{0} میں راستے",
+  "Route planners": "راستہ ساز",
+  "To ride a GPX route, add it on the map under Map → Route.": "GPX راستے پر چلنے کے لیے اسے نقشے پر نقشہ ← راستہ میں شامل کریں۔",
+  "Applies once you add a GPX route.": "GPX راستہ شامل کرنے پر لاگو ہوتا ہے۔",
+  "Route sources are now in the guide.": "راستوں کے ذرائع اب رہنما میں ہیں۔"
 }

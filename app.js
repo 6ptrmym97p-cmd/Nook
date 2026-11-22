@@ -1015,7 +1015,11 @@ function setFiltersOpen(open) {
   sidebar.classList.toggle("is-open", open);
   sidebar.setAttribute("aria-hidden", String(!open));
   toggle.setAttribute("aria-expanded", String(open));
-  if (open && !sidebar.open) sidebar.showModal();
+  if (open && !sidebar.open) {
+    sidebar.showModal();
+    // showModal focuses the first button (Reset), which draws a focus ring on phones.
+    sidebar.focus({ preventScroll: true });
+  }
   if (!open && sidebar.open) sidebar.close();
 }
 
@@ -1777,7 +1781,8 @@ function refreshMapPlaces() {
 }
 
 function setRouteControls(hasActiveTrack, hasSavedRoutes = hasActiveTrack) {
-  document.querySelector("#route-distance-group").hidden = !hasActiveTrack;
+  // The distance choice stays visible so it can be set before a GPX is added.
+  document.querySelector("#route-distance-hint").hidden = hasActiveTrack;
   document.querySelector("#clear-route").hidden = savedRoutes.length < 2 || !hasSavedRoutes;
 }
 
@@ -2148,6 +2153,23 @@ document.querySelector("#toggle-filters").addEventListener("click", () => {
 document.querySelector("#close-filters").addEventListener("click", () => setFiltersOpen(false));
 document.querySelector("#reset-filters").addEventListener("click", resetFilters);
 document.querySelector("#map-data-action").addEventListener("click", () => mapDataError ? retryMapData() : setFiltersOpen(true));
+// The sheet itself takes focus on open; keep Tab and Shift+Tab cycling inside it.
+document.querySelector("#map-sidebar").addEventListener("keydown", (event) => {
+  if (event.key !== "Tab") return;
+  const sidebar = event.currentTarget;
+  const items = [...sidebar.querySelectorAll("button, a[href], input")]
+    .filter((element) => !element.disabled && !element.closest("[hidden]") && !element.classList.contains("visually-hidden") && element.getClientRects().length);
+  if (!items.length) return;
+  const first = items[0];
+  const last = items[items.length - 1];
+  if (event.shiftKey && (document.activeElement === first || document.activeElement === sidebar)) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+});
 document.querySelector("#map-sidebar").addEventListener("cancel", (event) => {
   event.preventDefault();
   setFiltersOpen(false);
@@ -2193,7 +2215,6 @@ function openRouteImportPanelFromLink() {
   setFiltersOpen(true);
   setDisclosure(document.querySelector('[aria-controls="route-panel"]'), true);
   history.replaceState(null, "", window.location.pathname);
-  document.querySelector("#choose-gpx").focus({ preventScroll: true });
 }
 
 const wantsRouteImport = new URLSearchParams(window.location.search).get("route") === "import" || window.location.hash === "#route-import";

@@ -8,7 +8,7 @@ import path from "node:path";
 import vm from "node:vm";
 
 export const ORIGIN = "https://ridewithnook.com";
-export const PAGES = ["index", "regels", "routebronnen", "over"];
+export const PAGES = ["index", "regels", "over"];
 const VOID = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"]);
 const RAW = new Set(["script", "style"]);
 const RCDATA = new Set(["title", "textarea"]);
@@ -165,8 +165,7 @@ const NL = {
   imageAlt: "Nook: vind een slaapplek op je fietsreis. Campings, shelters, hutten en gastvrije tuinen op één kaart.",
   pages: {
     index: { ogTitle: "Nook: slaapplekken voor bikepackers en fietsreizigers" },
-    regels: { ogTitle: "Regels voor wildkamperen per land | Nook" },
-    routebronnen: { ogTitle: "Routebronnen voor fietsen en bikepacking | Nook" },
+    regels: { ogTitle: "Wildkampeerregels en fietsroutes per land | Nook" },
     over: { ogTitle: "Over Nook: slaapplekken voor mensen onderweg" },
   },
 };

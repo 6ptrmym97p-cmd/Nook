@@ -32,7 +32,10 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
     await page.goto(url("index.html?route=import"), { waitUntil: "load" });
     await settled();
     assert.ok(await page.locator("#map-sidebar").evaluate((element) => element.open));
-    assert.equal(await page.evaluate(() => document.activeElement.id), "choose-gpx");
+    assert.equal(await page.evaluate(() => document.activeElement.id), "map-sidebar", "The sheet itself takes focus, so no button shows a focus ring");
+    assert.ok(await page.locator("#choose-gpx").isVisible(), "GPX upload is in the map settings");
+    assert.ok(await page.locator("#route-distance-group").isVisible(), "Distance can be set before a route exists");
+    assert.ok(await page.locator("#route-distance-hint").isVisible());
     assert.equal(await page.locator("#route-library").isVisible(), false, "An empty saved-route library stays hidden");
     const panel = await page.locator("#map-sidebar").boundingBox();
     assert.ok(panel.y >= 58 && panel.y + panel.height <= 700, "Filter sheet must fit the screen");
@@ -48,7 +51,8 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
     const [chooser] = await Promise.all([page.waitForEvent("filechooser"), page.locator("#choose-gpx").click()]);
     await chooser.setFiles(file("track.gpx", track));
     await page.waitForFunction(() => savedRoutes.length === 1);
-    assert.equal(await page.locator("#route-distance-group").isVisible(), true, "Distance choice appears once a track is active");
+    assert.equal(await page.locator("#route-distance-group").isVisible(), true);
+    assert.equal(await page.locator("#route-distance-hint").isVisible(), false, "The hint disappears once a track is active");
     assert.match(await page.locator("#route-summary").innerText(), /Testfietstocht/);
     const saved = await page.evaluate(() => localStorage.getItem(ROUTE_LIBRARY_KEY));
     const badFiles = ["<gpx><", '<gpx><wpt lat="NaN" lon="x"/></gpx>', '<gpx><wpt lon="5"/></gpx>', '<gpx><wpt lat="999" lon="5"/></gpx>', '<xml><wpt lat="52" lon="5"/></xml>'];
@@ -121,6 +125,11 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
     for (const [width, height] of [[320, 568], [390, 700], [844, 390], [1440, 900]]) {
       await page.setViewportSize({ width, height });
       for (const path of ["regels.html", "routebronnen.html", "netwerken.html", "over.html"]) {
+        if (path === "routebronnen.html") {
+          await page.goto(url(path), { waitUntil: "load" });
+          await page.waitForURL(/regels\.html#planners$/);
+          continue;
+        }
         await page.goto(url(path), { waitUntil: "load" });
         if (path === "netwerken.html") {
           await page.waitForURL(/over\.html#bronnen$/);
@@ -140,6 +149,10 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
           await page.waitForSelector("#country-rule h2");
           assert.equal(await page.locator("#country-rule h2").innerText(), "Germany");
           assert.equal(await page.locator("#country-rule .source-link").count(), 1);
+          assert.equal(await page.locator("#country-routes h2").innerText(), "Routes in Germany");
+          assert.match(await page.locator("#country-routes .list-title").first().innerText(), /Radnetz Deutschland/);
+          assert.ok(await page.locator("#planners .list-row").count() >= 5, "Route planners live in the guide");
+          assert.equal(await page.locator("#choose-gpx, #gpx-file, [data-route-distance]").count(), 0, "Settings can only be changed on the map");
           await page.locator("#regio-brandenburg .disclosure-toggle").waitFor();
           assert.match(await page.locator("#regio-brandenburg .source-link").getAttribute("href"), /^https:\/\/bravors\.brandenburg\.de\//);
           await page.fill("#rules-country", "swe");

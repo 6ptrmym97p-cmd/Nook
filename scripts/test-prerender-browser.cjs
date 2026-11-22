@@ -49,7 +49,7 @@ function signature(doc, translate) {
     const page = await context.newPage();
 
     // 1. Each Dutch page equals the runtime ?lang=nl translation of the English page.
-    for (const name of ["index", "regels", "routebronnen", "over"]) {
+    for (const name of ["index", "regels", "over"]) {
       await page.goto(`${base}/${name}.html?lang=nl`);
       await page.waitForFunction(() => window.NookI18n?.code === "nl");
       await page.evaluate(() => window.NookI18n.ready);
@@ -86,7 +86,7 @@ function signature(doc, translate) {
     // 3. Every page in the sitemap loads without missing same-origin files or script errors.
     const sitemap = fs.readFileSync(path.join(dist, "sitemap.xml"), "utf8");
     const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, url]) => new URL(url).pathname);
-    assert.equal(urls.length, 4 * 2 + 35 * 2);
+    assert.equal(urls.length, 3 * 2 + 35 * 2);
     for (const pathname of urls) {
       const missing = []; const errors = [];
       const onResponse = (response) => { if (response.url().startsWith(base) && response.status() >= 400) missing.push(`${response.status()} ${response.url()}`); };

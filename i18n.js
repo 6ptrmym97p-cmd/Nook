@@ -1,6 +1,6 @@
 /* Local interface translations. Source descriptions and imported GPX names stay unchanged. */
 (() => {
-  const VERSION = "20261123-1";
+  const VERSION = "20261123-2";
   const STORAGE_KEY = "nook-language-v1";
   const languages = [
     ["en", "English"], ["nl", "Nederlands"], ["ar", "العربية"],

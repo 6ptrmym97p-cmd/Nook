@@ -16,6 +16,16 @@ window.NOOK_COUNTRY_RULES = {
    ],
    "guides": [
     "regio-utrecht"
+   ],
+   "routes": [
+    {
+     "name": "Nederland Fietsland",
+     "url": "https://www.nederlandfietsland.nl/lf-routes/",
+     "meta": [
+      "LF routes",
+      "Direct download"
+     ]
+    }
    ]
   },
   "BE": {
@@ -31,6 +41,16 @@ window.NOOK_COUNTRY_RULES = {
    ],
    "guides": [
     "regio-belgium-bivouac"
+   ],
+   "routes": [
+    {
+     "name": "Visit Flanders",
+     "url": "https://www.visitflanders.com/en/discover-flanders/most-beautiful-cycle-routes",
+     "meta": [
+      "Icon routes",
+      "Planner"
+     ]
+    }
    ]
   },
   "LU": {
@@ -46,6 +66,16 @@ window.NOOK_COUNTRY_RULES = {
    ],
    "guides": [
     "regio-luxembourg"
+   ],
+   "routes": [
+    {
+     "name": "Visit Luxembourg",
+     "url": "https://www.visitluxembourg.com/experience-luxembourg/nature-outdoors/cycling",
+     "meta": [
+      "Route catalogue",
+      "By route"
+     ]
+    }
    ]
   },
   "DE": {
@@ -61,6 +91,16 @@ window.NOOK_COUNTRY_RULES = {
    ],
    "guides": [
     "regio-brandenburg"
+   ],
+   "routes": [
+    {
+     "name": "Radnetz Deutschland",
+     "url": "https://www.radnetz-deutschland.de/en.html",
+     "meta": [
+      "D routes",
+      "By route"
+     ]
+    }
    ]
   },
   "DK": {
@@ -93,6 +133,16 @@ window.NOOK_COUNTRY_RULES = {
    "guides": [
     "regio-smaland",
     "regio-skane"
+   ],
+   "routes": [
+    {
+     "name": "Kattegattleden",
+     "url": "https://kattegattleden.hoodin.com/en/item/ladda-ner-gpx-filer-9/ws8jxpvouxsf02inl57oyen686qv3lba",
+     "meta": [
+      "Coastal route",
+      "Direct download"
+     ]
+    }
    ]
   },
   "NO": {
@@ -123,6 +173,16 @@ window.NOOK_COUNTRY_RULES = {
    ],
    "guides": [
     "regio-france-bivouac"
+   ],
+   "routes": [
+    {
+     "name": "France Vélo Tourisme",
+     "url": "https://en.francevelotourisme.com/cycle-route",
+     "meta": [
+      "Official routes",
+      "By route"
+     ]
+    }
    ]
   },
   "CH": {
@@ -138,6 +198,16 @@ window.NOOK_COUNTRY_RULES = {
    ],
    "guides": [
     "regio-swiss-alps"
+   ],
+   "routes": [
+    {
+     "name": "SchweizMobil",
+     "url": "https://schweizmobil.ch/en/cycling-in-switzerland",
+     "meta": [
+      "Official network",
+      "Plus"
+     ]
+    }
    ]
   },
   "AT": {
@@ -168,6 +238,16 @@ window.NOOK_COUNTRY_RULES = {
    ],
    "guides": [
     "regio-italian-alps"
+   ],
+   "routes": [
+    {
+     "name": "Bicitalia",
+     "url": "https://www.bicitalia.org/",
+     "meta": [
+      "National network",
+      "Corridor"
+     ]
+    }
    ]
   },
   "GB": {

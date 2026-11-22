@@ -685,5 +685,14 @@
   "Elevation": "Yükseklik",
   "{0} m": "{0} m",
   "Nearby photo, {0} away": "Yakındaki fotoğraf, {0} uzakta",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Bir yeri açtığınızda Nook, Wikimedia Commons, Open-Meteo ve OpenStreetMap'ten yakındaki bir fotoğrafı, yüksekliği ve en yakın yerleşimi ister. Yalnızca yerin koordinatları gönderilir."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Bir yeri açtığınızda Nook, Wikimedia Commons, Open-Meteo ve OpenStreetMap'ten yakındaki bir fotoğrafı, yüksekliği ve en yakın yerleşimi ister. Yalnızca yerin koordinatları gönderilir.",
+  "Guide": "Rehber",
+  "Camping rules and routes per country | Nook": "Ülkelere göre kamp kuralları ve rotalar | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "Ülkelere göre serbest kamp kuralları ve bisiklet rotaları, resmî kaynaklarla.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "Ülkelere göre kamp kuralları ve rotalar, kaynakla. Her zaman yerinde de kontrol edin.",
+  "Routes in {0}": "{0} rotaları",
+  "Route planners": "Rota planlayıcılar",
+  "To ride a GPX route, add it on the map under Map → Route.": "Bir GPX rotasını izlemek için haritada Harita → Rota bölümünden ekleyin.",
+  "Applies once you add a GPX route.": "Bir GPX rotası eklediğinizde geçerli olur.",
+  "Route sources are now in the guide.": "Rota kaynakları artık rehberde."
 }

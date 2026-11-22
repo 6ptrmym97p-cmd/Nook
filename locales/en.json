@@ -685,5 +685,14 @@
   "Elevation": "Elevation",
   "{0} m": "{0} m",
   "Nearby photo, {0} away": "Nearby photo, {0} away",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.",
+  "Guide": "Guide",
+  "Camping rules and routes per country | Nook": "Camping rules and routes per country | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "Wild camping rules and cycling routes per country, with official sources.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "Camping rules and routes per country, with sources. Always check locally too.",
+  "Routes in {0}": "Routes in {0}",
+  "Route planners": "Route planners",
+  "To ride a GPX route, add it on the map under Map → Route.": "To ride a GPX route, add it on the map under Map → Route.",
+  "Applies once you add a GPX route.": "Applies once you add a GPX route.",
+  "Route sources are now in the guide.": "Route sources are now in the guide."
 }

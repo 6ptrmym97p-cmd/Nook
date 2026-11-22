@@ -685,5 +685,14 @@
   "Elevation": "Độ cao",
   "{0} m": "{0} m",
   "Nearby photo, {0} away": "Ảnh gần đây, cách {0}",
-  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Khi bạn mở một địa điểm, Nook hỏi Wikimedia Commons, Open-Meteo và OpenStreetMap về ảnh gần đó, độ cao và thị trấn gần nhất. Chỉ tọa độ của địa điểm được gửi đi."
+  "When you open a place, Nook asks Wikimedia Commons, Open-Meteo and OpenStreetMap for a nearby photo, the elevation and the nearest town. Only the place's coordinates are sent.": "Khi bạn mở một địa điểm, Nook hỏi Wikimedia Commons, Open-Meteo và OpenStreetMap về ảnh gần đó, độ cao và thị trấn gần nhất. Chỉ tọa độ của địa điểm được gửi đi.",
+  "Guide": "Hướng dẫn",
+  "Camping rules and routes per country | Nook": "Quy định cắm trại và tuyến đường theo quốc gia | Nook",
+  "Wild camping rules and cycling routes per country, with official sources.": "Quy định cắm trại tự do và tuyến đạp xe theo quốc gia, có nguồn chính thức.",
+  "Camping rules and routes per country, with sources. Always check locally too.": "Quy định cắm trại và tuyến đường theo quốc gia, có nguồn. Luôn kiểm tra cả tại chỗ.",
+  "Routes in {0}": "Tuyến đường ở {0}",
+  "Route planners": "Công cụ lập tuyến",
+  "To ride a GPX route, add it on the map under Map → Route.": "Để đi theo tuyến GPX, hãy thêm nó trên bản đồ ở Bản đồ → Tuyến đường.",
+  "Applies once you add a GPX route.": "Áp dụng khi bạn thêm tuyến GPX.",
+  "Route sources are now in the guide.": "Nguồn tuyến đường hiện nằm trong phần hướng dẫn."
 }
