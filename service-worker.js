@@ -1,4 +1,4 @@
-const SHELL_CACHE = "nook-shell-20261123-5";
+const SHELL_CACHE = "nook-shell-20261123-6";
 const RUNTIME_CACHE = "nook-runtime-20261024-1";
 const TILE_CACHE = "nook-tiles-v1";
 const MAX_TILES = 256;
@@ -26,12 +26,12 @@ const APP_SHELL = [
   "./vendor/leaflet.markercluster-1.5.3/MarkerCluster.css",
   "./vendor/leaflet.markercluster-1.5.3/MarkerCluster.Default.css",
   "./public-data.js?v=20261024-1",
-  "./favicon.ico?v=20261123-2",
-  "./favicon.svg?v=20261123-2",
-  "./icon-192.png?v=20261123-2",
-  "./icon-512.png?v=20261123-2",
-  "./apple-touch-icon.png?v=20261123-2",
-  "./manifest.webmanifest?v=20261123-2",
+  "./favicon.ico?v=20261123-3",
+  "./favicon.svg?v=20261123-3",
+  "./icon-192.png?v=20261123-3",
+  "./icon-512.png?v=20261123-3",
+  "./apple-touch-icon.png?v=20261123-3",
+  "./manifest.webmanifest?v=20261123-3",
   "./pwa.js?v=20261018-1",
   "./feedback.js?v=20261122-1"
 ];
