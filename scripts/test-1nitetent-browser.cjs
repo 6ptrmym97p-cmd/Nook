@@ -47,6 +47,7 @@ const sample = JSON.parse(fs.readFileSync(path.join(root, "data", chunk.file)))[
     assert.ok(await page.locator('[data-network="nitetent"]').isChecked(), "Existing users see the new network by default");
     assert.equal(await page.locator('[data-network="wtmg"]').isChecked(), false, "Existing filter preferences are preserved");
     await page.locator("#toggle-filters").click();
+    await page.evaluate(() => { const toggle = document.querySelector('[aria-controls="sleep-filter"]'); if (toggle.getAttribute("aria-expanded") !== "true") toggle.click(); });
     for (const input of await page.locator('#sleep-filter input[value]').all()) {
       if (await input.getAttribute("value") !== "host") await input.uncheck();
     }
@@ -57,12 +58,13 @@ const sample = JSON.parse(fs.readFileSync(path.join(root, "data", chunk.file)))[
     assert.ok(await page.evaluate(() => [...mapMarkers.values()].some((marker) => marker.options.pinLabel === "T")));
     await openPin();
     assert.ok((await page.locator("#place-panel").innerText()).includes("Alleen één nacht"));
-    assert.ok((await page.locator("#place-panel").innerText()).includes(sample.lat.toFixed(5)));
+    assert.ok((await page.locator("#place-panel .place-actions .button-primary").getAttribute("href")).includes(String(sample.lat)), "Navigate opens directions to the place");
     assert.ok(detailDownloads.length > 0, "The detail batch is loaded when the place is opened");
     console.log("PASS: new network respects saved preferences and its real canvas pin opens localized details and the official source link");
 
     await page.locator("#place-panel .place-panel-close").click();
     await page.locator("#toggle-filters").click();
+    await page.evaluate(() => { const toggle = document.querySelector('[aria-controls="sleep-filter"]'); if (toggle.getAttribute("aria-expanded") !== "true") toggle.click(); });
     await page.locator('[data-network="nitetent"]').uncheck();
     await settled();
     assert.equal(await page.evaluate(() => mapMarkers.size), 0);

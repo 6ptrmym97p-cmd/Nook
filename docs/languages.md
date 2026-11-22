@@ -1,6 +1,6 @@
 # Interface languages
 
-Nook opens in English unless the visitor has chosen another supported language. A compact native selector is available in the header on every page: a globe on mobile and a globe with the current language code on desktop. The menu retains full language names, accessible labeling and a visible keyboard focus ring. A choice is saved in `nook-language-v1` and included in internal links as `?lang=…`, so it also works when browser storage is unavailable.
+Nook opens in English unless the visitor has chosen another supported language. A compact native selector is available on every page: in the header as a globe with the current language code on desktop, and in the menu with a full label on phones. The menu retains full language names, accessible labeling and a visible keyboard focus ring. A choice is saved in `nook-language-v1` and included in internal links as `?lang=…`, so it also works when browser storage is unavailable.
 
 The 21 supported languages are English (`en`), Dutch (`nl`), Arabic (`ar`), Bengali (`bn`), German (`de`), Spanish (`es`), French (`fr`), Hausa (`ha`), Hindi (`hi`), Indonesian (`id`), Japanese (`ja`), Marathi (`mr`), Portuguese (`pt`), Russian (`ru`), Swahili (`sw`), Tamil (`ta`), Telugu (`te`), Turkish (`tr`), Urdu (`ur`), Vietnamese (`vi`) and Simplified Chinese (`zh`). Arabic and Urdu use a right-to-left layout; the geographic map retains its normal orientation.
 
@@ -12,7 +12,7 @@ The 21 supported languages are English (`en`), Dutch (`nl`), Arabic (`ar`), Beng
 - `i18n.js` loads only the selected translation file. English uses the source wording and makes no language-file request. `bootstrap.js` starts the classic app and feedback scripts after the chosen language is ready.
 - The service worker caches visited languages for offline reloads. A first request for an unavailable language falls back to English with a visible notice. A failed language change retains the current selection.
 - Country names and number formats use `Intl`. App-generated source summaries are translated; original provider descriptions, place and host names, imported route names and quoted price details stay in their source language.
-- Additional language files were prepared with machine translation, with a manual pass over core labels and English source wording. They have not all been reviewed by native speakers. Legal summaries retain their source links and local-rule qualifications.
+- Additional language files were prepared with machine translation, with a manual pass over core labels and English source wording. They have not all been reviewed by native speakers. Legal summaries retain their source links and local-rule qualifications. Country rules added in `country-rules.js` are written in English and Dutch; other languages show the English text with a short notice.
 
 ## Updating wording
 

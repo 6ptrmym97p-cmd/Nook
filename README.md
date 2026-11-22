@@ -22,14 +22,14 @@ Lees vóór een publieke demo of LinkedIn-post `docs/launch-security.md`. Hoe zo
 
 ## Datakeuzes
 
-- De regiogidsen staan als uitklapbare achtergrondinformatie bij **Regels**, niet als kaartpins of kandidaten voor vannacht. De kaart telt alleen bronlocaties en eigen GPX-waypoints. Clusterbollen gebruiken dezelfde groene, ronde stijl. Vrij kamperen en toestemming zijn gebiedsregels, geen aparte locatiecategorieën zonder bronpunten.
+- **Kampeerregels** werkt met een zoekveld: je kiest een land en ziet de hoofdregel, de officiële bron en eventuele regiogidsen. Standaard staat het land van je laatste kaartbeeld er al. De regels staan in `country-rules.js` (35 landen met bron, gebieden verwijzen naar hun moederland, de rest staat op ‘nog niet onderzocht’). Landteksten zijn Engels en Nederlands; andere talen tonen ze in het Engels met een korte melding. De regiogidsen zijn achtergrondinformatie, geen kaartpins of kandidaten voor vannacht. De kaart telt alleen bronlocaties en eigen GPX-waypoints. Clusterbollen gebruiken dezelfde groene, ronde stijl. Vrij kamperen en toestemming zijn gebiedsregels, geen aparte locatiecategorieën zonder bronpunten.
 - OpenStreetMap-campings worden als lokale momentopname in `data/` geserveerd. Bezoekers sturen geen live Overpass-zoekopdrachten vanuit Nook.
 - GPX-tracks en routes uit onder meer Komoot kunnen lokaal worden geïmporteerd. Een instelbare corridor van 1–50 kilometer verbergt slaapplaatsen die te ver van de fietsroute liggen; de inhoud verlaat de browser niet.
 - Geïmporteerde GPX-routes blijven als lokale routebibliotheek in de browser staan. Je kunt routes aan- en uitvinken; de afstandsfilter gebruikt alle actieve routes samen. De app bewaart de vereenvoudigde routepunten, niet het ruwe GPX-bestand.
-- Nook opent direct op de kaart, zonder locatiepop-up of automatische GPS-aanvraag. Je locatie wordt pas gebruikt na een tik op de locatieknop of op **Gebruik huidige locatie** in de kandidatenlijst. Het laatste kaartbeeld wordt op dit apparaat onthouden, zodat een bezoek aan Regels of Routes je positie niet kwijtraakt.
-- **Mijn route** opent direct de GPX-import. Ongeldige bestanden veranderen de bestaande routelijst niet; landkeuze en de routefilter blijven bewaard. Verwijderde routes kun je tijdens dezelfde sessie herstellen.
+- Nook opent direct op de kaart, zonder locatiepop-up of automatische GPS-aanvraag. Je locatie wordt pas gebruikt na een tik op de locatieknop of op **Gebruik mijn locatie** bij Vannacht. Het laatste kaartbeeld wordt op dit apparaat onthouden, zodat een bezoek aan Kampeerregels of Routes je positie niet kwijtraakt.
+- De knop **Kaart** opent één paneel met **Route** (GPX toevoegen, afstand 3, 10 of 25 km of alles) en **Soort plek**. `index.html?route=import` opent het paneel direct bij de GPX-import. Er is geen landenfilter meer: de kaart toont wat in beeld is. Ongeldige bestanden veranderen de bestaande routelijst niet; de routefilter blijft bewaard. Verwijderde routes kun je tijdens dezelfde sessie herstellen.
 - `Plek voor vannacht` gebruikt, na toestemming, de actuele telefoonpositie. Met 15, 35 of 70 kilometer resterende fietsafstand worden maximaal negen kandidaten gerangschikt. Bij een actieve GPX gebeurt dat op voortgang langs de route; zonder GPX op hemelsbrede afstand.
-- De kandidatenlijst gebruikt dezelfde land-, slaapvorm-, netwerk- en routefilters als de kaart en beperkt het aantal resultaten per bron, zodat één gastnetwerk de lijst niet volledig vult.
+- **Vannacht** gebruikt dezelfde slaapvorm-, netwerk- en routefilters als de kaart en beperkt het aantal resultaten per bron, zodat één gastnetwerk de lijst niet volledig vult.
 - Als locatietoegang niet beschikbaar of geweigerd is, blijft de functie werken vanaf het midden van het huidige kaartbeeld.
 - Losse GPX-waypoints blijven eveneens zichtbaar als eigen slaapplaatsenlaag.
 - Denemarken bevat een momentopname van 2.480 officiële [Ud i Naturen](https://udinaturen.dk/kort)-objecten: vrije tentgebieden, primitieve overnachtingsplekken en shelters. Iedere marker bevat de eigen officiële beschrijving, capaciteit, boekingsstatus en detailpagina.
@@ -59,7 +59,7 @@ node scripts/fetch-wtmg-public.mjs /tmp/wtmg-public.json
 node scripts/build-public-data.mjs --countries-geojson /tmp/countries.geojson
 ```
 
-Zonder ruwe Vrienden-op-de-Fiets- of Ud-i-Naturen-export houdt de build de nu gepubliceerde plekken van die bronnen aan. `scripts/generate-countries.mjs --countries-geojson=…` vult de landenlijst in `app.js` aan voor nieuwe landen; bestaande, handmatig afgestelde landen blijven staan.
+Zonder ruwe Vrienden-op-de-Fiets- of Ud-i-Naturen-export houdt de build de nu gepubliceerde plekken van die bronnen aan. `scripts/generate-countries.mjs --countries-geojson=…` vult de landenlijst in `countries.js` aan voor nieuwe landen; bestaande, handmatig afgestelde landen blijven staan.
 
 ## 1NITE TENT vernieuwen
 
@@ -78,7 +78,7 @@ De kaart bevat 1.280 aanvullende onbewaakte hutten met opgegeven slaapplaatsen u
 
 ## Kaartprestaties en controles
 
-De kaart gebruikt OpenStreetMap-kaarttegels en Supercluster 8.0.1 (de ruimtelijke clusteringbibliotheek van Mapbox). Landen zijn een optioneel filter; de kaart opent en clustert op echte locaties, ook over de grens. `map-worker.js` bouwt en filtert de index buiten de hoofdthread en stuurt alleen zichtbare clusters/pins terug. Er worden geen duizenden Leaflet-markers meer gemaakt voordat er geclusterd wordt.
+De kaart gebruikt OpenStreetMap-kaarttegels en Supercluster 8.0.1 (de ruimtelijke clusteringbibliotheek van Mapbox). De kaart opent en clustert op echte locaties, ook over de grens. `map-worker.js` bouwt en filtert de index buiten de hoofdthread en stuurt alleen zichtbare clusters/pins terug. Er worden geen duizenden Leaflet-markers meer gemaakt voordat er geclusterd wordt.
 
 Alle 224.244 kaartposities worden meteen bij het openen geladen, ongeacht land of zoomniveau. Inzoomen gebruikt diezelfde reeds geladen index; de aantallen zijn clusters van bestaande plekken. De eerste kaartdownload bestaat uit `data/map-index.json` en `data/map-points.bin.gz` (circa 2 MB gecomprimeerd voor 224.244 punten). Browsers zonder `DecompressionStream` gebruiken dezelfde punten via `data/map-points.bin` (circa 3,6 MB). Volledige beschrijvingen, bronlinks en voorzieningen worden pas opgehaald bij een plekdetail of kandidatenlijst, in batches van maximaal 128 plekken. De oorspronkelijke landbestanden zijn daarmee vervangen, zonder verlies van bronrecords.
 

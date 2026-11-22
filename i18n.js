@@ -1,6 +1,6 @@
 /* Local interface translations. Source descriptions and imported GPX names stay unchanged. */
 (() => {
-  const VERSION = "20261027-1";
+  const VERSION = "20261122-1";
   const STORAGE_KEY = "nook-language-v1";
   const languages = [
     ["en", "English"], ["nl", "Nederlands"], ["ar", "العربية"],
@@ -39,9 +39,11 @@
   function alternateFor(language) {
     const href = prerendered && document.querySelector(`link[rel="alternate"][hreflang="${language}"]`)?.getAttribute("href");
     if (!href) return "";
-    // Stay on the current host (previews, local builds); only the path comes from the alternate.
-    const target = new URL(href, location.href);
-    return target.pathname + target.search + target.hash;
+    // Stay on the current host (previews, local builds) and keep page state such as ?country=;
+    // only the path comes from the alternate.
+    const current = new URL(location.href);
+    current.searchParams.delete("lang");
+    return new URL(href, location.href).pathname + current.search + current.hash;
   }
 
   function setDocumentLanguage(language) {

@@ -4,10 +4,11 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { translateHtml, linkRewriter, buildDiscoverability, COUNTRIES, ORIGIN, PAGES } from "./prerender.mjs";
+import { translateHtml, linkRewriter, buildDiscoverability, loadCountryRules, ORIGIN, PAGES } from "./prerender.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const nl = JSON.parse(fs.readFileSync(path.join(root, "locales", "nl.json"), "utf8"));
+const countryCount = Object.keys(loadCountryRules(root).countries).length;
 const out = fs.mkdtempSync(path.join(os.tmpdir(), "nook-prerender-"));
 const entries = buildDiscoverability(root, out);
 const fileFor = (url) => {
@@ -33,13 +34,15 @@ test("internal links map to the same page in the target language; external links
   assert.equal(rewrite("index.html?route=import"), "/nl/?route=import");
   assert.equal(rewrite("regels.html#regiogids"), "/nl/regels#regiogids");
   assert.equal(rewrite("#main-content"), "/nl/regels#main-content");
+  assert.equal(rewrite("/"), "/nl/");
   assert.equal(rewrite("https://www.refuges.info/"), "https://www.refuges.info/");
 });
 
 test("the sitemap lists the main pages, their Dutch versions and every country guide in two languages", () => {
+  assert.ok(countryCount >= 35, "every country with checked rules gets a guide");
   const sitemap = fs.readFileSync(path.join(out, "sitemap.xml"), "utf8");
   const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, url]) => url);
-  assert.equal(locs.length, PAGES.length * 2 + Object.keys(COUNTRIES).length * 2);
+  assert.equal(locs.length, PAGES.length * 2 + countryCount * 2);
   assert.equal(new Set(locs).size, locs.length);
   for (const url of locs) assert.ok(fs.existsSync(fileFor(url)), `${url} has no page`);
   assert.ok(locs.includes(`${ORIGIN}/wild-camping/norway`) && locs.includes(`${ORIGIN}/nl/wildkamperen/noorwegen`));
@@ -72,15 +75,19 @@ test("Dutch pages are fully translated and translating them again changes nothin
   }
 });
 
-test("country guides combine the rules row, region guide and the country's map counts", () => {
+test("country guides are the rules page with the country, its region guides and its map counts rendered", () => {
   const norway = fs.readFileSync(path.join(out, "wild-camping", "norway.html"), "utf8");
   assert.ok(norway.includes("<title>Wild camping in Norway by bike: rules and places to sleep | Nook</title>"));
-  assert.ok(norway.includes("Utmark, 150 m away, usually max 2 nights."));
-  assert.ok(norway.includes('<details open class="region-guide" id="regio-hardangervidda">'));
-  assert.ok(norway.includes('data-i18n-number="1752"') && norway.includes(">1,752<"));
+  assert.ok(norway.includes('id="country-rule" aria-live="polite" data-country="NO"'));
+  assert.ok(norway.includes('<p class="country-rule-main">Utmark, 150 m away, usually max 2 nights.</p>'));
+  assert.ok(norway.includes('<li id="regio-hardangervidda">') && norway.includes('id="rules-country"'), "region guide and country search stay");
+  assert.ok(norway.includes('data-i18n-number="1752">1,752<'));
   const noorwegen = fs.readFileSync(path.join(out, "nl", "wildkamperen", "noorwegen.html"), "utf8");
   assert.ok(noorwegen.includes("<h1>Wildkamperen in Noorwegen</h1>") && noorwegen.includes(">1.752<"));
+  assert.ok(noorwegen.includes(`<p class="country-rule-main">${nl["Utmark, 150 m away, usually max 2 nights."]}</p>`));
   const denmark = fs.readFileSync(path.join(out, "wild-camping", "denmark.html"), "utf8");
-  assert.ok(!denmark.includes('class="region-guide"') && denmark.includes("Other country guides"));
+  assert.ok(denmark.includes('id="country-guides" hidden') && denmark.includes("Camping rules in other countries"));
   assert.ok(denmark.includes('data-i18n-number="2480"'), "Denmark lists the official Ud i Naturen places");
+  const uk = fs.readFileSync(path.join(out, "wild-camping", "united-kingdom.html"), "utf8");
+  assert.ok(uk.includes("<h1>Wild camping in the United Kingdom</h1>"));
 });

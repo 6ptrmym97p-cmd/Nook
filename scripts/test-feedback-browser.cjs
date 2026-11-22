@@ -27,7 +27,7 @@ const base = process.env.NOOK_TEST_URL || "http://127.0.0.1:8000/";
     const url = new URL("over.html", base.endsWith("/") ? base : base + "/");
     url.searchParams.set("lang", "nl");
     await page.goto(url.href, { waitUntil: "load" });
-    await page.locator(".feedback-fab").click();
+    await page.locator(".callout [data-feedback-open]").click();
     const message = page.locator('.feedback-form [name="message"]');
     const email = page.locator('.feedback-form [name="email"]');
     const send = page.locator('.feedback-form [type="submit"]');

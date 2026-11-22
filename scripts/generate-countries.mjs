@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Rewrites FILTER_COUNTRIES in app.js for every country in a datasets/geo-countries GeoJSON.
+// Rewrites FILTER_COUNTRIES in countries.js for every country in a datasets/geo-countries GeoJSON.
 // Hand-tuned existing entries are kept unless listed in --regenerate.
 import fs from "node:fs";
 import path from "node:path";
@@ -9,7 +9,7 @@ const args = new Map(process.argv.slice(2).map((arg) => {
   const [key, ...value] = arg.split("=");
   return [key, value.length ? value.join("=") : "true"];
 }));
-const appPath = path.resolve(args.get("--app") || "app.js");
+const appPath = path.resolve(args.get("--app") || "countries.js");
 const geojsonPath = args.get("--countries-geojson");
 if (!geojsonPath) throw new Error("Gebruik --countries-geojson=pad/naar/countries.geojson");
 const regenerate = new Set(String(args.get("--regenerate") || "").split(",").filter(Boolean));

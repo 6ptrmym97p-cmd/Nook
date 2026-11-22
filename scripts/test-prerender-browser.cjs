@@ -49,7 +49,7 @@ function signature(doc, translate) {
     const page = await context.newPage();
 
     // 1. Each Dutch page equals the runtime ?lang=nl translation of the English page.
-    for (const name of ["index", "regels", "netwerken", "routebronnen", "over"]) {
+    for (const name of ["index", "regels", "routebronnen", "over"]) {
       await page.goto(`${base}/${name}.html?lang=nl`);
       await page.waitForFunction(() => window.NookI18n?.code === "nl");
       await page.evaluate(() => window.NookI18n.ready);
@@ -64,29 +64,29 @@ function signature(doc, translate) {
       assert.equal(result.base, "/");
       assert.deepEqual(result.actual, result.expected, `/nl/${name} differs from the runtime Dutch translation`);
     }
-    console.log("PASS: all five Dutch pages match the runtime Dutch translation exactly");
+    console.log("PASS: all Dutch pages match the runtime Dutch translation exactly");
 
     // 2. The URL language wins over a saved preference; switching uses the alternate page.
     await page.goto(`${base}/regels.html`);
     await page.evaluate(() => localStorage.setItem("nook-language-v1", "de"));
-    await page.goto(`${base}/nl/regels`);
+    await page.goto(`${base}/nl/regels?country=NO`);
     await page.waitForFunction(() => window.NookI18n?.code === "nl");
     await page.evaluate(() => window.NookI18n.ready);
-    assert.equal(new URL(page.url()).search, "", "a Dutch page must not add ?lang=nl");
-    assert.equal(await page.getAttribute('nav a[href="/nl/over"], a.mobile-about', "href"), "/nl/over");
-    await Promise.all([page.waitForURL(`${base}/regels`), page.selectOption("#language-select", "en")]);
-    await page.waitForFunction(() => window.NookI18n?.code === "en");
+    assert.ok(!new URL(page.url()).searchParams.has("lang"), "a Dutch page must not add ?lang=nl");
+    assert.equal(await page.getAttribute('nav a[href="/nl/over"]', "href"), "/nl/over");
+    await Promise.all([page.waitForURL(`${base}/regels?country=NO`), page.selectOption("#language-select", "en")]);
+    await page.waitForFunction(() => window.NookI18n?.code === "en" && document.querySelector("#country-rule h2")?.textContent === "Norway");
     await page.goto(`${base}/nl/regels`);
     await page.waitForFunction(() => window.NookI18n?.code === "nl" && !document.querySelector("#language-select").disabled);
-    await Promise.all([page.waitForURL(/\/nl\/regels\?lang=de$/), page.selectOption("#language-select", "de")]);
+    await Promise.all([page.waitForURL(/\/nl\/regels\?(?:.*&)?lang=de(?:&|$)/), page.selectOption("#language-select", "de")]);
     await page.waitForFunction(() => window.NookI18n?.code === "de");
     await page.evaluate(() => localStorage.clear());
-    console.log("PASS: Dutch URL beats a saved preference, English switches to the English page, other languages still use ?lang=");
+    console.log("PASS: Dutch URL beats a saved preference, English switches to the English page (keeping ?country=), other languages still use ?lang=");
 
     // 3. Every page in the sitemap loads without missing same-origin files or script errors.
     const sitemap = fs.readFileSync(path.join(dist, "sitemap.xml"), "utf8");
     const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, url]) => new URL(url).pathname);
-    assert.equal(urls.length, 32);
+    assert.equal(urls.length, 4 * 2 + 35 * 2);
     for (const pathname of urls) {
       const missing = []; const errors = [];
       const onResponse = (response) => { if (response.url().startsWith(base) && response.status() >= 400) missing.push(`${response.status()} ${response.url()}`); };
@@ -127,14 +127,26 @@ function signature(doc, translate) {
     const rulesStyle = await page.evaluate(() => { const s = getComputedStyle(document.body); return [s.fontFamily, s.backgroundColor, getComputedStyle(document.querySelector(".site-header")).height]; });
     await page.goto(`${base}/wild-camping/norway`);
     await page.waitForFunction(() => window.NookI18n?.code === "en" && !document.querySelector("#language-select").disabled);
-    const guide = await page.evaluate(() => ({
-      style: (() => { const s = getComputedStyle(document.body); return [s.fontFamily, s.backgroundColor, getComputedStyle(document.querySelector(".site-header")).height]; })(),
-      h1: document.querySelector("h1").textContent, open: document.querySelector("details.region-guide").open,
-      rows: document.querySelectorAll(".source-table tbody tr").length, title: document.title,
-    }));
+    await page.evaluate(() => window.NookI18n.ready);
+    const guide = await page.evaluate(async () => {
+      const text = (element) => element?.textContent.replace(/\s+/g, " ").trim();
+      const stored = new DOMParser().parseFromString(await (await fetch(location.pathname)).text(), "text/html");
+      return {
+        style: (() => { const s = getComputedStyle(document.body); return [s.fontFamily, s.backgroundColor, getComputedStyle(document.querySelector(".site-header")).height]; })(),
+        h1: text(document.querySelector("h1")), country: text(document.querySelector("#country-rule h2")),
+        staticCard: text(stored.querySelector("#country-rule")), liveCard: text(document.querySelector("#country-rule")),
+        staticGuides: text(stored.querySelector("#country-guides")), liveGuides: text(document.querySelector("#country-guides")),
+        places: document.querySelectorAll("#plekken .list-row").length, others: document.querySelectorAll("#landen a").length,
+        title: document.title, search: location.search,
+      };
+    });
     assert.deepEqual(guide.style, rulesStyle, "country guide must use the rules page design");
     assert.equal(guide.h1, "Wild camping in Norway");
-    assert.ok(guide.open && guide.rows >= 3 && guide.title.includes("Norway"));
+    assert.equal(guide.country, "Norway");
+    assert.equal(guide.staticCard, guide.liveCard, "the built country card must equal what rules.js renders");
+    assert.equal(guide.staticGuides, guide.liveGuides, "the built region guides must equal what rules.js renders");
+    assert.ok(guide.places >= 3 && guide.others === 34 && guide.title.includes("Norway"));
+    assert.equal(guide.search, "", "rules.js must not add ?country= on a country guide: " + JSON.stringify({ country: guide.country, h1: guide.h1, url: page.url() }));
     await Promise.all([page.waitForURL(`${base}/nl/wildkamperen/noorwegen`), page.selectOption("#language-select", "nl")]);
     await page.waitForFunction(() => window.NookI18n?.code === "nl");
     assert.equal(await page.textContent("h1"), "Wildkamperen in Noorwegen");

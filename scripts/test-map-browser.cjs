@@ -87,13 +87,8 @@ const { chromium } = require("playwright");
     assert.equal(await page.evaluate(() => Boolean(map._flyToFrame)), false);
     console.log("PASS: canvas touch hit detection and immediate cluster zoom");
 
-    const zoomButton = await page.locator(".leaflet-control-zoom-in").boundingBox();
-    const priorZoom = await page.evaluate(() => map.getZoom());
-    await page.touchscreen.tap(zoomButton.x + zoomButton.width / 2, zoomButton.y + zoomButton.height / 2);
-    await page.touchscreen.tap(zoomButton.x + zoomButton.width / 2, zoomButton.y + zoomButton.height / 2);
-    await settled();
-    assert.equal(await page.evaluate(() => map.getZoom()), priorZoom + 2);
-    console.log("PASS: consecutive zoom-button taps both register");
+    assert.equal(await page.locator(".leaflet-control-zoom").isVisible(), false, "Phones zoom with gestures; zoom buttons stay hidden");
+    console.log("PASS: phones hide the zoom buttons and keep gesture zoom");
 
     const cdp = await context.newCDPSession(page);
     const pinchZoom = await page.evaluate(() => {
