@@ -691,8 +691,6 @@
   "To ride a GPX route, add it on the map under Map → Route.": "GPXルートで走るには、地図の地図 → ルートから追加します。",
   "Applies once you add a GPX route.": "GPXルートを追加すると適用されます。",
   "Route sources are now in the guide.": "ルート情報はガイドに移動しました。",
-  "Host garden": "ホストの庭",
-  "Host address": "ホストの宿",
   "Privacy and cookies": "プライバシーとCookie",
   "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Cookieもトラッカーも使いません。言語、地図の表示位置、フィルター、GPXルートはこのブラウザーに保存され、私たちに送信されることはありません。",
   "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "地図タイルはOpenStreetMapから、一部の場所の写真は元のサイトから読み込まれます。ほかのウェブサイトと同じく、それらのサーバーにはあなたのIPアドレスが見えます。",

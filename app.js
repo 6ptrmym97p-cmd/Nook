@@ -772,6 +772,12 @@ function formatDistance(distanceKm) {
   return t("{0} km", Math.round(distanceKm));
 }
 
+// List rows name the source under the place; when the name already is the source, show the type instead.
+function placeRowSource(name, provider, type) {
+  const source = candidateProviderLabel(provider);
+  return name === source ? sleepTypes[type]?.label || source : source;
+}
+
 function candidateProviderLabel(provider) {
   return {
     denmark: "Ud i Naturen",
@@ -863,7 +869,7 @@ function updateCandidatePanel() {
       <i class="legend-dot dot-${escapeHtml(candidate.place.type)}" aria-hidden="true"></i>
       <span class="candidate-copy">
         <strong>${escapeHtml(candidate.place.name)}</strong>
-        <small>${escapeHtml(candidateDistanceLabel(candidate))} · ${escapeHtml(candidateProviderLabel(candidate.provider))}</small>
+        <small>${escapeHtml(candidateDistanceLabel(candidate))} · ${escapeHtml(placeRowSource(candidate.place.name, candidate.provider, candidate.place.type))}</small>
       </span>
       ${ICON_CHEVRON}
     </button>
@@ -1254,7 +1260,7 @@ function requestMapSources(filters) {
 
 function mapPointPlace(point) {
   return {
-    name: point.kind === "vodf" ? t("Host address") : point.kind === "wtmg" ? t("Host garden") : `${sleepTypes[point.type]?.label || t("Place to stay")} · ${candidateProviderLabel(point.kind)}`,
+    name: point.kind === "vodf" ? "Vrienden op de Fiets" : point.kind === "wtmg" ? "Welcome To My Garden" : `${sleepTypes[point.type]?.label || t("Place to stay")} · ${candidateProviderLabel(point.kind)}`,
     lat: point.lat, lng: point.lng, type: point.type,
     confidence: point.kind === "denmark" ? 3 : point.kind === "camping" ? 1 : 2,
     mapPoint: point,
@@ -1375,7 +1381,7 @@ function showCoincidentPlaces(points, page = 0) {
     button.type = "button";
     button.innerHTML = `
       <i class="legend-dot dot-${escapeHtml(point.type)}" aria-hidden="true"></i>
-      <span class="candidate-copy"><strong></strong><small>${escapeHtml(candidateProviderLabel(point.kind))}</small></span>
+      <span class="candidate-copy"><strong></strong><small>${escapeHtml(placeRowSource(mapPointPlace(point).name, point.kind, point.type))}</small></span>
       ${ICON_CHEVRON}`;
     const name = button.querySelector("strong");
     name.textContent = mapPointPlace(point).name;
@@ -1446,7 +1452,7 @@ function vodfPlace(pin) {
   if (pin.laundry) extras.push([t("Laundry"), t("Reported available")]);
 
   return {
-    name: t("Host address"),
+    name: "Vrienden op de Fiets",
     lat: pin.lat,
     lng: pin.lng,
     location: t("{0} · public map position", countryNames[pin.country]),
@@ -1477,7 +1483,7 @@ function wtmgPlace(pin) {
   if (pin.campfire) extras.push([t("Campfire"), t("Possibility reported")]);
 
   return {
-    name: t("Host garden"),
+    name: "Welcome To My Garden",
     lat: pin.lat,
     lng: pin.lng,
     location: t("{0} · public map position", countryNames[pin.country]),

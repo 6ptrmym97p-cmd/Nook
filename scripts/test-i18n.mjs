@@ -89,7 +89,8 @@ test("all 21 languages cover the entire interface with intact interpolation fiel
       assert.ok(translated[key].trim(), code + " has an empty message: " + key);
       assert.deepEqual(placeholders(translated[key]), placeholders(key), code + " changed a dynamic field: " + key);
       assert.ok(!/N00KARG|N00KMSG|__\d+__/.test(translated[key]), code + " contains a build marker");
-      for (const brand of ["nook", "Vrienden op de Fiets", "Welcome To My Garden", "OpenStreetMap", "CampWild", "GPX"]) {
+      // Brand names stay in their original spelling in every language.
+      for (const brand of ["nook", "Vrienden op de Fiets", "Welcome To My Garden", "OpenStreetMap", "CampWild", "GPX", "1NITE TENT", "Refuges.info", "Ud i Naturen", "Wikimedia Commons", "Open-Meteo", "Komoot", "EuroVelo", "Warmshowers", "BRouter", "cycle.travel", "BIKEPACKING.com", "Statskog", "Bivakzone.be"]) {
         if (key.includes(brand)) assert.ok(translated[key].includes(brand), code + " translated a proper name or format: " + key);
       }
     }
