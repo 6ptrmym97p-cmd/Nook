@@ -186,7 +186,7 @@ const sources = [
   { icon: "R", name: "Reddit", description: t("Recent experiences and local tips, useful as a guide. Then verify each claim with a primary source."), meta: t("Community · varying"), url: "https://www.reddit.com/r/bikepacking/search/?q=camping%20sweden%20denmark%20germany" },
 ];
 
-const ICON_CLOSE = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+const ICON_CLOSE = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 const ICON_CHEVRON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 const ICON_EXTERNAL = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>';
 const ICON_NAVIGATE = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 18-7-4-7 4z"/></svg>';
@@ -552,7 +552,7 @@ function openPlacePanel() {
 function showPlaceMessage(title, message) {
   renderEmptyPanel();
   const panel = document.querySelector("#place-panel");
-  panel.innerHTML = `${placeSheetHeader(title)}<p class="place-message">${escapeHtml(message)}</p>`;
+  panel.innerHTML = `${placeSheetHeader(title)}<div class="sheet-body"><p class="place-message">${escapeHtml(message)}</p></div>`;
   openPlacePanel();
 }
 
@@ -1030,6 +1030,8 @@ function updateFilterSummary() {
   const badge = document.querySelector("#filter-count");
   badge.textContent = String(count);
   badge.hidden = !count;
+  // Reset only shows when something differs from the defaults.
+  document.querySelector("#reset-filters").hidden = allTypes && routeFilterActive && routeDistanceKm === 10;
   document.querySelector("#toggle-filters").setAttribute("aria-label", count ? t("Map settings, {0} active", count) : t("Map settings"));
   document.querySelector("#sleep-summary").textContent = allTypes
     ? t("All")
@@ -1043,6 +1045,8 @@ function resetFilters() {
   setUserValue(ROUTE_DISTANCE_KEY, String(routeDistanceKm));
   saveFilterPreferences();
   refreshMapPlaces();
+  // The reset button hides itself, so keep focus inside the sheet.
+  document.querySelector("#map-sidebar").focus();
 }
 
 function saveMapView() {
@@ -1250,7 +1254,7 @@ function requestMapSources(filters) {
 
 function mapPointPlace(point) {
   return {
-    name: point.kind === "vodf" ? t("Vrienden op de Fiets host location") : point.kind === "wtmg" ? t("Welcome To My Garden location") : `${sleepTypes[point.type]?.label || t("Place to stay")} · ${candidateProviderLabel(point.kind)}`,
+    name: point.kind === "vodf" ? t("Host address") : point.kind === "wtmg" ? t("Host garden") : `${sleepTypes[point.type]?.label || t("Place to stay")} · ${candidateProviderLabel(point.kind)}`,
     lat: point.lat, lng: point.lng, type: point.type,
     confidence: point.kind === "denmark" ? 3 : point.kind === "camping" ? 1 : 2,
     mapPoint: point,
@@ -1359,30 +1363,35 @@ function updatePinAccessibility() {
   }
 }
 
+// Several places on one spot use the same rows as the Tonight list.
 function showCoincidentPlaces(points, page = 0) {
   showPlaceMessage(t("{0} spots at this location", points.length), t("Choose a place to see its source details."));
-  const panel = document.querySelector("#place-panel");
-  const selection = points.slice(page * 20, (page + 1) * 20);
+  const body = document.querySelector("#place-panel .sheet-body");
   const list = document.createElement("div");
-  list.className = "coincident-places";
-  selection.forEach((point) => {
+  list.className = "candidate-list";
+  points.slice(page * 20, (page + 1) * 20).forEach((point) => {
     const button = document.createElement("button");
-    button.className = "button button-secondary";
+    button.className = "candidate-item";
     button.type = "button";
-    button.textContent = mapPointPlace(point).name;
+    button.innerHTML = `
+      <i class="legend-dot dot-${escapeHtml(point.type)}" aria-hidden="true"></i>
+      <span class="candidate-copy"><strong></strong><small>${escapeHtml(candidateProviderLabel(point.kind))}</small></span>
+      ${ICON_CHEVRON}`;
+    const name = button.querySelector("strong");
+    name.textContent = mapPointPlace(point).name;
     button.onclick = () => renderPlace(mapPointPlace(point));
     list.append(button);
-    resolveMapPlace(point).then((place) => { button.textContent = place.name; }).catch(() => {});
+    resolveMapPlace(point).then((place) => { name.textContent = place.name; }).catch(() => {});
   });
+  body.append(list);
   if ((page + 1) * 20 < points.length) {
     const next = document.createElement("button");
-    next.className = "button button-secondary";
+    next.className = "button button-secondary button-block coincident-next";
     next.type = "button";
     next.textContent = t("Next places");
     next.onclick = () => showCoincidentPlaces(points, page + 1);
-    list.append(next);
+    body.append(next);
   }
-  panel.append(list);
 }
 
 function updateMapDataHint() {
@@ -1437,7 +1446,7 @@ function vodfPlace(pin) {
   if (pin.laundry) extras.push([t("Laundry"), t("Reported available")]);
 
   return {
-    name: t("Vrienden op de Fiets host location"),
+    name: t("Host address"),
     lat: pin.lat,
     lng: pin.lng,
     location: t("{0} · public map position", countryNames[pin.country]),
@@ -1468,7 +1477,7 @@ function wtmgPlace(pin) {
   if (pin.campfire) extras.push([t("Campfire"), t("Possibility reported")]);
 
   return {
-    name: t("Welcome To My Garden location"),
+    name: t("Host garden"),
     lat: pin.lat,
     lng: pin.lng,
     location: t("{0} · public map position", countryNames[pin.country]),

@@ -519,7 +519,6 @@
   "View": "Посмотреть",
   "View resources": "Посмотреть ресурсы",
   "Visit Luxembourg: campsites": "Посещение Люксембурга: кемпинги",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets местоположение хоста",
   "Växjö Region · Sweden": "Регион Векшё · Швеция",
   "Wallonia and other managers use their own capacity, times and fire rules": "Валлония и другие менеджеры используют свои возможности, время и правила пожарной безопасности.",
   "Water": "Вода",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "Сообщается о воде, питьевая пригодность неизвестна",
   "We store your message, page address, map position and browser type to help investigate the issue.": "Мы сохраняем ваше сообщение, адрес страницы, положение на карте и тип браузера, чтобы помочь разобраться в проблеме.",
   "Website": "Веб-сайт",
-  "Welcome To My Garden location": "Welcome To My Garden местоположение",
   "What can you do?": "Что ты можешь сделать?",
   "What could be improved, what went wrong, or what place is missing?": "Что можно было бы улучшить, что пошло не так или какого места не хватает?",
   "What do you want to see?": "Что вы хотите увидеть?",
@@ -694,5 +692,7 @@
   "Route planners": "Планировщики маршрутов",
   "To ride a GPX route, add it on the map under Map → Route.": "Чтобы ехать по маршруту GPX, добавьте его на карте: Карта → Маршрут.",
   "Applies once you add a GPX route.": "Применяется, когда вы добавите маршрут GPX.",
-  "Route sources are now in the guide.": "Источники маршрутов теперь в гиде."
+  "Route sources are now in the guide.": "Источники маршрутов теперь в гиде.",
+  "Host garden": "Сад хозяина",
+  "Host address": "Адрес хозяина"
 }

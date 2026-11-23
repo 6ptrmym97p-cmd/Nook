@@ -519,7 +519,6 @@
   "View": "காண்க",
   "View resources": "ஆதாரங்களைக் காண்க",
   "Visit Luxembourg: campsites": "லக்சம்பேர்க்கைப் பார்வையிடவும்: முகாம்கள்",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets ஹோஸ்ட் இடம்",
   "Växjö Region · Sweden": "Växjö பகுதி · ஸ்வீடன்",
   "Wallonia and other managers use their own capacity, times and fire rules": "வாலோனியா மற்றும் பிற மேலாளர்கள் தங்கள் சொந்த திறன், நேரம் மற்றும் தீ விதிகளைப் பயன்படுத்துகின்றனர்",
   "Water": "தண்ணீர்",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "தண்ணீர் பதிவாகியுள்ளது, குடிக்கக்கூடிய தன்மை தெரியவில்லை",
   "We store your message, page address, map position and browser type to help investigate the issue.": "சிக்கலை விசாரிக்க உதவ, உங்கள் செய்தி, பக்க முகவரி, வரைபடத்தின் நிலை மற்றும் உலாவி வகையைச் சேமிப்போம்.",
   "Website": "இணையதளம்",
-  "Welcome To My Garden location": "Welcome To My Garden இடம்",
   "What can you do?": "நீங்கள் என்ன செய்ய முடியும்?",
   "What could be improved, what went wrong, or what place is missing?": "எதை மேம்படுத்தலாம், என்ன தவறு நடந்தது அல்லது எந்த இடம் இல்லை?",
   "What do you want to see?": "நீங்கள் என்ன பார்க்க விரும்புகிறீர்கள்?",
@@ -694,5 +692,7 @@
   "Route planners": "வழித் திட்டமிடும் கருவிகள்",
   "To ride a GPX route, add it on the map under Map → Route.": "GPX வழியில் செல்ல, வரைபடத்தில் வரைபடம் → வழி இல் சேர்க்கவும்.",
   "Applies once you add a GPX route.": "GPX வழியைச் சேர்த்ததும் பொருந்தும்.",
-  "Route sources are now in the guide.": "வழி ஆதாரங்கள் இப்போது வழிகாட்டியில் உள்ளன."
+  "Route sources are now in the guide.": "வழி ஆதாரங்கள் இப்போது வழிகாட்டியில் உள்ளன.",
+  "Host garden": "ஹோஸ்ட் தோட்டம்",
+  "Host address": "ஹோஸ்ட் முகவரி"
 }

@@ -519,7 +519,6 @@
   "View": "Duba",
   "View resources": "Duba albarkatu",
   "Visit Luxembourg: campsites": "Ziyarci Luxembourg: wuraren zama",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets wurin masauki",
   "Växjö Region · Sweden": "Yankin Växjö · Sweden",
   "Wallonia and other managers use their own capacity, times and fire rules": "Wallonia da sauran manajoji suna amfani da nasu iya aiki, lokuta da dokokin wuta",
   "Water": "Ruwa",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "Ruwa ya ruwaito, ba a san yiwuwar shan ruwa ba",
   "We store your message, page address, map position and browser type to help investigate the issue.": "Muna adana saƙonku, adireshin shafi, taswira matsayi da nau'in burauza don taimakawa bincika batun.",
   "Website": "Yanar Gizo",
-  "Welcome To My Garden location": "Welcome To My Garden wuri",
   "What can you do?": "Me za ku iya yi?",
   "What could be improved, what went wrong, or what place is missing?": "Menene za a iya inganta, abin da ba daidai ba, ko wane wuri ya ɓace?",
   "What do you want to see?": "Me kuke son gani?",
@@ -694,5 +692,7 @@
   "Route planners": "Masu tsara hanya",
   "To ride a GPX route, add it on the map under Map → Route.": "Don bin hanyar GPX, ƙara ta a taswira ta Taswira → Hanya.",
   "Applies once you add a GPX route.": "Yana aiki da zarar ka ƙara hanyar GPX.",
-  "Route sources are now in the guide.": "Majiyoyin hanyoyi yanzu suna cikin jagora."
+  "Route sources are now in the guide.": "Majiyoyin hanyoyi yanzu suna cikin jagora.",
+  "Host garden": "Lambun mai masauki",
+  "Host address": "Adireshin mai masauki"
 }

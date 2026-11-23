@@ -519,7 +519,6 @@
   "View": "見る",
   "View resources": "リソースを見る",
   "Visit Luxembourg: campsites": "ルクセンブルクを訪れる：キャンプ場",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets ホストの場所",
   "Växjö Region · Sweden": "ベクショー地方 · スウェーデン",
   "Wallonia and other managers use their own capacity, times and fire rules": "ワロニアと他のマネージャーは独自の能力、時間、発砲ルールを使用します",
   "Water": "水",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "水は報告されているが、飲用可能かは不明",
   "We store your message, page address, map position and browser type to help investigate the issue.": "問題の調査に役立てるため、メッセージ、ページ アドレス、地図の位置、ブラウザの種類が保存されます。",
   "Website": "Webサイト",
-  "Welcome To My Garden location": "Welcome To My Gardenの場所",
   "What can you do?": "何ができるでしょうか？",
   "What could be improved, what went wrong, or what place is missing?": "何が改善できたのか、何がうまくいかなかったのか、何が足りないのか?",
   "What do you want to see?": "何が見たいですか？",
@@ -694,5 +692,7 @@
   "Route planners": "ルートプランナー",
   "To ride a GPX route, add it on the map under Map → Route.": "GPXルートで走るには、地図の地図 → ルートから追加します。",
   "Applies once you add a GPX route.": "GPXルートを追加すると適用されます。",
-  "Route sources are now in the guide.": "ルート情報はガイドに移動しました。"
+  "Route sources are now in the guide.": "ルート情報はガイドに移動しました。",
+  "Host garden": "ホストの庭",
+  "Host address": "ホストの宿"
 }

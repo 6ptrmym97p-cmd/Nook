@@ -522,7 +522,6 @@
   "Ask permission on private land and alpine meadows": "Vraag toestemming op privégrond en alpenweiden",
   "Ask permission on private land and check the park page. Coasts, protected or classified locations, roads and locally prohibited zones are excluded; Strict fire regulations apply in Mediterranean areas.": "Vraag toestemming op privégrond en controleer de parkpagina. Kusten, beschermde of geklasseerde locaties, wegen en lokaal verboden zones vallen af; in mediterrane gebieden gelden strenge vuurregels.",
   "Ask permission on private land.": "Vraag toestemming op privégrond.",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets-hostpin",
   "You cannot generally pitch a tent wherever you like. Seek permission, use host networks or choose designated sites.": "Vrij je tent neerzetten is geen legale basisstrategie. Richt je op toestemming, gastnetwerken en erkende terreinen.",
   "Wild camping": "Vrij kamperen",
   "Wild camping is not generally permitted, but Belgium has basic bivouac areas along walking and cycling routes. Find designated sites using the individual OpenStreetMap pins, then check with the land manager.": "Vrij kamperen is geen algemene optie, maar België heeft eenvoudige bivakzones langs wandel- en fietsroutes. Gebruik de losse OpenStreetMap-pins om aangewezen plekken te vinden en controleer daarna de beheerder.",
@@ -540,7 +539,6 @@
   "Water point marked": "Waterpunt gemarkeerd",
   "We store your message, page address, map position and browser type to help investigate the issue.": "We bewaren je bericht, de pagina, het kaartbeeld en je browsertype, zodat we het probleem kunnen terugvinden.",
   "Website": "Website",
-  "Welcome To My Garden location": "Welcome To My Garden-tuinpin",
   "Reported welcome": "Welkom gemeld",
   "Worldwide": "Wereldwijd",
   "Worldwide host network with a map in its mobile app. nook does not currently have a stable public export for including these locations.": "Wereldwijd hospitalitynetwerk met een hostkaart in de mobiele app. nook heeft nog geen stabiele openbare export om die kaartposities betrouwbaar als eigen laag bij te houden.",
@@ -694,5 +692,7 @@
   "Route planners": "Routeplanners",
   "To ride a GPX route, add it on the map under Map → Route.": "Een GPX-route zet je op de kaart via Kaart → Route.",
   "Applies once you add a GPX route.": "Geldt zodra je een GPX-route toevoegt.",
-  "Route sources are now in the guide.": "Routebronnen staan nu in de gids."
+  "Route sources are now in the guide.": "Routebronnen staan nu in de gids.",
+  "Host garden": "Gasttuin",
+  "Host address": "Gastadres"
 }

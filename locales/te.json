@@ -519,7 +519,6 @@
   "View": "చూడండి",
   "View resources": "వనరులను వీక్షించండి",
   "Visit Luxembourg: campsites": "లక్సెంబర్గ్‌ని సందర్శించండి: క్యాంప్‌సైట్‌లు",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets హోస్ట్ స్థానం",
   "Växjö Region · Sweden": "Växjö ప్రాంతం · స్వీడన్",
   "Wallonia and other managers use their own capacity, times and fire rules": "వాలోనియా మరియు ఇతర నిర్వాహకులు వారి స్వంత సామర్థ్యం, సమయాలు మరియు అగ్ని నియమాలను ఉపయోగిస్తారు",
   "Water": "నీరు",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "నీరు నివేదించబడింది, త్రాగే సామర్థ్యం తెలియదు",
   "We store your message, page address, map position and browser type to help investigate the issue.": "సమస్యను పరిశోధించడంలో సహాయపడటానికి మేము మీ సందేశం, పేజీ చిరునామా, మ్యాప్ స్థానం మరియు బ్రౌజర్ రకాన్ని నిల్వ చేస్తాము.",
   "Website": "వెబ్సైట్",
-  "Welcome To My Garden location": "Welcome To My Garden స్థానం",
   "What can you do?": "మీరు ఏమి చేయగలరు?",
   "What could be improved, what went wrong, or what place is missing?": "ఏమి మెరుగుపరచవచ్చు, ఏమి తప్పు జరిగింది లేదా ఏ స్థలం లేదు?",
   "What do you want to see?": "మీరు ఏమి చూడాలనుకుంటున్నారు?",
@@ -694,5 +692,7 @@
   "Route planners": "మార్గ ప్లానర్లు",
   "To ride a GPX route, add it on the map under Map → Route.": "GPX మార్గంలో వెళ్లడానికి, మ్యాప్‌లో మ్యాప్ → మార్గం లో జోడించండి.",
   "Applies once you add a GPX route.": "GPX మార్గాన్ని జోడించిన తర్వాత వర్తిస్తుంది.",
-  "Route sources are now in the guide.": "మార్గ మూలాలు ఇప్పుడు గైడ్‌లో ఉన్నాయి."
+  "Route sources are now in the guide.": "మార్గ మూలాలు ఇప్పుడు గైడ్‌లో ఉన్నాయి.",
+  "Host garden": "హోస్ట్ తోట",
+  "Host address": "హోస్ట్ చిరునామా"
 }

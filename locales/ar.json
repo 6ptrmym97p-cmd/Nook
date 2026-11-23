@@ -519,7 +519,6 @@
   "View": "عرض",
   "View resources": "عرض الموارد",
   "Visit Luxembourg: campsites": "قم بزيارة لوكسمبورغ: المعسكرات",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets موقع المضيف",
   "Växjö Region · Sweden": "منطقة فاكسجو · السويد",
   "Wallonia and other managers use their own capacity, times and fire rules": "يستخدم والونيا والمديرون الآخرون قدراتهم الخاصة وأوقاتهم وقواعد إطلاق النار",
   "Water": "الماء",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "تم الإبلاغ عن المياه، وصلاحية الشرب غير معروفة",
   "We store your message, page address, map position and browser type to help investigate the issue.": "نقوم بتخزين رسالتك وعنوان صفحتك وموضع الخريطة ونوع المتصفح للمساعدة في التحقيق في المشكلة.",
   "Website": "موقع إلكتروني",
-  "Welcome To My Garden location": "Welcome To My Garden الموقع",
   "What can you do?": "ماذا يمكنك أن تفعل؟",
   "What could be improved, what went wrong, or what place is missing?": "ما الذي يمكن تحسينه، أو ما الخطأ الذي حدث، أو ما هو المكان المفقود؟",
   "What do you want to see?": "ماذا تريد أن ترى؟",
@@ -694,5 +692,7 @@
   "Route planners": "أدوات تخطيط المسارات",
   "To ride a GPX route, add it on the map under Map → Route.": "لاتباع مسار GPX، أضفه على الخريطة من خريطة ← المسار.",
   "Applies once you add a GPX route.": "يُطبَّق عند إضافة مسار GPX.",
-  "Route sources are now in the guide.": "مصادر المسارات موجودة الآن في الدليل."
+  "Route sources are now in the guide.": "مصادر المسارات موجودة الآن في الدليل.",
+  "Host garden": "حديقة مضيف",
+  "Host address": "عنوان مضيف"
 }

@@ -519,7 +519,6 @@
   "View": "View",
   "View resources": "View resources",
   "Visit Luxembourg: campsites": "Visit Luxembourg: campsites",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets host location",
   "Växjö Region · Sweden": "Växjö Region · Sweden",
   "Wallonia and other managers use their own capacity, times and fire rules": "Wallonia and other managers use their own capacity, times and fire rules",
   "Water": "Water",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "Water reported, drinkability unknown",
   "We store your message, page address, map position and browser type to help investigate the issue.": "We store your message, page address, map position and browser type to help investigate the issue.",
   "Website": "Website",
-  "Welcome To My Garden location": "Welcome To My Garden location",
   "What can you do?": "What can you do?",
   "What could be improved, what went wrong, or what place is missing?": "What could be improved, what went wrong, or what place is missing?",
   "What do you want to see?": "What do you want to see?",
@@ -694,5 +692,7 @@
   "Route planners": "Route planners",
   "To ride a GPX route, add it on the map under Map → Route.": "To ride a GPX route, add it on the map under Map → Route.",
   "Applies once you add a GPX route.": "Applies once you add a GPX route.",
-  "Route sources are now in the guide.": "Route sources are now in the guide."
+  "Route sources are now in the guide.": "Route sources are now in the guide.",
+  "Host garden": "Host garden",
+  "Host address": "Host address"
 }

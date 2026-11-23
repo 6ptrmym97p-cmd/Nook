@@ -83,7 +83,9 @@ const file = (name, contents) => ({ name, mimeType: "application/gpx+xml", buffe
     assert.equal(await page.evaluate(() => localStorage.getItem(ROUTE_LIBRARY_KEY)), savedTwo);
     await page.locator('[data-route-remove]').last().click();
     assert.equal(await page.evaluate(() => savedRoutes.length), 1);
+    await page.locator('[data-route-distance="25"]').click();
     await page.locator("#reset-filters").click();
+    assert.ok(await page.locator("#reset-filters").isHidden(), "Reset hides once everything is back to the defaults");
     assert.equal(await page.evaluate(() => savedRoutes.length), 1);
     assert.equal(await page.locator("#filter-count").innerText(), "1", "Reset restores the default: all types, 10 km along the active route");
     assert.equal(await page.evaluate(() => routeDistanceKm), 10);

@@ -519,7 +519,6 @@
   "View": "Tazama",
   "View resources": "Tazama rasilimali",
   "Visit Luxembourg: campsites": "Tembelea Luxemburg: maeneo ya kambi",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets eneo la mwenyeji",
   "Växjö Region · Sweden": "Mkoa wa Växjö · Uswidi",
   "Wallonia and other managers use their own capacity, times and fire rules": "Wallonia na wasimamizi wengine hutumia uwezo wao wenyewe, nyakati na sheria za moto",
   "Water": "Maji",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "Maji yameripotiwa, unywaji haujulikani",
   "We store your message, page address, map position and browser type to help investigate the issue.": "Tunahifadhi ujumbe wako, anwani ya ukurasa, nafasi ya ramani na aina ya kivinjari ili kusaidia kuchunguza suala hilo.",
   "Website": "Tovuti",
-  "Welcome To My Garden location": "Welcome To My Garden eneo",
   "What can you do?": "Unaweza kufanya nini?",
   "What could be improved, what went wrong, or what place is missing?": "Ni nini kinaweza kuboreshwa, ni nini kilienda vibaya, au ni mahali gani panakosekana?",
   "What do you want to see?": "Unataka kuona nini?",
@@ -694,5 +692,7 @@
   "Route planners": "Wapangaji wa njia",
   "To ride a GPX route, add it on the map under Map → Route.": "Ili kufuata njia ya GPX, iongeze kwenye ramani chini ya Ramani → Njia.",
   "Applies once you add a GPX route.": "Inatumika ukishaongeza njia ya GPX.",
-  "Route sources are now in the guide.": "Vyanzo vya njia sasa viko kwenye mwongozo."
+  "Route sources are now in the guide.": "Vyanzo vya njia sasa viko kwenye mwongozo.",
+  "Host garden": "Bustani ya mwenyeji",
+  "Host address": "Anwani ya mwenyeji"
 }

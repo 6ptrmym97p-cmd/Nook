@@ -519,7 +519,6 @@
   "View": "Görüntüle",
   "View resources": "Kaynakları görüntüle",
   "Visit Luxembourg: campsites": "Lüksemburg'u ziyaret edin: kamp alanları",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets ana bilgisayar konumu",
   "Växjö Region · Sweden": "Växjö Bölgesi · İsveç",
   "Wallonia and other managers use their own capacity, times and fire rules": "Wallonia ve diğer yöneticiler kendi kapasitelerini, zamanlarını ve yangın kurallarını kullanırlar",
   "Water": "Su",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "Su bildirildi, içilebilirliği bilinmiyor",
   "We store your message, page address, map position and browser type to help investigate the issue.": "Sorunun araştırılmasına yardımcı olmak için mesajınızı, sayfa adresinizi, harita konumunuzu ve tarayıcı türünüzü saklıyoruz.",
   "Website": "Web sitesi",
-  "Welcome To My Garden location": "Welcome To My Garden konum",
   "What can you do?": "Ne yapabilirsin?",
   "What could be improved, what went wrong, or what place is missing?": "Neler geliştirilebilirdi, neler yanlış gitti veya hangi yer eksik?",
   "What do you want to see?": "Ne görmek istiyorsun?",
@@ -694,5 +692,7 @@
   "Route planners": "Rota planlayıcılar",
   "To ride a GPX route, add it on the map under Map → Route.": "Bir GPX rotasını izlemek için haritada Harita → Rota bölümünden ekleyin.",
   "Applies once you add a GPX route.": "Bir GPX rotası eklediğinizde geçerli olur.",
-  "Route sources are now in the guide.": "Rota kaynakları artık rehberde."
+  "Route sources are now in the guide.": "Rota kaynakları artık rehberde.",
+  "Host garden": "Ev sahibinin bahçesi",
+  "Host address": "Ev sahibi adresi"
 }

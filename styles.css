@@ -25,7 +25,7 @@
   --radius: 12px;
   --radius-sheet: 20px;
   --header-h: 52px;
-  --shadow-float: 0 6px 20px rgba(4, 18, 13, 0.28);
+  --shadow-float: 0 2px 10px rgba(4, 18, 13, 0.22);
   --shadow-sheet: 0 -12px 40px rgba(18, 49, 39, 0.18);
   --shadow-panel: 0 12px 40px rgba(18, 49, 39, 0.18);
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -493,19 +493,20 @@ body.map-app {
   .leaflet-control-zoom { display: block; }
   .leaflet-control-zoom a {
     display: grid;
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 44px;
     place-items: center;
     color: var(--ink);
     background: var(--surface);
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1;
     text-decoration: none;
   }
   .leaflet-control-zoom {
     overflow: hidden;
-    margin: 72px 12px 0 0 !important;
-    border-radius: var(--radius);
+    margin: 76px 16px 0 0 !important;
+    border-radius: 999px;
     box-shadow: var(--shadow-float);
   }
   .leaflet-control-zoom a + a { border-top: 1px solid var(--line); }
@@ -520,7 +521,7 @@ body.map-app {
   pointer-events: none;
 }
 .map-controls > * { position: absolute; }
-.map-settings { top: 12px; right: 12px; }
+.map-settings { top: 16px; right: 16px; }
 .map-tonight { left: 16px; bottom: max(24px, env(safe-area-inset-bottom)); }
 .map-locate { right: 16px; bottom: max(24px, env(safe-area-inset-bottom)); }
 .map-controls > * { pointer-events: auto; }
@@ -536,7 +537,7 @@ body.map-app {
   border-radius: 999px;
   color: var(--ink);
   background: var(--surface);
-  box-shadow: 0 2px 10px rgba(4, 18, 13, 0.22);
+  box-shadow: var(--shadow-float);
   font-weight: 700;
 }
 .map-button svg { flex: none; color: var(--ink); }
@@ -573,10 +574,10 @@ body.map-app {
 .map-data-hint {
   position: absolute;
   z-index: 1150;
-  top: 12px;
+  top: 16px;
   left: 50%;
   display: flex;
-  max-width: calc(100% - 144px);
+  max-width: calc(100% - 160px);
   align-items: center;
   gap: 12px;
   padding: 8px 8px 8px 14px;
@@ -684,6 +685,7 @@ dialog.sheet::backdrop { background: rgba(5, 20, 14, 0.2); }
   .sheet::before { display: none; }
   .sheet-header { padding-top: 12px; }
   dialog.sheet { position: fixed; top: calc(var(--header-h) + 16px); max-height: calc(100dvh - var(--header-h) - 112px); }
+  dialog.map-sidebar { left: auto; right: 80px; }
 }
 
 .panel-sheet {
@@ -888,9 +890,8 @@ dialog.sheet::backdrop { background: rgba(5, 20, 14, 0.2); }
 .row-link svg { flex: none; color: var(--muted); }
 .place-attribution { color: var(--muted); font-size: var(--fs-small); }
 .place-attribution a { color: inherit; }
-.coincident-places { display: flex; flex-direction: column; gap: 8px; padding: 0 16px 24px; }
-.coincident-places .button { justify-content: flex-start; white-space: normal; text-align: left; }
-.place-message { padding: 0 16px 16px; color: var(--muted); }
+.place-message { margin-bottom: 12px; color: var(--muted); }
+.coincident-next { margin-top: 16px; }
 
 /* Leaflet canvas pins and clusters */
 .map-count-cluster {
@@ -1089,7 +1090,7 @@ a.list-row:hover .list-title { text-decoration: underline; }
 .guide-facts dt { padding-top: 1px; color: var(--muted); font-size: var(--fs-small); }
 .guide-facts dd { margin: 0; }
 
-/* Feedback dialog */
+/* Feedback: a bottom sheet on phones, a centred dialog on larger screens */
 .feedback-dialog {
   width: min(480px, calc(100% - 24px));
   max-height: calc(100dvh - 24px);
@@ -1100,21 +1101,35 @@ a.list-row:hover .list-title { text-decoration: underline; }
   background: var(--surface);
   box-shadow: var(--shadow-panel);
 }
-.feedback-dialog::backdrop { background: rgba(5, 20, 14, 0.3); }
-.feedback-form { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 20px 16px 20px; }
-.feedback-form h2 { padding-right: 48px; }
-.dialog-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  display: grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
-  border: 0;
-  border-radius: 50%;
-  background: var(--fill);
-  font-size: 22px;
+.feedback-dialog:focus { outline: none; }
+.feedback-dialog::backdrop { background: rgba(5, 20, 14, 0.2); }
+.feedback-form .sheet-header { padding-top: 12px; }
+.feedback-body { display: flex; flex-direction: column; gap: 16px; padding: 4px 16px 20px; }
+@media (max-width: 820px) {
+  .feedback-dialog[open] {
+    display: flex;
+    flex-direction: column;
+    inset: auto 0 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: min(92dvh, 720px);
+    margin: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+    box-shadow: var(--shadow-sheet);
+  }
+  .feedback-dialog::before {
+    content: "";
+    align-self: center;
+    flex: none;
+    width: 36px;
+    height: 4px;
+    margin-top: 8px;
+    border-radius: 2px;
+    background: #d9dcd6;
+  }
+  .feedback-form { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+  .feedback-form .sheet-header { padding-top: 4px; }
 }
 .feedback-kinds { display: flex; gap: 0; margin: 0; padding: 3px; border: 0; border-radius: var(--radius); background: var(--fill); }
 .feedback-kinds label { position: relative; flex: 1 1 0; }
@@ -1143,6 +1158,13 @@ a.list-row:hover .list-title { text-decoration: underline; }
   font-weight: 400;
 }
 .feedback-field textarea { resize: vertical; }
+.feedback-field textarea:focus-visible,
+.feedback-field input:focus-visible,
+.search-field input:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 0;
+  background: var(--surface);
+}
 .feedback-trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .feedback-privacy { color: var(--muted); font-size: var(--fs-small); }
 .feedback-status { font-size: var(--fs-small); }

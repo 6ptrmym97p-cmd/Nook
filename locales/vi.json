@@ -519,7 +519,6 @@
   "View": "Xem",
   "View resources": "Xem tài nguyên",
   "Visit Luxembourg: campsites": "Thăm Luxembourg: khu cắm trại",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets vị trí máy chủ",
   "Växjö Region · Sweden": "Vùng Växjö · Thụy Điển",
   "Wallonia and other managers use their own capacity, times and fire rules": "Wallonia và các nhà quản lý khác sử dụng năng lực, thời gian và quy tắc chữa cháy của mình",
   "Water": "Nước",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "Nước được báo cáo, khả năng uống không rõ",
   "We store your message, page address, map position and browser type to help investigate the issue.": "Chúng tôi lưu trữ tin nhắn, địa chỉ trang, vị trí bản đồ và loại trình duyệt của bạn để giúp điều tra vấn đề.",
   "Website": "Trang web",
-  "Welcome To My Garden location": "Welcome To My Garden vị trí",
   "What can you do?": "Bạn có thể làm gì?",
   "What could be improved, what went wrong, or what place is missing?": "Điều gì có thể được cải thiện, điều gì đã xảy ra hoặc thiếu chỗ nào?",
   "What do you want to see?": "Bạn muốn xem gì?",
@@ -694,5 +692,7 @@
   "Route planners": "Công cụ lập tuyến",
   "To ride a GPX route, add it on the map under Map → Route.": "Để đi theo tuyến GPX, hãy thêm nó trên bản đồ ở Bản đồ → Tuyến đường.",
   "Applies once you add a GPX route.": "Áp dụng khi bạn thêm tuyến GPX.",
-  "Route sources are now in the guide.": "Nguồn tuyến đường hiện nằm trong phần hướng dẫn."
+  "Route sources are now in the guide.": "Nguồn tuyến đường hiện nằm trong phần hướng dẫn.",
+  "Host garden": "Vườn của chủ nhà",
+  "Host address": "Địa chỉ chủ nhà"
 }

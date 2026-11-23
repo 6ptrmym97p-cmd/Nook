@@ -12,10 +12,14 @@ const feedbackServerMessages = {
   const dialog = document.createElement("dialog");
   dialog.className = "feedback-dialog";
   dialog.setAttribute("aria-labelledby", "feedback-title");
+  dialog.tabIndex = -1;
   dialog.innerHTML = `
     <form class="feedback-form" novalidate>
-      <button class="dialog-close" type="button" data-feedback-close aria-label="${th("Close")}">×</button>
-      <h2 id="feedback-title">${th("Suggestion, complaint or bug?")}</h2>
+      <div class="sheet-header">
+        <h2 id="feedback-title">${th("Suggestion, complaint or bug?")}</h2>
+        <button class="icon-button" type="button" data-feedback-close aria-label="${th("Close")}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="feedback-body">
       <fieldset class="feedback-kinds">
         <legend class="visually-hidden">${th("Type of message")}</legend>
         <label><input type="radio" name="kind" value="tip" checked /><span>${th("Suggestion")}</span></label>
@@ -36,6 +40,7 @@ const feedbackServerMessages = {
       <div class="feedback-actions">
         <button class="button button-primary" type="submit">${th("Send")}</button>
       </div>
+      </div>
     </form>`;
   document.body.append(dialog);
 
@@ -50,7 +55,9 @@ const feedbackServerMessages = {
     status.textContent = "";
     status.classList.remove("is-error");
     dialog.showModal();
-    form.elements.message.focus();
+    // On touch screens the keyboard would cover the form straight away, so focus the sheet itself.
+    if (matchMedia("(pointer: fine)").matches) form.elements.message.focus();
+    else dialog.focus();
   }
 
   function close() {

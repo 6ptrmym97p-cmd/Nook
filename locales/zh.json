@@ -519,7 +519,6 @@
   "View": "查看",
   "View resources": "查看资源",
   "Visit Luxembourg: campsites": "访问卢森堡：露营地",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets 主机位置",
   "Växjö Region · Sweden": "韦克舍地区·瑞典",
   "Wallonia and other managers use their own capacity, times and fire rules": "瓦隆和其他管理者使用自己的能力、时间和消防规则",
   "Water": "水",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "据报告有水，可饮用性未知",
   "We store your message, page address, map position and browser type to help investigate the issue.": "我们存储您的消息、页面地址、地图位置和浏览器类型，以帮助调查问题。",
   "Website": "网站",
-  "Welcome To My Garden location": "Welcome To My Garden 位置",
   "What can you do?": "你能做什么？",
   "What could be improved, what went wrong, or what place is missing?": "哪些地方可以改进，哪些地方出了问题，或者还有哪些地方缺失？",
   "What do you want to see?": "你想看什么？",
@@ -694,5 +692,7 @@
   "Route planners": "路线规划工具",
   "To ride a GPX route, add it on the map under Map → Route.": "要按 GPX 路线骑行，请在地图的地图 → 路线中添加。",
   "Applies once you add a GPX route.": "添加 GPX 路线后生效。",
-  "Route sources are now in the guide.": "路线来源现在在指南中。"
+  "Route sources are now in the guide.": "路线来源现在在指南中。",
+  "Host garden": "主人家花园",
+  "Host address": "主人家地址"
 }

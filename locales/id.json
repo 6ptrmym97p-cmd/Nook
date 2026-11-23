@@ -519,7 +519,6 @@
   "View": "Lihat",
   "View resources": "Lihat sumber daya",
   "Visit Luxembourg: campsites": "Kunjungi Luksemburg: tempat perkemahan",
-  "Vrienden op de Fiets host location": "Vrienden op de Fiets lokasi tuan rumah",
   "Växjö Region · Sweden": "Wilayah Växjö · Swedia",
   "Wallonia and other managers use their own capacity, times and fire rules": "Wallonia dan manajer lainnya menggunakan kapasitas, waktu, dan aturan kebakaran mereka sendiri",
   "Water": "Air",
@@ -528,7 +527,6 @@
   "Water reported, drinkability unknown": "Air dilaporkan, kemampuan minum tidak diketahui",
   "We store your message, page address, map position and browser type to help investigate the issue.": "Kami menyimpan pesan Anda, alamat halaman, posisi peta, dan jenis browser untuk membantu menyelidiki masalah tersebut.",
   "Website": "Situs web",
-  "Welcome To My Garden location": "Welcome To My Garden lokasi",
   "What can you do?": "Apa yang bisa kamu lakukan?",
   "What could be improved, what went wrong, or what place is missing?": "Apa yang bisa diperbaiki, apa yang salah, atau apa yang kurang?",
   "What do you want to see?": "Apa yang ingin kamu lihat?",
@@ -694,5 +692,7 @@
   "Route planners": "Perencana rute",
   "To ride a GPX route, add it on the map under Map → Route.": "Untuk mengikuti rute GPX, tambahkan di peta melalui Peta → Rute.",
   "Applies once you add a GPX route.": "Berlaku setelah Anda menambahkan rute GPX.",
-  "Route sources are now in the guide.": "Sumber rute kini ada di panduan."
+  "Route sources are now in the guide.": "Sumber rute kini ada di panduan.",
+  "Host garden": "Kebun tuan rumah",
+  "Host address": "Alamat tuan rumah"
 }
