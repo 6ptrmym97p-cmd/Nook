@@ -504,7 +504,7 @@ body.map-app {
   }
   .leaflet-control-zoom {
     overflow: hidden;
-    margin: 16px 16px 0 0 !important;
+    margin: 72px 12px 0 0 !important;
     border-radius: var(--radius);
     box-shadow: var(--shadow-float);
   }
@@ -512,7 +512,7 @@ body.map-app {
   .leaflet-control-zoom a:hover { background: var(--fill); }
 }
 
-/* Settings top left, Tonight bottom left, location bottom right. */
+/* Settings top right, Tonight bottom left, location bottom right. */
 .map-controls {
   position: absolute;
   z-index: 1200;
@@ -520,7 +520,7 @@ body.map-app {
   pointer-events: none;
 }
 .map-controls > * { position: absolute; }
-.map-settings { top: 12px; left: 12px; }
+.map-settings { top: 12px; right: 12px; }
 .map-tonight { left: 16px; bottom: max(24px, env(safe-area-inset-bottom)); }
 .map-locate { right: 16px; bottom: max(24px, env(safe-area-inset-bottom)); }
 .map-controls > * { pointer-events: auto; }
@@ -546,6 +546,7 @@ body.map-app {
   padding: 0;
 }
 .map-button-round svg { color: #fff; }
+.map-tonight svg { width: 22px; height: 22px; color: var(--lime); }
 .map-button.has-location { color: var(--forest); background: var(--lime); }
 .map-button.has-location svg { color: var(--forest); }
 .map-button.is-loading svg { opacity: 0.6; }

@@ -49,7 +49,7 @@ const settled = async (page) => {
       assert.equal(await page.getAttribute("html", "lang"), language);
       assert.equal(await page.getAttribute("html", "dir"), ["ar", "ur"].includes(language) ? "rtl" : "ltr");
       assert.equal(await page.evaluate(() => mapManifest.count), expectedPlaces);
-      assert.equal(await page.locator("#show-candidates span").innerText(), words["Tonight"]);
+      assert.equal(await page.locator("#show-candidates").getAttribute("aria-label"), words["Tonight"]);
       await page.locator("#toggle-filters").click();
       assert.equal(await page.locator("#filters-title").innerText(), words["Map"]);
       assert.equal(await page.locator("#choose-gpx").innerText(), words["Add GPX"]);
