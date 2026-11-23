@@ -1,4 +1,4 @@
-# Nook: sleep spots for bikepackers and touring cyclists
+# nook: sleep spots for bikepackers and touring cyclists
 # Search engines and AI assistants may index and cite the public pages and map data.
 Content-Signal: search=yes, ai-input=yes
 

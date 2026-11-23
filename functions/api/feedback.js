@@ -42,12 +42,12 @@ async function notifyByEmail(env, key, record, metadata) {
       },
       signal: AbortSignal.timeout(10000),
       body: JSON.stringify({
-        from: env.FEEDBACK_EMAIL_FROM || "Nook feedback <onboarding@resend.dev>",
+        from: env.FEEDBACK_EMAIL_FROM || "nook feedback <onboarding@resend.dev>",
         to: [env.FEEDBACK_EMAIL_TO],
-        subject: `[Nook] Nieuwe feedback: ${labels[record.kind]}`,
+        subject: `[nook] Nieuwe feedback: ${labels[record.kind]}`,
         ...(record.email ? { reply_to: record.email } : {}),
         text: [
-          "Nieuwe feedback voor Nook",
+          "Nieuwe feedback voor nook",
           `Type: ${labels[record.kind]}`,
           `Ontvangen: ${record.createdAt}`,
           "",

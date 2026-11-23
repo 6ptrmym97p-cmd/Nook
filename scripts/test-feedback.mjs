@@ -130,7 +130,7 @@ test("emails the configured owner after saving feedback, with optional reply-to 
   assert.equal(tasks.length, 1);
   assert.deepEqual(outgoing.to, ["owner@example.com"]);
   assert.equal(outgoing.reply_to, "visitor@example.com");
-  assert.equal(outgoing.subject, "[Nook] Nieuwe feedback: Bug");
+  assert.equal(outgoing.subject, "[nook] Nieuwe feedback: Bug");
   assert.ok(outgoing.text.includes("A <b>missing</b> place"));
   assert.ok(outgoing.text.includes("60.1,10.2,7"));
   assert.ok(!("html" in outgoing));

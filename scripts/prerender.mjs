@@ -154,7 +154,7 @@ function finishHead(html, { lang, canonical, urls, title, description, ogTitle, 
   out = setMeta(out, 'property="og:title"', ogTitle);
   out = setMeta(out, 'property="og:description"', finalDescription);
   if (imageAlt) out = setMeta(out, 'property="og:image:alt"', imageAlt);
-  out = out.replace(/(<meta property="og:site_name" content="Nook" \/>)/, `$1\n    <meta property="og:locale" content="${lang === "nl" ? "nl_NL" : "en_GB"}" />`);
+  out = out.replace(/(<meta property="og:site_name" content="nook" \/>)/, `$1\n    <meta property="og:locale" content="${lang === "nl" ? "nl_NL" : "en_GB"}" />`);
   if (!out.includes('data-prerendered-lang=') || !out.includes('<base href="/" />') || !out.includes(`rel="canonical" href="${canonical}"`)) {
     throw new Error("Could not prepare head for " + canonical);
   }
@@ -162,11 +162,11 @@ function finishHead(html, { lang, canonical, urls, title, description, ogTitle, 
 }
 
 const NL = {
-  imageAlt: "Nook: vind een slaapplek op je fietsreis. Campings, shelters, hutten en gastvrije tuinen op één kaart.",
+  imageAlt: "nook: vind een slaapplek op je fietsreis. Campings, shelters, hutten en gastvrije tuinen op één kaart.",
   pages: {
-    index: { ogTitle: "Nook: slaapplekken voor bikepackers en fietsreizigers" },
-    regels: { ogTitle: "Wildkampeerregels en fietsroutes per land | Nook" },
-    over: { ogTitle: "Over Nook: slaapplekken voor mensen onderweg" },
+    index: { ogTitle: "nook: slaapplekken voor bikepackers en fietsreizigers" },
+    regels: { ogTitle: "Wildkampeerregels en fietsroutes per land | nook" },
+    over: { ogTitle: "Over nook: slaapplekken voor mensen onderweg" },
   },
 };
 
@@ -205,24 +205,24 @@ const COPY = {
   en: {
     dir: "wild-camping",
     country: (code) => (ARTICLE.has(code) ? "the " : "") + new Intl.DisplayNames(["en"], { type: "region" }).of(code),
-    title: (n) => `Wild camping in ${n} by bike: rules and places to sleep | Nook`,
+    title: (n) => `Wild camping in ${n} by bike: rules and places to sleep | nook`,
     h1: (n) => `Wild camping in ${n}`,
-    intro: (n, total) => `What cyclists with a small tent need to know about staying overnight in ${n}, with the official source and ${total} places to sleep on the Nook map.`,
-    description: (n, total, status) => `Wild camping in ${n} on a bike trip: the main rule (${status}), the official source and ${total} campsites, huts, shelters and host gardens on the Nook map.`,
+    intro: (n, total) => `What cyclists with a small tent need to know about staying overnight in ${n}, with the official source and ${total} places to sleep on the nook map.`,
+    description: (n, total, status) => `Wild camping in ${n} on a bike trip: the main rule (${status}), the official source and ${total} campsites, huts, shelters and host gardens on the nook map.`,
     placesHeading: (n) => `Places to sleep in ${n} on the map`,
-    placesNote: "Numbers from the current Nook snapshot. Check availability, costs and rules with the provider.",
+    placesNote: "Numbers from the current nook snapshot. Check availability, costs and rules with the provider.",
     otherHeading: "Camping rules in other countries",
-    imageAlt: "Nook: find a place to sleep on your bike trip. Campsites, shelters, huts and host gardens on one map.",
+    imageAlt: "nook: find a place to sleep on your bike trip. Campsites, shelters, huts and host gardens on one map.",
   },
   nl: {
     dir: "nl/wildkamperen",
     country: (code) => new Intl.DisplayNames(["nl"], { type: "region" }).of(code),
-    title: (n) => `Wildkamperen in ${n} met de fiets: regels en slaapplekken | Nook`,
+    title: (n) => `Wildkamperen in ${n} met de fiets: regels en slaapplekken | nook`,
     h1: (n) => `Wildkamperen in ${n}`,
-    intro: (n, total) => `Wat je als fietser met een kleine tent moet weten over overnachten in ${n}, met de officiële bron en ${total} slaapplekken op de Nook-kaart.`,
-    description: (n, total, status) => `Wildkamperen in ${n} tijdens een fietsreis: de hoofdregel (${status}), de officiële bron en ${total} campings, hutten, shelters en gastvrije tuinen op de Nook-kaart.`,
+    intro: (n, total) => `Wat je als fietser met een kleine tent moet weten over overnachten in ${n}, met de officiële bron en ${total} slaapplekken op de nook-kaart.`,
+    description: (n, total, status) => `Wildkamperen in ${n} tijdens een fietsreis: de hoofdregel (${status}), de officiële bron en ${total} campings, hutten, shelters en gastvrije tuinen op de nook-kaart.`,
     placesHeading: (n) => `Slaapplekken in ${n} op de kaart`,
-    placesNote: "Aantallen uit de huidige momentopname van Nook. Controleer beschikbaarheid, kosten en regels bij de aanbieder.",
+    placesNote: "Aantallen uit de huidige momentopname van nook. Controleer beschikbaarheid, kosten en regels bij de aanbieder.",
     otherHeading: "Kampeerregels in andere landen",
     imageAlt: NL.imageAlt,
   },

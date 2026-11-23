@@ -1,10 +1,10 @@
-# Nook
+# nook
 
-> Nook (https://ridewithnook.com) is a free, multilingual web map for bikepackers and touring cyclists. It helps you find a feasible place to sleep along a cycling route: campsites, huts and shelters, designated free tent sites and host gardens, with over 220,000 places worldwide.
+> nook (https://ridewithnook.com) is a free, multilingual web map for bikepackers and touring cyclists. It helps you find a feasible place to sleep along a cycling route: campsites, huts and shelters, designated free tent sites and host gardens, with over 220,000 places worldwide.
 
-Nook runs in the browser and can be installed as a PWA. It needs no account and uses no tracking cookies. Imported GPX routes stay on the visitor's device. The interface is available in 21 languages; English is the default and other languages can be opened with `?lang=` (for example `?lang=nl`, `?lang=de`, `?lang=fr`).
+nook runs in the browser and can be installed as a PWA. It needs no account and uses no tracking cookies. Imported GPX routes stay on the visitor's device. The interface is available in 21 languages; English is the default and other languages can be opened with `?lang=` (for example `?lang=nl`, `?lang=de`, `?lang=fr`).
 
-## What you can do with Nook
+## What you can do with nook
 
 - Filter the map by country and by type of stay: campsites, hut or shelter, designated free site, host network.
 - Import a GPX track or route (for example from Komoot, EuroVelo or cycle.travel) and show only places within a chosen distance of the route (for example 3, 8, 15 or 25 km).
@@ -15,13 +15,13 @@ Nook runs in the browser and can be installed as a PWA. It needs no account and 
 
 - [Map](https://ridewithnook.com/): the interactive map with filters, GPX import and "A place for tonight".
 - [Guide](https://ridewithnook.com/regels): search a country for its wild camping rule, official source, regional notes and national cycling routes (35 countries checked against official sources), plus route planners for finding GPX routes.
-- [About Nook](https://ridewithnook.com/over): who Nook is for, every data source on the map with its number of places, and privacy.
+- [About nook](https://ridewithnook.com/over): who nook is for, every data source on the map with its number of places, and privacy.
 
 All pages also exist in Dutch under https://ridewithnook.com/nl/ (for example https://ridewithnook.com/nl/regels).
 
 ## Wild camping by country
 
-Each guide gives the main rule, the official source, a regional background and the number of places on the Nook map for that country.
+Each guide gives the main rule, the official source, a regional background and the number of places on the nook map for that country.
 
 - [Wild camping in Argentina](https://ridewithnook.com/wild-camping/argentina) · [Wildkamperen in Argentinië](https://ridewithnook.com/nl/wildkamperen/argentinie)
 - [Wild camping in Australia](https://ridewithnook.com/wild-camping/australia) · [Wildkamperen in Australië](https://ridewithnook.com/nl/wildkamperen/australie)

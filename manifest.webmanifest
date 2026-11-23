@@ -1,6 +1,6 @@
 {
-  "name": "Nook",
-  "short_name": "Nook",
+  "name": "nook",
+  "short_name": "nook",
   "description": "Sleep spots for people on the move.",
   "lang": "en",
   "start_url": "./index.html",

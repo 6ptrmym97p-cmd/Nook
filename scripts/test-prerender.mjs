@@ -77,7 +77,7 @@ test("Dutch pages are fully translated and translating them again changes nothin
 
 test("country guides are the rules page with the country, its region guides and its map counts rendered", () => {
   const norway = fs.readFileSync(path.join(out, "wild-camping", "norway.html"), "utf8");
-  assert.ok(norway.includes("<title>Wild camping in Norway by bike: rules and places to sleep | Nook</title>"));
+  assert.ok(norway.includes("<title>Wild camping in Norway by bike: rules and places to sleep | nook</title>"));
   assert.ok(norway.includes('id="country-rule" aria-live="polite" data-country="NO"'));
   assert.ok(norway.includes('<p class="country-rule-main">Utmark, 150 m away, usually max 2 nights.</p>'));
   assert.ok(norway.includes('<li id="regio-hardangervidda">') && norway.includes('id="rules-country"'), "region guide and country search stay");

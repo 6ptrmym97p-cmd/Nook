@@ -176,12 +176,12 @@ const countries = [
 const sources = [
   { icon: "R", name: "Refuges.info", description: t("Shelter or hut; check source and local rules"), meta: "CC BY-SA 2.0", url: "https://www.refuges.info/" },
   { icon: "T", name: "1NITE TENT", description: t("Camp in a host’s garden. Arrange your stay through the website first."), meta: t("One night only"), url: "https://1nitetent.com/#map" },
-  { icon: "W", name: "Warmshowers", description: t("Worldwide host network with a map in its mobile app. Nook does not currently have a stable public export for including these locations."), meta: t("Map visible in official app"), url: "https://play.google.com/store/apps/details?id=org.warmshowers.app" },
-  { icon: "V", name: "Vrienden op de Fiets", description: t("The public map feed provides individual map positions and generic features without address fields. Nook groups nearby places across national borders and shows individual source pins when zooming in."), meta: t("5,341 pins · 38 European countries · July 7, 2026"), url: "https://www.vriendenopdefiets.nl/zoek-een-logeeradres" },
+  { icon: "W", name: "Warmshowers", description: t("Worldwide host network with a map in its mobile app. nook does not currently have a stable public export for including these locations."), meta: t("Map visible in official app"), url: "https://play.google.com/store/apps/details?id=org.warmshowers.app" },
+  { icon: "V", name: "Vrienden op de Fiets", description: t("The public map feed provides individual map positions and generic features without address fields. nook groups nearby places across national borders and shows individual source pins when zooming in."), meta: t("5,341 pins · 38 European countries · July 7, 2026"), url: "https://www.vriendenopdefiets.nl/zoek-een-logeeradres" },
   { icon: "G", name: "Welcome To My Garden", description: t("The public explore map provides individual garden positions, basic facilities and, where available, a garden photo. These are spatially clustered on the map and shown separately when zooming in further."), meta: t("5,921 pins · 4,321 photos · July 7, 2026"), url: "https://welcometomygarden.org/nl/explore" },
   { icon: "U", name: "Ud i Naturen", description: t("Official Danish map data with concrete free tent areas, primitive overnight accommodations and shelters, including location description, capacity and booking status."), meta: t("2,480 official spots · June 14, 2026"), url: "https://udinaturen.dk/kort" },
   { icon: "C", name: t("OpenStreetMap campsites"), description: t("Campsites and motorhome sites from OpenStreetMap via OpenCampingMap, shown as clusters and individual map pins."), meta: t("82,084 pins · 47 countries · July 7, 2026"), url: "https://opencampingmap.org/" },
-  { icon: "CW", name: "CampWild", description: t("Public map of shelters, lean-tos, bivouac sites and huts. Nook includes places clearly intended for sleeping or shelter and prioritises official Ud i Naturen records in Denmark."), meta: t("5,944 places · 92 Danish duplicates removed · 7 July 2026"), url: "https://map.campwild.org/" },
+  { icon: "CW", name: "CampWild", description: t("Public map of shelters, lean-tos, bivouac sites and huts. nook includes places clearly intended for sleeping or shelter and prioritises official Ud i Naturen records in Denmark."), meta: t("5,944 places · 92 Danish duplicates removed · 7 July 2026"), url: "https://map.campwild.org/" },
   { icon: "F", name: "De Wereldfietser", description: t("Forum and association with a lot of experiential knowledge about routes, material and overnight stays along the way."), meta: t("Forum · Dutch"), url: "https://forum.wereldfietser.nl/" },
   { icon: "R", name: "Reddit", description: t("Recent experiences and local tips, useful as a guide. Then verify each claim with a primary source."), meta: t("Community · varying"), url: "https://www.reddit.com/r/bikepacking/search/?q=camping%20sweden%20denmark%20germany" },
 ];
@@ -992,8 +992,8 @@ function requestUserLocation({ openCandidates = false, focusMap = true } = {}) {
     locationMessage = error.code === error.PERMISSION_DENIED
       ? t("Location access is denied. Turn on location for this site or use the center of the map.")
       : error.code === error.TIMEOUT
-        ? t("Determining the location took too long. Nook now uses the center of the map.")
-        : t("This browser did not report a position. Nook now uses the center of the map.");
+        ? t("Determining the location took too long. nook now uses the center of the map.")
+        : t("This browser did not report a position. nook now uses the center of the map.");
     if (openCandidates && focusMap) focusDetailsAroundMapCenter();
     showLocationStatus(locationMessage, "warning", { sticky: true });
     updateLocationNote();
@@ -1447,7 +1447,7 @@ function vodfPlace(pin) {
     sourceUrl: publicData.vodf?.source || "https://www.vriendenopdefiets.nl/zoek-een-logeeradres",
     sourceAction: t("Open the official host map"),
     decision: t("This is an individual pin from the public map feed."),
-    description: t("Nook uses the same published map position, without host ID, name, or address fields. Log in at the source for the host and reservation."),
+    description: t("nook uses the same published map position, without host ID, name, or address fields. Log in at the source for the host and reservation."),
     stay: t("Only after reservation with a host"),
     cost: t("According to the platform terms"),
     water: t("Depending on the host"),
