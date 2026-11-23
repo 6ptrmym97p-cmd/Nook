@@ -370,7 +370,6 @@
   "Please check:": "Please check:",
   "Plus": "Plus",
   "Possibility reported": "Possibility reported",
-  "Privacy": "Privacy",
   "Private property is allowed with explicit permission": "Private property is allowed with explicit permission",
   "Protected areas are a hard no": "Protected areas are a hard no",
   "Province of Utrecht · Netherlands": "Province of Utrecht · Netherlands",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "Huts and shelters in Norway",
   "No account needed.": "No account needed.",
   "Your location is only used when you allow it.": "Your location is only used when you allow it.",
-  "GPX routes stay on your device.": "GPX routes stay on your device.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.",
   "Feedback is stored with technical details.": "Feedback is stored with technical details.",
   "Spotted a mistake or missing a place?": "Spotted a mistake or missing a place?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "Applies once you add a GPX route.",
   "Route sources are now in the guide.": "Route sources are now in the guide.",
   "Host garden": "Host garden",
-  "Host address": "Host address"
+  "Host address": "Host address",
+  "Privacy and cookies": "Privacy and cookies",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.",
+  "Clear saved data": "Clear saved data",
+  "Remove your saved routes and settings from this browser?": "Remove your saved routes and settings from this browser?",
+  "Saved data cleared.": "Saved data cleared."
 }

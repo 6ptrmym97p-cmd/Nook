@@ -370,7 +370,6 @@
   "Please check:": "请检查：",
   "Plus": "加号",
   "Possibility reported": "报告的可能性",
-  "Privacy": "隐私",
   "Private property is allowed with explicit permission": "经明确许可，允许私有财产",
   "Protected areas are a hard no": "保护区是一个很难拒绝的地方",
   "Province of Utrecht · Netherlands": "荷兰乌得勒支省",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "挪威的小屋和庇护所",
   "No account needed.": "无需账户。",
   "Your location is only used when you allow it.": "只有在你允许时才会使用你的位置。",
-  "GPX routes stay on your device.": "GPX 路线保留在你的设备上。",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "我们在不使用 Cookie 或路线数据的情况下统计成功的 GPX 导入次数，并保留 90 天。",
   "Feedback is stored with technical details.": "反馈会连同技术信息一起保存。",
   "Spotted a mistake or missing a place?": "发现错误或缺少地点？",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "添加 GPX 路线后生效。",
   "Route sources are now in the guide.": "路线来源现在在指南中。",
   "Host garden": "主人家花园",
-  "Host address": "主人家地址"
+  "Host address": "主人家地址",
+  "Privacy and cookies": "隐私与 Cookie",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "不使用 Cookie 或跟踪器。你的语言、地图视图、筛选条件和 GPX 路线都保存在此浏览器中，绝不会发送给我们。",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "地图图块来自 OpenStreetMap，部分地点照片来自其来源网站。与任何网站一样，这些服务器能看到你的 IP 地址。",
+  "Clear saved data": "清除已保存的数据",
+  "Remove your saved routes and settings from this browser?": "要从此浏览器中删除已保存的路线和设置吗？",
+  "Saved data cleared.": "已清除保存的数据。"
 }

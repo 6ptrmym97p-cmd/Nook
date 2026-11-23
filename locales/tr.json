@@ -370,7 +370,6 @@
   "Please check:": "Lütfen kontrol edin:",
   "Plus": "Artı",
   "Possibility reported": "Olasılık bildirildi",
-  "Privacy": "Gizlilik",
   "Private property is allowed with explicit permission": "Özel mülkiyete açık izinle izin verilir",
   "Protected areas are a hard no": "Korunan alanlar kesinlikle hayır",
   "Province of Utrecht · Netherlands": "Utrecht Eyaleti · Hollanda",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "Norveç'te kulübeler ve barınaklar",
   "No account needed.": "Hesap gerekmez.",
   "Your location is only used when you allow it.": "Konumunuz yalnızca izin verirseniz kullanılır.",
-  "GPX routes stay on your device.": "GPX rotaları cihazınızda kalır.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "Başarılı GPX içe aktarmalarını çerez veya rota verisi olmadan sayarız ve sayıları 90 gün saklarız.",
   "Feedback is stored with technical details.": "Geri bildirimler teknik bilgilerle birlikte saklanır.",
   "Spotted a mistake or missing a place?": "Bir hata mı gördünüz ya da bir yer mi eksik?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "Bir GPX rotası eklediğinizde geçerli olur.",
   "Route sources are now in the guide.": "Rota kaynakları artık rehberde.",
   "Host garden": "Ev sahibinin bahçesi",
-  "Host address": "Ev sahibi adresi"
+  "Host address": "Ev sahibi adresi",
+  "Privacy and cookies": "Gizlilik ve çerezler",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Çerez veya izleyici yok. Diliniz, harita görünümünüz, filtreleriniz ve GPX rotalarınız bu tarayıcıda saklanır ve bize asla gönderilmez.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "Harita karoları OpenStreetMap’ten, bazı yer fotoğrafları ise kaynağından yüklenir. Her web sitesinde olduğu gibi bu sunucular IP adresinizi görür.",
+  "Clear saved data": "Kayıtlı verileri sil",
+  "Remove your saved routes and settings from this browser?": "Kayıtlı rotalarınız ve ayarlarınız bu tarayıcıdan kaldırılsın mı?",
+  "Saved data cleared.": "Kayıtlı veriler silindi."
 }

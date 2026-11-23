@@ -370,7 +370,6 @@
   "Please check:": "దయచేసి తనిఖీ చేయండి:",
   "Plus": "ప్లస్",
   "Possibility reported": "అవకాశం నివేదించబడింది",
-  "Privacy": "గోప్యత",
   "Private property is allowed with explicit permission": "స్పష్టమైన అనుమతితో ప్రైవేట్ ఆస్తి అనుమతించబడుతుంది",
   "Protected areas are a hard no": "రక్షిత ప్రాంతాలు కష్టతరమైనవి",
   "Province of Utrecht · Netherlands": "ఉట్రేచ్ట్ ప్రావిన్స్ · నెదర్లాండ్స్",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "నార్వేలో గుడిసెలు మరియు ఆశ్రయాలు",
   "No account needed.": "ఖాతా అవసరం లేదు.",
   "Your location is only used when you allow it.": "మీరు అనుమతిస్తేనే మీ స్థానం ఉపయోగించబడుతుంది.",
-  "GPX routes stay on your device.": "GPX మార్గాలు మీ పరికరంలోనే ఉంటాయి.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "కుకీలు లేదా మార్గ డేటా లేకుండా విజయవంతమైన GPX దిగుమతులను లెక్కించి, ఆ లెక్కలను 90 రోజులు ఉంచుతాం.",
   "Feedback is stored with technical details.": "అభిప్రాయం సాంకేతిక వివరాలతో సేవ్ చేయబడుతుంది.",
   "Spotted a mistake or missing a place?": "తప్పు కనిపించిందా లేదా ఏదైనా స్థలం లేదా?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "GPX మార్గాన్ని జోడించిన తర్వాత వర్తిస్తుంది.",
   "Route sources are now in the guide.": "మార్గ మూలాలు ఇప్పుడు గైడ్‌లో ఉన్నాయి.",
   "Host garden": "హోస్ట్ తోట",
-  "Host address": "హోస్ట్ చిరునామా"
+  "Host address": "హోస్ట్ చిరునామా",
+  "Privacy and cookies": "గోప్యత మరియు కుకీలు",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "కుకీలు లేదా ట్రాకర్లు లేవు. మీ భాష, మ్యాప్ వీక్షణ, ఫిల్టర్లు మరియు GPX మార్గాలు ఈ బ్రౌజర్‌లోనే సేవ్ అవుతాయి, మాకు ఎప్పుడూ పంపబడవు.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "మ్యాప్ టైల్స్ OpenStreetMap నుండి, కొన్ని ప్రదేశాల ఫోటోలు వాటి మూలం నుండి లోడ్ అవుతాయి. ఏ వెబ్‌సైట్ లాగానే, ఆ సర్వర్లు మీ IP చిరునామాను చూస్తాయి.",
+  "Clear saved data": "సేవ్ చేసిన డేటాను తొలగించు",
+  "Remove your saved routes and settings from this browser?": "ఈ బ్రౌజర్ నుండి మీరు సేవ్ చేసిన మార్గాలు మరియు సెట్టింగ్‌లను తీసివేయాలా?",
+  "Saved data cleared.": "సేవ్ చేసిన డేటా తొలగించబడింది."
 }

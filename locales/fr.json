@@ -370,7 +370,6 @@
   "Please check:": "Veuillez vérifier :",
   "Plus": "Plus",
   "Possibility reported": "Possibilité signalée",
-  "Privacy": "Confidentialité",
   "Private property is allowed with explicit permission": "La propriété privée est autorisée avec autorisation explicite",
   "Protected areas are a hard no": "Les zones protégées sont un non catégorique",
   "Province of Utrecht · Netherlands": "Province d'Utrecht · Pays-Bas",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "Cabanes et abris en Norvège",
   "No account needed.": "Aucun compte nécessaire.",
   "Your location is only used when you allow it.": "Votre position n’est utilisée que si vous l’autorisez.",
-  "GPX routes stay on your device.": "Les traces GPX restent sur votre appareil.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "Nous comptons les imports GPX réussis sans cookies ni données d’itinéraire, et conservons ces chiffres 90 jours.",
   "Feedback is stored with technical details.": "Les retours sont enregistrés avec des données techniques.",
   "Spotted a mistake or missing a place?": "Une erreur repérée ou un lieu manquant ?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "S’applique dès que vous ajoutez une trace GPX.",
   "Route sources are now in the guide.": "Les sources d’itinéraires sont maintenant dans le guide.",
   "Host garden": "Jardin d'accueil",
-  "Host address": "Adresse d'hôte"
+  "Host address": "Adresse d'hôte",
+  "Privacy and cookies": "Confidentialité et cookies",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Ni cookies ni traceurs. Votre langue, la vue de la carte, les filtres et les itinéraires GPX sont enregistrés dans ce navigateur et ne nous sont jamais envoyés.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "Les tuiles de la carte viennent d’OpenStreetMap et certaines photos de lieux de leur source. Comme pour tout site web, ces serveurs voient votre adresse IP.",
+  "Clear saved data": "Effacer les données enregistrées",
+  "Remove your saved routes and settings from this browser?": "Supprimer vos itinéraires et réglages enregistrés de ce navigateur ?",
+  "Saved data cleared.": "Données enregistrées effacées."
 }

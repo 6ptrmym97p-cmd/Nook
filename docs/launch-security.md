@@ -36,7 +36,7 @@ Nook heeft geen PHP-installatie, SQL-server of accountwachtwoorden om te patchen
 Bij launch is dit het model:
 
 - Bij jou gehost: `public-data.js`, `data/*.json`, HTML, CSS, JS, PWA-iconen en favicon.
-- Extern geladen als asset: kaarttegels van OpenStreetMap en fonts van Google Fonts (Leaflet, markercluster en Supercluster worden met hun licenties lokaal geserveerd; Leaflet/markercluster behouden SRI), en bronfoto's die al door de bron als publieke afbeelding worden gepubliceerd.
+- Extern geladen als asset: kaarttegels van OpenStreetMap (Leaflet, markercluster, Supercluster en het lettertype DM Sans worden met hun licenties lokaal geserveerd; Leaflet/markercluster behouden SRI), en bronfoto's die al door de bron als publieke afbeelding worden gepubliceerd.
 - Alleen als link: bronpagina's voor contact, reservering, actuele omstandigheden en eventuele licenties.
 - Alleen server-side: private feedback-KV en de mailsecret. Niet in de browser: API-secrets, betaalgegevens, privé-hostprofielen of GPX-bestanden van andere bezoekers.
 

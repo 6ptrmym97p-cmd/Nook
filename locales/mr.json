@@ -370,7 +370,6 @@
   "Please check:": "कृपया तपासा:",
   "Plus": "प्लस",
   "Possibility reported": "शक्यता कळवली",
-  "Privacy": "गोपनीयता",
   "Private property is allowed with explicit permission": "खाजगी मालमत्तेला स्पष्ट परवानगी आहे",
   "Protected areas are a hard no": "संरक्षित क्षेत्रे हार्ड नं",
   "Province of Utrecht · Netherlands": "उट्रेच प्रांत · नेदरलँड",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "नॉर्वेमधील झोपड्या आणि निवारे",
   "No account needed.": "खात्याची गरज नाही.",
   "Your location is only used when you allow it.": "तुम्ही परवानगी दिली तरच तुमचे स्थान वापरले जाते.",
-  "GPX routes stay on your device.": "GPX मार्ग तुमच्या डिव्हाइसवर राहतात.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "आम्ही कुकीज किंवा मार्गाच्या डेटाशिवाय यशस्वी GPX आयात मोजतो आणि ही मोजणी 90 दिवस ठेवतो.",
   "Feedback is stored with technical details.": "अभिप्राय तांत्रिक तपशिलांसह जतन केला जातो.",
   "Spotted a mistake or missing a place?": "चूक दिसली किंवा एखादी जागा राहिली?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "GPX मार्ग जोडल्यावर लागू होते.",
   "Route sources are now in the guide.": "मार्ग स्रोत आता मार्गदर्शकात आहेत.",
   "Host garden": "यजमानाची बाग",
-  "Host address": "यजमानाचा पत्ता"
+  "Host address": "यजमानाचा पत्ता",
+  "Privacy and cookies": "गोपनीयता आणि कुकीज",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "कुकीज किंवा ट्रॅकर नाहीत. तुमची भाषा, नकाशा दृश्य, फिल्टर आणि GPX मार्ग याच ब्राउझरमध्ये जतन होतात आणि आम्हाला कधीही पाठवले जात नाहीत.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "नकाशाचे टाइल्स OpenStreetMap वरून आणि काही ठिकाणांचे फोटो त्यांच्या स्रोतावरून लोड होतात. कोणत्याही वेबसाइटप्रमाणे, त्या सर्व्हरना तुमचा IP पत्ता दिसतो.",
+  "Clear saved data": "जतन केलेला डेटा पुसा",
+  "Remove your saved routes and settings from this browser?": "या ब्राउझरमधून तुमचे जतन केलेले मार्ग आणि सेटिंग्ज काढायच्या?",
+  "Saved data cleared.": "जतन केलेला डेटा पुसला."
 }

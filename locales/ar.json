@@ -370,7 +370,6 @@
   "Please check:": "يرجى التحقق من:",
   "Plus": "زائد",
   "Possibility reported": "تم الإبلاغ عن إمكانية",
-  "Privacy": "الخصوصية",
   "Private property is allowed with explicit permission": "الملكية الخاصة مسموح بها بإذن صريح",
   "Protected areas are a hard no": "المناطق المحمية هي رقم صعب",
   "Province of Utrecht · Netherlands": "مقاطعة أوتريخت · هولندا",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "أكواخ وملاجئ في النرويج",
   "No account needed.": "لا حاجة إلى حساب.",
   "Your location is only used when you allow it.": "لا يُستخدم موقعك إلا إذا سمحت بذلك.",
-  "GPX routes stay on your device.": "تبقى مسارات GPX على جهازك.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "نحصي عمليات استيراد GPX الناجحة دون ملفات تعريف الارتباط أو بيانات المسار، ونحتفظ بالأعداد 90 يومًا.",
   "Feedback is stored with technical details.": "تُحفظ الملاحظات مع تفاصيل تقنية.",
   "Spotted a mistake or missing a place?": "هل لاحظت خطأ أو مكانًا مفقودًا؟",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "يُطبَّق عند إضافة مسار GPX.",
   "Route sources are now in the guide.": "مصادر المسارات موجودة الآن في الدليل.",
   "Host garden": "حديقة مضيف",
-  "Host address": "عنوان مضيف"
+  "Host address": "عنوان مضيف",
+  "Privacy and cookies": "الخصوصية وملفات تعريف الارتباط",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "لا ملفات تعريف ارتباط ولا أدوات تتبع. تُحفظ لغتك وعرض الخريطة والمرشحات ومسارات GPX في هذا المتصفح ولا تُرسل إلينا أبدًا.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "تُحمَّل مربعات الخريطة من OpenStreetMap وبعض صور الأماكن من مصدرها. وكما هو الحال مع أي موقع ويب، ترى تلك الخوادم عنوان IP الخاص بك.",
+  "Clear saved data": "مسح البيانات المحفوظة",
+  "Remove your saved routes and settings from this browser?": "هل تريد إزالة مساراتك وإعداداتك المحفوظة من هذا المتصفح؟",
+  "Saved data cleared.": "تم مسح البيانات المحفوظة."
 }

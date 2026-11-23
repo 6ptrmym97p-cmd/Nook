@@ -34,3 +34,26 @@
     if (query.matches) setOpen(false);
   });
 })();
+
+/* About page: remove everything nook saved in this browser. */
+(() => {
+  const button = document.querySelector("#clear-saved-data");
+  if (!button) return;
+  const status = document.querySelector("#clear-saved-data-status");
+  const text = (key) => (window.t ? t(key) : key);
+  button.addEventListener("click", async () => {
+    if (!window.confirm(text("Remove your saved routes and settings from this browser?"))) return;
+    for (const name of ["localStorage", "sessionStorage"]) {
+      try {
+        const storage = window[name];
+        Object.keys(storage).filter((key) => key.startsWith("nook-")).forEach((key) => storage.removeItem(key));
+      } catch { /* Blocked storage holds nothing to clear. */ }
+    }
+    // Cached tiles and place data show where you looked; the offline app shell stays.
+    try {
+      const keys = await caches.keys();
+      await Promise.all(keys.filter((key) => /^nook-(runtime|tiles)-/.test(key)).map((key) => caches.delete(key)));
+    } catch { /* No Cache Storage in this browser. */ }
+    status.textContent = text("Saved data cleared.");
+  });
+})();

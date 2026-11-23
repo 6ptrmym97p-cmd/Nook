@@ -370,7 +370,6 @@
   "Please check:": "ご確認ください：",
   "Plus": "プラス",
   "Possibility reported": "可能性が報告されている",
-  "Privacy": "プライバシー",
   "Private property is allowed with explicit permission": "私有財産は明示的な許可があれば許可されます",
   "Protected areas are a hard no": "保護地域は絶対にノーです",
   "Province of Utrecht · Netherlands": "ユトレヒト県 · オランダ",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "ノルウェーの小屋とシェルター",
   "No account needed.": "アカウントは不要です。",
   "Your location is only used when you allow it.": "現在地は許可した場合にのみ使われます。",
-  "GPX routes stay on your device.": "GPXルートはあなたの端末に残ります。",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "成功したGPXの読み込み回数を、Cookieやルートデータなしで数え、90日間保存します。",
   "Feedback is stored with technical details.": "フィードバックは技術情報とともに保存されます。",
   "Spotted a mistake or missing a place?": "間違いを見つけた、または場所が足りませんか？",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "GPXルートを追加すると適用されます。",
   "Route sources are now in the guide.": "ルート情報はガイドに移動しました。",
   "Host garden": "ホストの庭",
-  "Host address": "ホストの宿"
+  "Host address": "ホストの宿",
+  "Privacy and cookies": "プライバシーとCookie",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Cookieもトラッカーも使いません。言語、地図の表示位置、フィルター、GPXルートはこのブラウザーに保存され、私たちに送信されることはありません。",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "地図タイルはOpenStreetMapから、一部の場所の写真は元のサイトから読み込まれます。ほかのウェブサイトと同じく、それらのサーバーにはあなたのIPアドレスが見えます。",
+  "Clear saved data": "保存データを消去",
+  "Remove your saved routes and settings from this browser?": "このブラウザーに保存したルートと設定を削除しますか？",
+  "Saved data cleared.": "保存データを消去しました。"
 }

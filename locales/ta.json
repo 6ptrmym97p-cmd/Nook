@@ -370,7 +370,6 @@
   "Please check:": "தயவுசெய்து சரிபார்க்கவும்:",
   "Plus": "மேலும்",
   "Possibility reported": "சாத்தியம் தெரிவிக்கப்பட்டுள்ளது",
-  "Privacy": "தனியுரிமை",
   "Private property is allowed with explicit permission": "தனிப்பட்ட சொத்து வெளிப்படையான அனுமதியுடன் அனுமதிக்கப்படுகிறது",
   "Protected areas are a hard no": "பாதுகாக்கப்பட்ட பகுதிகள் கடினமான எண்",
   "Province of Utrecht · Netherlands": "உட்ரெக்ட் மாகாணம் · நெதர்லாந்து",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "நார்வேயில் குடில்கள் மற்றும் தங்குமிடங்கள்",
   "No account needed.": "கணக்கு தேவையில்லை.",
   "Your location is only used when you allow it.": "நீங்கள் அனுமதித்தால் மட்டுமே உங்கள் இருப்பிடம் பயன்படுத்தப்படும்.",
-  "GPX routes stay on your device.": "GPX வழிகள் உங்கள் சாதனத்திலேயே இருக்கும்.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "குக்கீகள் அல்லது வழித் தரவு இன்றி வெற்றிகரமான GPX இறக்கங்களை எண்ணி, அந்த எண்ணிக்கையை 90 நாட்கள் வைத்திருக்கிறோம்.",
   "Feedback is stored with technical details.": "கருத்துகள் தொழில்நுட்ப விவரங்களுடன் சேமிக்கப்படுகின்றன.",
   "Spotted a mistake or missing a place?": "தவறு கண்டீர்களா அல்லது ஓர் இடம் விடுபட்டதா?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "GPX வழியைச் சேர்த்ததும் பொருந்தும்.",
   "Route sources are now in the guide.": "வழி ஆதாரங்கள் இப்போது வழிகாட்டியில் உள்ளன.",
   "Host garden": "ஹோஸ்ட் தோட்டம்",
-  "Host address": "ஹோஸ்ட் முகவரி"
+  "Host address": "ஹோஸ்ட் முகவரி",
+  "Privacy and cookies": "தனியுரிமை மற்றும் குக்கீகள்",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "குக்கீகளோ டிராக்கர்களோ இல்லை. உங்கள் மொழி, வரைபடக் காட்சி, வடிகட்டிகள் மற்றும் GPX வழிகள் இந்த உலாவியிலேயே சேமிக்கப்படுகின்றன; ஒருபோதும் எங்களுக்கு அனுப்பப்படுவதில்லை.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "வரைபட ஓடுகள் OpenStreetMap இலிருந்தும் சில இடப் புகைப்படங்கள் அவற்றின் மூலத்திலிருந்தும் ஏற்றப்படுகின்றன. எந்த இணையதளத்தையும் போலவே, அந்தச் சேவையகங்கள் உங்கள் IP முகவரியைக் காண்கின்றன.",
+  "Clear saved data": "சேமித்த தரவை அழி",
+  "Remove your saved routes and settings from this browser?": "இந்த உலாவியிலிருந்து நீங்கள் சேமித்த வழிகளையும் அமைப்புகளையும் நீக்கவா?",
+  "Saved data cleared.": "சேமித்த தரவு அழிக்கப்பட்டது."
 }

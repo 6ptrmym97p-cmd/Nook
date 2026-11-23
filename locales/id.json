@@ -370,7 +370,6 @@
   "Please check:": "Silakan periksa:",
   "Plus": "Ditambah lagi",
   "Possibility reported": "Kemungkinan dilaporkan",
-  "Privacy": "Privasi",
   "Private property is allowed with explicit permission": "Properti pribadi diperbolehkan dengan izin eksplisit",
   "Protected areas are a hard no": "Kawasan lindung adalah hal yang dilarang",
   "Province of Utrecht · Netherlands": "Provinsi Utrecht · Belanda",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "Pondok dan tempat berteduh di Norwegia",
   "No account needed.": "Tidak perlu akun.",
   "Your location is only used when you allow it.": "Lokasi Anda hanya digunakan jika Anda mengizinkannya.",
-  "GPX routes stay on your device.": "Rute GPX tetap di perangkat Anda.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "Kami menghitung impor GPX yang berhasil tanpa cookie atau data rute, dan menyimpan hitungannya selama 90 hari.",
   "Feedback is stored with technical details.": "Masukan disimpan bersama detail teknis.",
   "Spotted a mistake or missing a place?": "Melihat kesalahan atau ada tempat yang hilang?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "Berlaku setelah Anda menambahkan rute GPX.",
   "Route sources are now in the guide.": "Sumber rute kini ada di panduan.",
   "Host garden": "Kebun tuan rumah",
-  "Host address": "Alamat tuan rumah"
+  "Host address": "Alamat tuan rumah",
+  "Privacy and cookies": "Privasi dan cookie",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Tanpa cookie atau pelacak. Bahasa, tampilan peta, filter, dan rute GPX Anda disimpan di browser ini dan tidak pernah dikirim ke kami.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "Ubin peta dimuat dari OpenStreetMap dan beberapa foto tempat dari sumbernya. Seperti situs web lainnya, server tersebut melihat alamat IP Anda.",
+  "Clear saved data": "Hapus data tersimpan",
+  "Remove your saved routes and settings from this browser?": "Hapus rute dan pengaturan tersimpan Anda dari browser ini?",
+  "Saved data cleared.": "Data tersimpan telah dihapus."
 }

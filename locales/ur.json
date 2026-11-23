@@ -370,7 +370,6 @@
   "Please check:": "براہ کرم چیک کریں:",
   "Plus": "پلس",
   "Possibility reported": "امکان کی اطلاع دی گئی۔",
-  "Privacy": "رازداری",
   "Private property is allowed with explicit permission": "نجی جائیداد کو واضح اجازت کے ساتھ اجازت دی گئی ہے۔",
   "Protected areas are a hard no": "محفوظ علاقے ایک مشکل نمبر ہیں۔",
   "Province of Utrecht · Netherlands": "صوبہ یوٹریکٹ · نیدرلینڈز",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "ناروے میں جھونپڑیاں اور پناہ گاہیں",
   "No account needed.": "اکاؤنٹ کی ضرورت نہیں۔",
   "Your location is only used when you allow it.": "آپ کا مقام صرف آپ کی اجازت سے استعمال ہوتا ہے۔",
-  "GPX routes stay on your device.": "GPX راستے آپ کی ڈیوائس پر رہتے ہیں۔",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "ہم کامیاب GPX درآمدات کو کوکیز یا راستے کے ڈیٹا کے بغیر گنتے ہیں اور یہ گنتی 90 دن رکھتے ہیں۔",
   "Feedback is stored with technical details.": "رائے تکنیکی تفصیلات کے ساتھ محفوظ کی جاتی ہے۔",
   "Spotted a mistake or missing a place?": "کوئی غلطی دیکھی یا کوئی جگہ رہ گئی؟",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "GPX راستہ شامل کرنے پر لاگو ہوتا ہے۔",
   "Route sources are now in the guide.": "راستوں کے ذرائع اب رہنما میں ہیں۔",
   "Host garden": "میزبان کا باغ",
-  "Host address": "میزبان کا پتہ"
+  "Host address": "میزبان کا پتہ",
+  "Privacy and cookies": "رازداری اور کوکیز",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "نہ کوکیز، نہ ٹریکرز۔ آپ کی زبان، نقشے کا منظر، فلٹرز اور GPX راستے اسی براؤزر میں محفوظ رہتے ہیں اور کبھی ہمیں نہیں بھیجے جاتے۔",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "نقشے کی ٹائلیں OpenStreetMap سے اور کچھ جگہوں کی تصاویر ان کے ماخذ سے لوڈ ہوتی ہیں۔ کسی بھی ویب سائٹ کی طرح، وہ سرورز آپ کا IP پتہ دیکھتے ہیں۔",
+  "Clear saved data": "محفوظ ڈیٹا صاف کریں",
+  "Remove your saved routes and settings from this browser?": "کیا اس براؤزر سے اپنے محفوظ راستے اور ترتیبات ہٹا دیں؟",
+  "Saved data cleared.": "محفوظ ڈیٹا صاف کر دیا گیا۔"
 }

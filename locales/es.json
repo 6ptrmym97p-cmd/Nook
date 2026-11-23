@@ -370,7 +370,6 @@
   "Please check:": "Por favor verifique:",
   "Plus": "Más",
   "Possibility reported": "Posibilidad reportada",
-  "Privacy": "Privacidad",
   "Private property is allowed with explicit permission": "Se permite la propiedad privada con permiso explícito.",
   "Protected areas are a hard no": "Las áreas protegidas son un duro no",
   "Province of Utrecht · Netherlands": "Provincia de Utrecht · Países Bajos",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "Refugios y cabañas en Noruega",
   "No account needed.": "No hace falta cuenta.",
   "Your location is only used when you allow it.": "Tu ubicación solo se usa si lo permites.",
-  "GPX routes stay on your device.": "Las rutas GPX se quedan en tu dispositivo.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "Contamos las importaciones GPX correctas sin cookies ni datos de ruta y guardamos los recuentos 90 días.",
   "Feedback is stored with technical details.": "Los comentarios se guardan con datos técnicos.",
   "Spotted a mistake or missing a place?": "¿Has visto un error o falta un lugar?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "Se aplica cuando añadas una ruta GPX.",
   "Route sources are now in the guide.": "Las fuentes de rutas están ahora en la guía.",
   "Host garden": "Jardín de anfitrión",
-  "Host address": "Dirección de anfitrión"
+  "Host address": "Dirección de anfitrión",
+  "Privacy and cookies": "Privacidad y cookies",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Sin cookies ni rastreadores. Tu idioma, la vista del mapa, los filtros y las rutas GPX se guardan en este navegador y nunca se nos envían.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "Los mosaicos del mapa se cargan desde OpenStreetMap y algunas fotos de lugares desde su fuente. Como en cualquier web, esos servidores ven tu dirección IP.",
+  "Clear saved data": "Borrar datos guardados",
+  "Remove your saved routes and settings from this browser?": "¿Quitar tus rutas y ajustes guardados de este navegador?",
+  "Saved data cleared.": "Datos guardados borrados."
 }

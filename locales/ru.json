@@ -370,7 +370,6 @@
   "Please check:": "Пожалуйста, проверьте:",
   "Plus": "Плюс",
   "Possibility reported": "Сообщается о возможности",
-  "Privacy": "Конфиденциальность",
   "Private property is allowed with explicit permission": "Частная собственность разрешена с явного разрешения",
   "Protected areas are a hard no": "Охраняемые территории – твердое «нет»",
   "Province of Utrecht · Netherlands": "Провинция Утрехт · Нидерланды",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "Хижины и укрытия в Норвегии",
   "No account needed.": "Аккаунт не нужен.",
   "Your location is only used when you allow it.": "Ваше местоположение используется только с вашего разрешения.",
-  "GPX routes stay on your device.": "Маршруты GPX остаются на вашем устройстве.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "Мы считаем успешные импорты GPX без cookies и данных маршрута и храним эти счётчики 90 дней.",
   "Feedback is stored with technical details.": "Отзывы сохраняются вместе с техническими данными.",
   "Spotted a mistake or missing a place?": "Заметили ошибку или не хватает места?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "Применяется, когда вы добавите маршрут GPX.",
   "Route sources are now in the guide.": "Источники маршрутов теперь в гиде.",
   "Host garden": "Сад хозяина",
-  "Host address": "Адрес хозяина"
+  "Host address": "Адрес хозяина",
+  "Privacy and cookies": "Конфиденциальность и cookie",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Никаких cookie и трекеров. Язык, вид карты, фильтры и GPX-маршруты хранятся в этом браузере и никогда не отправляются нам.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "Тайлы карты загружаются с OpenStreetMap, а некоторые фото мест — с их источника. Как и любой сайт, эти серверы видят ваш IP-адрес.",
+  "Clear saved data": "Удалить сохранённые данные",
+  "Remove your saved routes and settings from this browser?": "Удалить сохранённые маршруты и настройки из этого браузера?",
+  "Saved data cleared.": "Сохранённые данные удалены."
 }

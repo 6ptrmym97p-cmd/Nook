@@ -370,7 +370,6 @@
   "Please check:": "Tafadhali angalia:",
   "Plus": "Pamoja",
   "Possibility reported": "Uwezekano umeripotiwa",
-  "Privacy": "Faragha",
   "Private property is allowed with explicit permission": "Mali ya kibinafsi inaruhusiwa kwa ruhusa wazi",
   "Protected areas are a hard no": "Maeneo yaliyolindwa ni no ngumu",
   "Province of Utrecht · Netherlands": "Mkoa wa Utrecht · Uholanzi",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "Vibanda na makazi nchini Norway",
   "No account needed.": "Hakuna akaunti inayohitajika.",
   "Your location is only used when you allow it.": "Mahali ulipo hutumika tu ukiruhusu.",
-  "GPX routes stay on your device.": "Njia za GPX hubaki kwenye kifaa chako.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "Tunahesabu uingizaji wa GPX uliofaulu bila vidakuzi wala data ya njia, na tunahifadhi hesabu kwa siku 90.",
   "Feedback is stored with technical details.": "Maoni huhifadhiwa pamoja na maelezo ya kiufundi.",
   "Spotted a mistake or missing a place?": "Umeona kosa au mahali pamekosekana?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "Inatumika ukishaongeza njia ya GPX.",
   "Route sources are now in the guide.": "Vyanzo vya njia sasa viko kwenye mwongozo.",
   "Host garden": "Bustani ya mwenyeji",
-  "Host address": "Anwani ya mwenyeji"
+  "Host address": "Anwani ya mwenyeji",
+  "Privacy and cookies": "Faragha na vidakuzi",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Hakuna vidakuzi wala vifuatiliaji. Lugha yako, mwonekano wa ramani, vichujio na njia za GPX huhifadhiwa kwenye kivinjari hiki na hazitumwi kwetu kamwe.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "Vigae vya ramani hupakiwa kutoka OpenStreetMap na baadhi ya picha za maeneo kutoka chanzo chake. Kama tovuti yoyote, seva hizo huona anwani yako ya IP.",
+  "Clear saved data": "Futa data iliyohifadhiwa",
+  "Remove your saved routes and settings from this browser?": "Ondoa njia na mipangilio yako iliyohifadhiwa kwenye kivinjari hiki?",
+  "Saved data cleared.": "Data iliyohifadhiwa imefutwa."
 }

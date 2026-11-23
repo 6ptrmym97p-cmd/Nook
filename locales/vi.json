@@ -370,7 +370,6 @@
   "Please check:": "Vui lòng kiểm tra:",
   "Plus": "Cộng thêm",
   "Possibility reported": "Khả năng được báo cáo",
-  "Privacy": "Quyền riêng tư",
   "Private property is allowed with explicit permission": "Tài sản riêng được cho phép với sự cho phép rõ ràng",
   "Protected areas are a hard no": "Các khu vực được bảo vệ là điều không thể",
   "Province of Utrecht · Netherlands": "Tỉnh Utrecht · Hà Lan",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "Nhà chòi và lều trú ở Na Uy",
   "No account needed.": "Không cần tài khoản.",
   "Your location is only used when you allow it.": "Vị trí của bạn chỉ được dùng khi bạn cho phép.",
-  "GPX routes stay on your device.": "Tuyến GPX vẫn ở trên thiết bị của bạn.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "Chúng tôi đếm các lần nhập GPX thành công mà không dùng cookie hay dữ liệu tuyến, và giữ số đếm trong 90 ngày.",
   "Feedback is stored with technical details.": "Phản hồi được lưu cùng thông tin kỹ thuật.",
   "Spotted a mistake or missing a place?": "Thấy lỗi hoặc thiếu một địa điểm?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "Áp dụng khi bạn thêm tuyến GPX.",
   "Route sources are now in the guide.": "Nguồn tuyến đường hiện nằm trong phần hướng dẫn.",
   "Host garden": "Vườn của chủ nhà",
-  "Host address": "Địa chỉ chủ nhà"
+  "Host address": "Địa chỉ chủ nhà",
+  "Privacy and cookies": "Quyền riêng tư và cookie",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Không có cookie hay trình theo dõi. Ngôn ngữ, chế độ xem bản đồ, bộ lọc và lộ trình GPX của bạn được lưu trong trình duyệt này và không bao giờ được gửi cho chúng tôi.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "Ô bản đồ được tải từ OpenStreetMap và một số ảnh địa điểm từ nguồn của chúng. Như mọi trang web, các máy chủ đó thấy địa chỉ IP của bạn.",
+  "Clear saved data": "Xóa dữ liệu đã lưu",
+  "Remove your saved routes and settings from this browser?": "Xóa các lộ trình và cài đặt đã lưu khỏi trình duyệt này?",
+  "Saved data cleared.": "Đã xóa dữ liệu đã lưu."
 }

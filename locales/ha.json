@@ -370,7 +370,6 @@
   "Please check:": "Da fatan za a duba:",
   "Plus": "Ƙari",
   "Possibility reported": "An ruwaito yuwuwar",
-  "Privacy": "Keɓantawa",
   "Private property is allowed with explicit permission": "Ana ba da izinin kadarorin sirri tare da izini bayyananne",
   "Protected areas are a hard no": "Wuraren da aka karewa suna da wahala a'a",
   "Province of Utrecht · Netherlands": "Lardin Utrecht · Netherlands",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "Bukkoki da matsuguni a Norway",
   "No account needed.": "Ba a buƙatar asusu.",
   "Your location is only used when you allow it.": "Ana amfani da wurinka ne kawai idan ka yarda.",
-  "GPX routes stay on your device.": "Hanyoyin GPX suna nan a na'urarka.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "Muna ƙidaya shigo da GPX da ya yi nasara ba tare da kukis ko bayanan hanya ba, kuma muna ajiye ƙidayar kwana 90.",
   "Feedback is stored with technical details.": "Ana ajiye ra'ayi tare da bayanan fasaha.",
   "Spotted a mistake or missing a place?": "Ka ga kuskure ko wani wuri ya ɓace?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "Yana aiki da zarar ka ƙara hanyar GPX.",
   "Route sources are now in the guide.": "Majiyoyin hanyoyi yanzu suna cikin jagora.",
   "Host garden": "Lambun mai masauki",
-  "Host address": "Adireshin mai masauki"
+  "Host address": "Adireshin mai masauki",
+  "Privacy and cookies": "Sirri da kukis",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Babu kukis ko masu bin diddigi. Ana adana yarenka, kallon taswira, matattara da hanyoyin GPX a wannan burauza kuma ba a taɓa aiko mana da su ba.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "Tayal-tayal na taswira suna fitowa daga OpenStreetMap, wasu hotunan wurare kuma daga tushensu. Kamar kowane gidan yanar gizo, waɗannan sabobin suna ganin adireshin IP ɗinka.",
+  "Clear saved data": "Share bayanan da aka adana",
+  "Remove your saved routes and settings from this browser?": "Cire hanyoyinka da saitunanka da aka adana daga wannan burauza?",
+  "Saved data cleared.": "An share bayanan da aka adana."
 }

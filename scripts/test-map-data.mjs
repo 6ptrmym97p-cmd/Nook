@@ -53,7 +53,8 @@ test("vendored map styles and scripts match the HTML integrity checks", () => {
   let checked = 0;
   for (const [tag] of html.matchAll(/<(?:script|link)\b[^>]*>/g)) {
     const file = tag.match(/(?:src|href)="(vendor\/[^"?]+)"/)?.[1];
-    if (!file) continue;
+    // Font preloads carry no integrity: the CSS font request cannot, so a hash would download it twice.
+    if (!file || /\bas="font"/.test(tag)) continue;
     const integrity = tag.match(/integrity="([^"]+)"/)?.[1];
     const digest = crypto.createHash("sha256").update(fs.readFileSync(path.join(root, file))).digest("base64");
     assert.equal(integrity, `sha256-${digest}`, `${file} would be blocked by the browser`);

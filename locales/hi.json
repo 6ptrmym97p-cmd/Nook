@@ -370,7 +370,6 @@
   "Please check:": "कृपया जांचें:",
   "Plus": "प्लस",
   "Possibility reported": "संभावना बताई गई",
-  "Privacy": "गोपनीयता",
   "Private property is allowed with explicit permission": "स्पष्ट अनुमति के साथ निजी संपत्ति की अनुमति है",
   "Protected areas are a hard no": "संरक्षित क्षेत्र कठिन नहीं हैं",
   "Province of Utrecht · Netherlands": "यूट्रेक्ट प्रांत · नीदरलैंड",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "नॉर्वे में झोपड़ियाँ और आश्रय",
   "No account needed.": "खाते की ज़रूरत नहीं।",
   "Your location is only used when you allow it.": "आपकी लोकेशन तभी इस्तेमाल होती है जब आप अनुमति दें।",
-  "GPX routes stay on your device.": "GPX रूट आपके डिवाइस पर रहते हैं।",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "हम सफल GPX आयात बिना कुकीज़ या रूट डेटा के गिनते हैं और यह गिनती 90 दिन रखते हैं।",
   "Feedback is stored with technical details.": "फ़ीडबैक तकनीकी जानकारी के साथ सहेजा जाता है।",
   "Spotted a mistake or missing a place?": "कोई गलती दिखी या कोई जगह छूट गई?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "GPX रूट जोड़ने पर लागू होता है।",
   "Route sources are now in the guide.": "रूट स्रोत अब गाइड में हैं।",
   "Host garden": "मेज़बान का बगीचा",
-  "Host address": "मेज़बान का पता"
+  "Host address": "मेज़बान का पता",
+  "Privacy and cookies": "गोपनीयता और कुकीज़",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "कोई कुकी या ट्रैकर नहीं। आपकी भाषा, मानचित्र दृश्य, फ़िल्टर और GPX रूट इसी ब्राउज़र में सहेजे जाते हैं और कभी हमें नहीं भेजे जाते।",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "मानचित्र टाइलें OpenStreetMap से और कुछ जगहों की तस्वीरें उनके स्रोत से लोड होती हैं। किसी भी वेबसाइट की तरह, वे सर्वर आपका IP पता देखते हैं।",
+  "Clear saved data": "सहेजा गया डेटा मिटाएँ",
+  "Remove your saved routes and settings from this browser?": "इस ब्राउज़र से अपने सहेजे गए रूट और सेटिंग्स हटाएँ?",
+  "Saved data cleared.": "सहेजा गया डेटा मिटा दिया गया।"
 }

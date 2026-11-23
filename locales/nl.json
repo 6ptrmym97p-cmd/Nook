@@ -421,7 +421,6 @@
   "Location active, accurate to about {0}.": "Positie actief, nauwkeurigheid ongeveer {0}.",
   "Finding your location": "Positie bepalen",
   "Before you go:": "Praktisch:",
-  "Privacy": "Privacy",
   "Private property is allowed with explicit permission": "Privéterrein kan met expliciete toestemming",
   "Province of Utrecht · Netherlands": "Provincie Utrecht · Nederland",
   "Public CampWild Map Pin.": "Publieke CampWild-kaartpin.",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "Hutten en shelters in Noorwegen",
   "No account needed.": "Geen account nodig.",
   "Your location is only used when you allow it.": "Je locatie wordt alleen gebruikt als je dat toestaat.",
-  "GPX routes stay on your device.": "GPX-routes blijven op je apparaat.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "We tellen geslaagde GPX-imports zonder cookies of routegegevens en bewaren die tellingen 90 dagen.",
   "Feedback is stored with technical details.": "Feedback slaan we op met technische gegevens.",
   "Spotted a mistake or missing a place?": "Fout gezien of een plek gemist?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "Geldt zodra je een GPX-route toevoegt.",
   "Route sources are now in the guide.": "Routebronnen staan nu in de gids.",
   "Host garden": "Gasttuin",
-  "Host address": "Gastadres"
+  "Host address": "Gastadres",
+  "Privacy and cookies": "Privacy en cookies",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Geen cookies of trackers. Je taal, kaartbeeld, filters en GPX-routes worden in deze browser bewaard en nooit naar ons gestuurd.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "Kaarttegels komen van OpenStreetMap en sommige plekfoto’s van hun bron. Zoals bij elke website zien die servers je IP-adres.",
+  "Clear saved data": "Bewaarde gegevens wissen",
+  "Remove your saved routes and settings from this browser?": "Je bewaarde routes en instellingen uit deze browser verwijderen?",
+  "Saved data cleared.": "Bewaarde gegevens gewist."
 }

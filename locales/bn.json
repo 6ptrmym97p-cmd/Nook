@@ -370,7 +370,6 @@
   "Please check:": "অনুগ্রহ করে চেক করুন:",
   "Plus": "প্লাস",
   "Possibility reported": "সম্ভাবনার কথা জানানো হয়েছে",
-  "Privacy": "গোপনীয়তা",
   "Private property is allowed with explicit permission": "ব্যক্তিগত সম্পত্তি সুস্পষ্ট অনুমতি সঙ্গে অনুমোদিত হয়",
   "Protected areas are a hard no": "সংরক্ষিত এলাকা একটি কঠিন সংখ্যা",
   "Province of Utrecht · Netherlands": "Utrecht প্রদেশ · নেদারল্যান্ডস",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "নরওয়েতে কুঁড়েঘর ও আশ্রয়",
   "No account needed.": "অ্যাকাউন্টের দরকার নেই।",
   "Your location is only used when you allow it.": "আপনি অনুমতি দিলে তবেই আপনার অবস্থান ব্যবহার হয়।",
-  "GPX routes stay on your device.": "GPX রুট আপনার ডিভাইসেই থাকে।",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "আমরা কুকি বা রুটের ডেটা ছাড়াই সফল GPX আমদানি গণনা করি এবং গণনা ৯০ দিন রাখি।",
   "Feedback is stored with technical details.": "মতামত প্রযুক্তিগত তথ্যসহ সংরক্ষিত হয়।",
   "Spotted a mistake or missing a place?": "কোনো ভুল দেখেছেন বা কোনো জায়গা নেই?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "GPX রুট যোগ করলে প্রযোজ্য হবে।",
   "Route sources are now in the guide.": "রুটের সূত্র এখন গাইডে আছে।",
   "Host garden": "হোস্টের বাগান",
-  "Host address": "হোস্টের ঠিকানা"
+  "Host address": "হোস্টের ঠিকানা",
+  "Privacy and cookies": "গোপনীয়তা ও কুকি",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "কোনো কুকি বা ট্র্যাকার নেই। আপনার ভাষা, মানচিত্রের দৃশ্য, ফিল্টার ও GPX রুট এই ব্রাউজারেই সংরক্ষিত থাকে এবং কখনো আমাদের কাছে পাঠানো হয় না।",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "মানচিত্রের টাইল OpenStreetMap থেকে এবং কিছু জায়গার ছবি তাদের উৎস থেকে লোড হয়। যেকোনো ওয়েবসাইটের মতোই, সেই সার্ভারগুলো আপনার IP ঠিকানা দেখতে পায়।",
+  "Clear saved data": "সংরক্ষিত ডেটা মুছুন",
+  "Remove your saved routes and settings from this browser?": "এই ব্রাউজার থেকে আপনার সংরক্ষিত রুট ও সেটিংস মুছে ফেলবেন?",
+  "Saved data cleared.": "সংরক্ষিত ডেটা মুছে ফেলা হয়েছে।"
 }

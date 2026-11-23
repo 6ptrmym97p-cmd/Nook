@@ -370,7 +370,6 @@
   "Please check:": "Por favor verifique:",
   "Plus": "Mais",
   "Possibility reported": "Possibilidade relatada",
-  "Privacy": "Privacidade",
   "Private property is allowed with explicit permission": "A propriedade privada é permitida com permissão explícita",
   "Protected areas are a hard no": "Áreas protegidas são um não difícil",
   "Province of Utrecht · Netherlands": "Província de Utrecht · Holanda",
@@ -643,7 +642,6 @@
   "Huts and shelters in Norway": "Cabanas e abrigos na Noruega",
   "No account needed.": "Não precisa de conta.",
   "Your location is only used when you allow it.": "A sua localização só é usada se o permitir.",
-  "GPX routes stay on your device.": "As rotas GPX ficam no seu dispositivo.",
   "We count successful GPX imports without cookies or route data, and keep the counts for 90 days.": "Contamos importações GPX bem-sucedidas sem cookies nem dados de rota e guardamos as contagens durante 90 dias.",
   "Feedback is stored with technical details.": "O feedback é guardado com dados técnicos.",
   "Spotted a mistake or missing a place?": "Viu um erro ou falta um local?",
@@ -694,5 +692,11 @@
   "Applies once you add a GPX route.": "Aplica-se quando adicionar uma rota GPX.",
   "Route sources are now in the guide.": "As fontes de rotas estão agora no guia.",
   "Host garden": "Jardim de anfitrião",
-  "Host address": "Endereço de anfitrião"
+  "Host address": "Endereço de anfitrião",
+  "Privacy and cookies": "Privacidade e cookies",
+  "No cookies or trackers. Your language, map view, filters and GPX routes are saved in this browser and never sent to us.": "Sem cookies nem rastreadores. O seu idioma, a vista do mapa, os filtros e as rotas GPX ficam guardados neste navegador e nunca nos são enviados.",
+  "Map tiles load from OpenStreetMap and some place photos from their source. Like any website, those servers see your IP address.": "Os mosaicos do mapa vêm do OpenStreetMap e algumas fotos de locais da respetiva fonte. Como em qualquer site, esses servidores veem o seu endereço IP.",
+  "Clear saved data": "Apagar dados guardados",
+  "Remove your saved routes and settings from this browser?": "Remover as suas rotas e definições guardadas deste navegador?",
+  "Saved data cleared.": "Dados guardados apagados."
 }
