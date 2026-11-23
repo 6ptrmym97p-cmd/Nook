@@ -512,17 +512,17 @@ body.map-app {
   .leaflet-control-zoom a:hover { background: var(--fill); }
 }
 
+/* Settings top left, Tonight bottom left, location bottom right. */
 .map-controls {
   position: absolute;
   z-index: 1200;
-  left: 16px;
-  right: 16px;
-  bottom: max(24px, env(safe-area-inset-bottom));
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  inset: 0;
   pointer-events: none;
 }
+.map-controls > * { position: absolute; }
+.map-settings { top: 12px; left: 12px; }
+.map-tonight { left: 16px; bottom: max(24px, env(safe-area-inset-bottom)); }
+.map-locate { right: 16px; bottom: max(24px, env(safe-area-inset-bottom)); }
 .map-controls > * { pointer-events: auto; }
 
 .map-button {
@@ -543,13 +543,19 @@ body.map-app {
 .map-button-round {
   width: 48px;
   justify-content: center;
-  margin-left: auto;
   padding: 0;
 }
 .map-button-round svg { color: #fff; }
 .map-button.has-location { color: var(--forest); background: var(--lime); }
 .map-button.has-location svg { color: var(--forest); }
 .map-button.is-loading svg { opacity: 0.6; }
+.map-settings svg { width: 22px; height: 22px; }
+.map-settings .map-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  box-shadow: 0 0 0 2px var(--forest);
+}
 .map-badge {
   display: inline-grid;
   min-width: 20px;
@@ -569,7 +575,7 @@ body.map-app {
   top: 12px;
   left: 50%;
   display: flex;
-  max-width: calc(100% - 32px);
+  max-width: calc(100% - 144px);
   align-items: center;
   gap: 12px;
   padding: 8px 8px 8px 14px;
